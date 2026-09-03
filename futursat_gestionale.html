@@ -245,6 +245,18 @@
     .gest-tabs{display:flex;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:4px;}
     .gest-tab{background:transparent;border:none;color:var(--text2);padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s;}
     .gest-tab.active{background:var(--accent);color:#fff;}
+    .p-filter-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+    .p-filter-btn:hover{border-color:var(--accent);color:var(--text);}
+    .p-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .p-filter-btn.p2.active{background:rgba(59,130,246,0.8);border-color:#3b82f6;}
+    .p-filter-btn.p3.active{background:rgba(34,197,94,0.8);border-color:#22c55e;}
+    .p-filter-btn.p1.active{background:rgba(148,163,184,0.5);border-color:#94a3b8;color:var(--text);}
+    .p-filter-btn.pnone.active{background:var(--surface2);border-color:var(--text3);color:var(--text3);}
+    .piatt-chip{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.5px;}
+    .piatt-chip.p1{background:rgba(148,163,184,0.15);color:#94a3b8;border:1px solid rgba(148,163,184,0.4);}
+    .piatt-chip.p2{background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.4);}
+    .piatt-chip.p3{background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.4);}
+    .piatt-chip.pnone{color:var(--text3);font-style:italic;}
     .gest-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
     .gest-search{flex:1;min-width:180px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;font-family:inherit;}
     .gest-search:focus{outline:none;border-color:var(--accent);}
@@ -557,12 +569,21 @@
           <input class="gest-search" id="gestVeicoliSearch" placeholder="🔍 Cerca per targa, cliente, marca..." oninput="filterVeicoliTable()">
           <button class="btn-add" onclick="openVeicoloModal()">＋ Aggiungi Veicolo</button>
         </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
+          <span style="font-size:12px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.8px">Filtra:</span>
+          <button class="p-filter-btn active" id="pfBtn-all" onclick="filterByPiattaforma('all')">Tutte</button>
+          <button class="p-filter-btn p2" id="pfBtn-p2" onclick="filterByPiattaforma('p2')">🔵 Piattaforma 2</button>
+          <button class="p-filter-btn p3" id="pfBtn-p3" onclick="filterByPiattaforma('p3')">🟢 Piattaforma 3</button>
+          <button class="p-filter-btn p1" id="pfBtn-p1" onclick="filterByPiattaforma('p1')">⚪ Piattaforma 1</button>
+          <button class="p-filter-btn pnone" id="pfBtn-pnone" onclick="filterByPiattaforma('none')">— Nessuna</button>
+          <span id="pfCount" style="margin-left:auto;font-size:12px;color:var(--text3)"></span>
+        </div>
         <div class="gest-table-wrap">
           <table class="gest-table" id="gestVeicoliTable">
             <thead><tr>
-              <th>Targa</th><th>Marca</th><th>Modello</th><th>Cliente</th><th>Canone €</th><th>GPS</th><th>Azioni</th>
+              <th>Targa</th><th>Piattaforma</th><th>Cliente</th><th>Canone €</th><th>GPS</th><th>Azioni</th>
             </tr></thead>
-            <tbody id="gestVeicoliBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
+            <tbody id="gestVeicoliBody"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
           </table>
         </div>
         <div class="gest-pager">
@@ -1494,19 +1515,41 @@
 
   // ── VEICOLI TABLE ─────────────────────────────────
   let _veicoli=[], _veicoli_filtered=[], _vPage=0, _veicoliCache={}; const V_PER_PAGE=50;
+  let _pfActive = 'all';
   async function loadVeicoliTable() {
-    document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
+    document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
     _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,cliente_id&order=targa.asc&limit=5000');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
-  function filterVeicoliTable() {
+  function getPiattNum(p) {
+    const s = (p||'').toLowerCase().trim();
+    if (!s) return 0;
+    if (s.includes('guardone') || s.includes('piattaforma 2')) return 2;
+    if (s.includes('watch') || s.includes('piattaforma 3')) return 3;
+    return 1;
+  }
+  function applyVeicoliFilters() {
     const q = document.getElementById('gestVeicoliSearch').value.toLowerCase();
-    _veicoli_filtered = q ? _veicoli.filter(v =>
+    let list = _veicoli;
+    if (q) list = list.filter(v =>
       (v.targa||'').toLowerCase().includes(q) ||
       (v.ragione_sociale||'').toLowerCase().includes(q) ||
       (v.marca||'').toLowerCase().includes(q)
-    ) : [..._veicoli];
-    _vPage=0; renderVeicoliTable();
+    );
+    if (_pfActive === 'p2') list = list.filter(v => getPiattNum(v.piattaforma) === 2);
+    else if (_pfActive === 'p3') list = list.filter(v => getPiattNum(v.piattaforma) === 3);
+    else if (_pfActive === 'p1') list = list.filter(v => getPiattNum(v.piattaforma) === 1);
+    else if (_pfActive === 'none') list = list.filter(v => !v.piattaforma || v.piattaforma.trim() === '');
+    _veicoli_filtered = list; _vPage=0; renderVeicoliTable();
+  }
+  function filterVeicoliTable() { applyVeicoliFilters(); }
+  function filterByPiattaforma(key) {
+    _pfActive = key;
+    ['all','p2','p3','p1','pnone'].forEach(k => {
+      const btn = document.getElementById('pfBtn-'+k);
+      if (btn) btn.classList.toggle('active', k === key);
+    });
+    applyVeicoliFilters();
   }
   function renderVeicoliTable() {
     const start=_vPage*V_PER_PAGE, slice=_veicoli_filtered.slice(start,start+V_PER_PAGE);
@@ -1515,22 +1558,27 @@
     document.getElementById('gestVBtnPrev').disabled = _vPage===0;
     document.getElementById('gestVBtnNext').disabled = start+V_PER_PAGE>=tot;
     _veicoliCache = {};
+    const pfCount = document.getElementById('pfCount');
+    if (pfCount) pfCount.textContent = `${_veicoli_filtered.length} targhe`;
     document.getElementById('gestVeicoliBody').innerHTML = slice.length ? slice.map(v => {
       _veicoliCache[v.id] = v;
+      const pn = getPiattNum(v.piattaforma);
+      const pChip = v.piattaforma && v.piattaforma.trim()
+        ? `<span class="piatt-chip p${pn}">P${pn}</span>`
+        : `<span class="piatt-chip pnone">—</span>`;
       return `
-      <tr>
+      <tr onclick="openVeicoloModal(${v.id})" style="cursor:pointer">
         <td><b style="font-family:'Courier New';letter-spacing:1px">${v.targa||'—'}</b></td>
-        <td>${v.marca||'—'}</td>
-        <td>${v.modello||'—'}</td>
+        <td>${pChip}</td>
         <td>${v.ragione_sociale||'—'}</td>
         <td>${v.canone!=null?'€ '+Number(v.canone).toFixed(2):'—'}</td>
         <td><span style="color:${v.attivo_gps==='SI'?'var(--green)':'var(--text3)'}">${v.attivo_gps||'—'}</span></td>
-        <td><div class="actions">
-          <button class="btn-edit" onclick="openVeicoloModal(${v.id})">✏️ Modifica</button>
+        <td><div class="actions" onclick="event.stopPropagation()">
+          <button class="btn-edit" onclick="openVeicoloModal(${v.id})">✏️</button>
           <button class="btn-danger" onclick="confirmDelete('veicolo',${v.id},'${(v.targa||'').replace(/'/g,"\\'")}')">🗑️</button>
         </div></td>
       </tr>`;
-    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
+    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
   }
   function veicoliPage(dir) { _vPage+=dir; renderVeicoliTable(); }
 
