@@ -288,6 +288,22 @@
     .import-result{padding:14px 16px;border-radius:10px;font-size:13px;margin-top:14px;}
     .import-result.ok{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#86efac;}
     .import-result.err{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;}
+    /* ── MOVIMENTI ── */
+    .mov-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+    .mov-kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+    .mov-kpi .mov-kpi-num{font-size:28px;font-weight:700;margin-bottom:2px;}
+    .mov-kpi .mov-kpi-lbl{font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;}
+    .mov-kpi.green{border-left:3px solid var(--green);}
+    .mov-kpi.red{border-left:3px solid var(--red);}
+    .mov-kpi.blue{border-left:3px solid var(--accent);}
+    .mov-kpi.gray{border-left:3px solid var(--text3);}
+    .mov-section{margin-bottom:20px;}
+    .mov-section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+    .mov-chips{display:flex;flex-wrap:wrap;gap:6px;}
+    .mov-chip{padding:4px 10px;border-radius:20px;font-size:12px;font-family:'Courier New',monospace;font-weight:600;letter-spacing:1px;}
+    .mov-chip.new{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);color:#86efac;}
+    .mov-chip.del{background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;}
+    .mov-chip.same{background:var(--surface2);border:1px solid var(--border);color:var(--text3);}
     /* ── MOBILE ── */
     .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:190;}
     @media(max-width:768px){
@@ -459,6 +475,9 @@
         <div class="kpi-card"><div class="kpi-val" id="kpiMedia">—</div><div class="kpi-label">Canone medio per veicolo</div></div>
         <div class="kpi-card"><div class="kpi-val" id="kpiAttivi">—</div><div class="kpi-label">Veicoli attivi GPS</div></div>
         <div class="kpi-card warn"><div class="kpi-val" id="kpiScad">—</div><div class="kpi-label">Contratti in scadenza (90gg)</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="kpiCosto">—</div><div class="kpi-label">Costo mensile (noi)</div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--green)"><div class="kpi-val" id="kpiMargine" style="color:var(--green)">—</div><div class="kpi-label">Margine mensile</div></div>
+        <div class="kpi-card" style="border-left:3px solid var(--green)"><div class="kpi-val" id="kpiMargineAnnuo" style="color:var(--green)">—</div><div class="kpi-label">Margine annuale</div></div>
       </div>
 
       <!-- GRAFICI RIGA 1 -->
@@ -517,6 +536,7 @@
           <button class="gest-tab active" id="gtab-veicoli" onclick="showGestTab('veicoli')">🚗 Veicoli</button>
           <button class="gest-tab" id="gtab-clienti" onclick="showGestTab('clienti')">👤 Clienti</button>
           <button class="gest-tab" id="gtab-import" onclick="showGestTab('import')">📥 Importa Excel</button>
+          <button class="gest-tab" id="gtab-movimenti" onclick="showGestTab('movimenti')">📊 Movimenti</button>
         </div>
       </div>
 
@@ -580,6 +600,31 @@
           <div id="importResult"></div>
         </div>
       </div>
+
+      <!-- TAB MOVIMENTI -->
+      <div id="gtab-content-movimenti" style="display:none">
+        <div class="mov-intro">
+          <p style="color:var(--text2);font-size:13px;margin-bottom:16px">
+            Carica il nuovo file Excel ATTIVI: il sistema confronta le targhe presenti nel file con quelle nel database e mostra <b style="color:var(--green)">nuove attivazioni</b> e <b style="color:var(--red)">disdette</b>.
+          </p>
+          <div class="drop-zone" id="movDropZone" onclick="document.getElementById('movFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleMovDrop(event)" style="margin-bottom:16px">
+            <div class="drop-zone-icon">📊</div>
+            <div class="drop-zone-txt">Trascina il file Excel oppure clicca per sceglierlo</div>
+            <div class="drop-zone-sub">Formati: .xlsx · .xls · .ods · .csv</div>
+            <input type="file" id="movFileInput" accept=".xlsx,.xls,.ods,.csv" style="display:none" onchange="handleMovFile(this.files[0])">
+          </div>
+        </div>
+        <div id="movLoading" style="display:none;text-align:center;padding:30px;color:var(--text2)">
+          <div class="spinner" style="margin:0 auto 10px"></div>Analisi in corso...
+        </div>
+        <div id="movResult" style="display:none">
+          <!-- Riepilogo KPI -->
+          <div class="mov-kpi-row" id="movKpiRow"></div>
+          <!-- Sezioni dettaglio -->
+          <div id="movSections"></div>
+          <button class="btn-cancel" onclick="resetMov()" style="margin-top:16px">✕ Nuova analisi</button>
+        </div>
+      </div>
     </div>
 
   </div><!-- /content -->
@@ -612,6 +657,7 @@
           <div class="form-field"><label class="form-label">Tipo Servizio</label><input class="form-input" id="mv_tipo_servizio" placeholder="LOG"></div>
           <div class="form-field"><label class="form-label">Data Attivazione</label><input class="form-input" id="mv_data_att" type="date"></div>
           <div class="form-field"><label class="form-label">Data Termine</label><input class="form-input" id="mv_data_termine" type="date"></div>
+          <div class="form-field"><label class="form-label">Piattaforma</label><input class="form-input" id="mv_piattaforma" placeholder="es. Guardone"></div>
           <div class="form-field"><label class="form-label">Installatore</label><input class="form-input" id="mv_installatore" placeholder="Nome installatore"></div>
           <div class="form-field"><label class="form-label">Seriale GPS</label><input class="form-input" id="mv_seriale" placeholder="XXXXXXXX"></div>
           <div class="form-field"><label class="form-label">Attivo GPS</label>
@@ -708,12 +754,12 @@
   }
 
   // ── NAV ──────────────────────────────────────────────
-  const PAGES = ['targa','cliente','statistiche','contratti'];
-  const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',statistiche:'Statistiche',contratti:'Contratti'};
+  const PAGES = ['targa','cliente','statistiche','contratti','gestione'];
+  const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
 
   function showPage(id) {
     PAGES.forEach(p => {
-      document.getElementById('page-'+p).style.display = p===id?'':'none';
+      document.getElementById('page-'+p).style.display = p===id?'block':'none';
       document.getElementById('nav-'+p)?.classList.toggle('active', p===id);
     });
     document.getElementById('topbarTitle').textContent = TITLES[id]||id;
@@ -841,6 +887,7 @@
         ${row('Modello', veicolo.modello)}
         ${row('Colore', veicolo.colore)}
         ${row('Tipo Mezzo', veicolo.tipo_mezzo)}
+        ${row('Piattaforma', veicolo.piattaforma)}
         ${row('Numero Contratto', veicolo.numero_contratto)}
         ${row('Articolo', veicolo.articolo)}
         ${row('Attivazione', fmtDate(veicolo.data_attivazione))}
@@ -1026,8 +1073,12 @@
       const attivi     = veicoli.filter(v => v.attivo_gps && v.attivo_gps.toLowerCase()==='yes');
       // Usa canone (dal file principale) oppure canone_mensile (da Attivi se già importato)
       const getCanone = v => parseFloat(v.canone)||parseFloat(v.canone_mensile)||0;
+      const getCosto  = v => parseFloat(v.prezzo_a_noi)||0;
       const fatMens    = veicoli.reduce((s,v)=> s + getCanone(v), 0);
       const fatAnnuo   = fatMens * 12;
+      const costoMens  = veicoli.reduce((s,v)=> s + getCosto(v), 0);
+      const margineMens  = fatMens - costoMens;
+      const margineAnnuo = margineMens * 12;
       const canoni     = veicoli.map(v=>getCanone(v)).filter(v=>v>0);
       const mediaC     = canoni.length ? canoni.reduce((a,b)=>a+b,0)/canoni.length : 0;
       const scadenze   = veicoli.filter(v => {
@@ -1043,6 +1094,9 @@
       el('kpiMedia').textContent    = '€ ' + mediaC.toFixed(2);
       el('kpiAttivi').textContent   = attivi.length.toLocaleString('it-IT');
       el('kpiScad').textContent     = scadenze.length;
+      el('kpiCosto').textContent    = costoMens > 0 ? '€ ' + Math.round(costoMens).toLocaleString('it-IT') : '—';
+      el('kpiMargine').textContent  = costoMens > 0 ? '€ ' + Math.round(margineMens).toLocaleString('it-IT') : '—';
+      el('kpiMargineAnnuo').textContent = costoMens > 0 ? '€ ' + Math.round(margineAnnuo).toLocaleString('it-IT') : '—';
 
       // Build clienti map for province lookup
       const cliMap = {};
@@ -1302,12 +1356,109 @@
   // Tab switching
   let gestTabLoaded = {veicoli:false, clienti:false};
   function showGestTab(tab) {
-    ['veicoli','clienti','import'].forEach(t => {
+    ['veicoli','clienti','import','movimenti'].forEach(t => {
       document.getElementById('gtab-'+t).classList.toggle('active', t===tab);
-      document.getElementById('gtab-content-'+t).style.display = t===tab?'':'none';
+      document.getElementById('gtab-content-'+t).style.display = t===tab?'block':'none';
     });
     if (tab==='veicoli' && !gestTabLoaded.veicoli) { gestTabLoaded.veicoli=true; loadVeicoliTable(); }
     if (tab==='clienti' && !gestTabLoaded.clienti) { gestTabLoaded.clienti=true; loadClientiTable(); }
+  }
+
+  // ── MOVIMENTI: ANALISI DISDETTE & NUOVE ATTIVAZIONI ───────────────────────
+  function handleMovDrop(e) {
+    e.preventDefault();
+    document.getElementById('movDropZone').classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if (f) handleMovFile(f);
+  }
+
+  async function handleMovFile(file) {
+    document.getElementById('movDropZone').style.display = 'none';
+    document.getElementById('movLoading').style.display = 'block';
+    document.getElementById('movResult').style.display = 'none';
+    try {
+      // 1. Leggi le targhe dal file Excel
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+
+      // Trova colonna TARGA (cerca header)
+      let targaCol = -1;
+      let headerRow = -1;
+      for (let r = 0; r < Math.min(5, rows.length); r++) {
+        for (let c = 0; c < rows[r].length; c++) {
+          const v = String(rows[r][c]).toLowerCase().trim();
+          if (v === 'targa' || v === 'plate') { targaCol = c; headerRow = r; break; }
+        }
+        if (targaCol >= 0) break;
+      }
+      if (targaCol < 0) throw new Error('Colonna "Targa" non trovata nel file. Assicurati che ci sia un\'intestazione "Targa".');
+
+      const fileTarge = new Set();
+      for (let r = headerRow + 1; r < rows.length; r++) {
+        const t = String(rows[r][targaCol]||'').trim().toUpperCase().replace(/\s+/g,'');
+        if (t && t.length >= 5) fileTarge.add(t);
+      }
+
+      // 2. Leggi le targhe attuali dal DB
+      const dbVeicoli = await sbGet('/rest/v1/veicoli?select=targa&limit=10000');
+      const dbTarge = new Set(dbVeicoli.map(v => (v.targa||'').trim().toUpperCase()));
+
+      // 3. Calcola differenze
+      const nuove    = [...fileTarge].filter(t => !dbTarge.has(t)).sort();  // in file, non in DB
+      const disdette = [...dbTarge].filter(t => !fileTarge.has(t)).sort();  // in DB, non in file
+      const invariati = [...fileTarge].filter(t => dbTarge.has(t)).sort();
+
+      document.getElementById('movLoading').style.display = 'none';
+      renderMovResult(nuove, disdette, invariati, fileTarge.size, dbTarge.size);
+    } catch(e) {
+      document.getElementById('movLoading').style.display = 'none';
+      document.getElementById('movDropZone').style.display = '';
+      alert('Errore analisi: ' + e.message);
+    }
+  }
+
+  function renderMovResult(nuove, disdette, invariati, totFile, totDB) {
+    // KPI row
+    document.getElementById('movKpiRow').innerHTML = `
+      <div class="mov-kpi green"><div class="mov-kpi-num" style="color:var(--green)">${nuove.length}</div><div class="mov-kpi-lbl">Nuove attivazioni</div></div>
+      <div class="mov-kpi red"><div class="mov-kpi-num" style="color:var(--red)">${disdette.length}</div><div class="mov-kpi-lbl">Disdette</div></div>
+      <div class="mov-kpi gray"><div class="mov-kpi-num" style="color:var(--text2)">${invariati.length}</div><div class="mov-kpi-lbl">Invariati</div></div>
+      <div class="mov-kpi blue">
+        <div class="mov-kpi-num" style="color:var(--accent)">${totFile}</div>
+        <div class="mov-kpi-lbl">Totale nel file</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">DB attuale: ${totDB}</div>
+      </div>`;
+
+    // Sezioni dettaglio
+    let html = '';
+    if (nuove.length > 0) {
+      html += `<div class="mov-section">
+        <div class="mov-section-title"><span style="color:var(--green)">✅</span> Nuove attivazioni — ${nuove.length} targhe nuove nel file</div>
+        <div class="mov-chips">${nuove.map(t=>`<span class="mov-chip new">${t}</span>`).join('')}</div>
+      </div>`;
+    }
+    if (disdette.length > 0) {
+      html += `<div class="mov-section">
+        <div class="mov-section-title"><span style="color:var(--red)">❌</span> Disdette — ${disdette.length} targhe presenti nel DB ma non nel file</div>
+        <div class="mov-chips">${disdette.map(t=>`<span class="mov-chip del">${t}</span>`).join('')}</div>
+      </div>`;
+    }
+    if (nuove.length === 0 && disdette.length === 0) {
+      html = `<div style="text-align:center;padding:30px;color:var(--green);font-size:15px">
+        ✅ Nessuna variazione — il file coincide esattamente con il database attuale.
+      </div>`;
+    }
+    document.getElementById('movSections').innerHTML = html;
+    document.getElementById('movResult').style.display = 'block';
+  }
+
+  function resetMov() {
+    document.getElementById('movDropZone').style.display = '';
+    document.getElementById('movResult').style.display = 'none';
+    document.getElementById('movLoading').style.display = 'none';
+    document.getElementById('movFileInput').value = '';
   }
   // Load gestione when page shown
   const _origShowPage = showPage;
@@ -1317,10 +1468,10 @@
   };
 
   // ── VEICOLI TABLE ─────────────────────────────────
-  let _veicoli=[], _veicoli_filtered=[], _vPage=0; const V_PER_PAGE=50;
+  let _veicoli=[], _veicoli_filtered=[], _vPage=0, _veicoliCache={}; const V_PER_PAGE=50;
   async function loadVeicoliTable() {
     document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,cliente_id&order=targa.asc&limit=5000');
+    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,cliente_id&order=targa.asc&limit=5000');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
   function filterVeicoliTable() {
@@ -1338,7 +1489,10 @@
     document.getElementById('gestVeicoliInfo').textContent = `${start+1}–${Math.min(start+V_PER_PAGE,tot)} di ${tot}`;
     document.getElementById('gestVBtnPrev').disabled = _vPage===0;
     document.getElementById('gestVBtnNext').disabled = start+V_PER_PAGE>=tot;
-    document.getElementById('gestVeicoliBody').innerHTML = slice.length ? slice.map(v => `
+    _veicoliCache = {};
+    document.getElementById('gestVeicoliBody').innerHTML = slice.length ? slice.map(v => {
+      _veicoliCache[v.id] = v;
+      return `
       <tr>
         <td><b style="font-family:'Courier New';letter-spacing:1px">${v.targa||'—'}</b></td>
         <td>${v.marca||'—'}</td>
@@ -1347,15 +1501,16 @@
         <td>${v.canone!=null?'€ '+Number(v.canone).toFixed(2):'—'}</td>
         <td><span style="color:${v.attivo_gps==='SI'?'var(--green)':'var(--text3)'}">${v.attivo_gps||'—'}</span></td>
         <td><div class="actions">
-          <button class="btn-edit" onclick="openVeicoloModal(${JSON.stringify(JSON.stringify(v))})">✏️ Modifica</button>
+          <button class="btn-edit" onclick="openVeicoloModal(${v.id})">✏️ Modifica</button>
           <button class="btn-danger" onclick="confirmDelete('veicolo',${v.id},'${(v.targa||'').replace(/'/g,"\\'")}')">🗑️</button>
         </div></td>
-      </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
+      </tr>`;
+    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
   }
   function veicoliPage(dir) { _vPage+=dir; renderVeicoliTable(); }
 
   // ── CLIENTI TABLE ─────────────────────────────────
-  let _clienti=[], _clienti_filtered=[], _cPage=0; const C_PER_PAGE=50;
+  let _clienti=[], _clienti_filtered=[], _cPage=0, _clientiCache={}; const C_PER_PAGE=50;
   async function loadClientiTable() {
     document.getElementById('gestClientiBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
     _clienti = await sbGet('/rest/v1/clienti?select=id,ragione_sociale,indirizzo,cap,citta,provincia,partita_iva,telefono,fax,email,descriz_pagamento&order=ragione_sociale.asc&limit=5000');
@@ -1375,7 +1530,10 @@
     document.getElementById('gestClientiInfo').textContent = `${start+1}–${Math.min(start+C_PER_PAGE,tot)} di ${tot}`;
     document.getElementById('gestCBtnPrev').disabled = _cPage===0;
     document.getElementById('gestCBtnNext').disabled = start+C_PER_PAGE>=tot;
-    document.getElementById('gestClientiBody').innerHTML = slice.length ? slice.map(c => `
+    _clientiCache = {};
+    document.getElementById('gestClientiBody').innerHTML = slice.length ? slice.map(c => {
+      _clientiCache[c.id] = c;
+      return `
       <tr>
         <td><b>${c.ragione_sociale||'—'}</b></td>
         <td>${c.citta||'—'}</td>
@@ -1383,10 +1541,11 @@
         <td>${c.partita_iva||'—'}</td>
         <td>${c.telefono||'—'}</td>
         <td><div class="actions">
-          <button class="btn-edit" onclick="openClienteModal(${JSON.stringify(JSON.stringify(c))})">✏️ Modifica</button>
+          <button class="btn-edit" onclick="openClienteModal(${c.id})">✏️ Modifica</button>
           <button class="btn-danger" onclick="confirmDelete('cliente',${c.id},'${(c.ragione_sociale||'').replace(/'/g,"\\'")}')">🗑️</button>
         </div></td>
-      </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
+      </tr>`;
+    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
   }
   function clientiPage(dir) { _cPage+=dir; renderClientiTable(); }
 
@@ -1395,8 +1554,8 @@
   function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
   // ── VEICOLO MODAL ─────────────────────────────────
-  function openVeicoloModal(jsonStr=null) {
-    const v = jsonStr ? JSON.parse(jsonStr) : null;
+  function openVeicoloModal(id=null) {
+    const v = id ? (_veicoliCache[id] || null) : null;
     document.getElementById('modalVeicoloTitle').textContent = v ? '✏️ Modifica Veicolo — '+v.targa : '＋ Aggiungi Veicolo';
     const f = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
     f('mv_id', v?.id||''); f('mv_targa', v?.targa); f('mv_ragione', v?.ragione_sociale);
@@ -1407,7 +1566,7 @@
     f('mv_servizio', v?.servizio); f('mv_tipo_servizio', v?.tipo_servizio);
     f('mv_data_att', v?.data_attivazione?v.data_attivazione.substring(0,10):'');
     f('mv_data_termine', v?.data_termine?v.data_termine.substring(0,10):'');
-    f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
+    f('mv_piattaforma', v?.piattaforma); f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
     f('mv_attivo', v?.attivo_gps||'');
     openModal('modalVeicolo');
   }
@@ -1428,6 +1587,7 @@
       servizio: document.getElementById('mv_servizio').value||null, tipo_servizio: document.getElementById('mv_tipo_servizio').value||null,
       data_attivazione: document.getElementById('mv_data_att').value||null,
       data_termine: document.getElementById('mv_data_termine').value||null,
+      piattaforma: document.getElementById('mv_piattaforma').value||null,
       installatore: document.getElementById('mv_installatore').value||null,
       seriale_periferica: document.getElementById('mv_seriale').value||null,
       attivo_gps: document.getElementById('mv_attivo').value||null
@@ -1440,8 +1600,8 @@
   }
 
   // ── CLIENTE MODAL ─────────────────────────────────
-  function openClienteModal(jsonStr=null) {
-    const c = jsonStr ? JSON.parse(jsonStr) : null;
+  function openClienteModal(id=null) {
+    const c = id ? (_clientiCache[id] || null) : null;
     document.getElementById('modalClienteTitle').textContent = c ? '✏️ Modifica Cliente — '+c.ragione_sociale : '＋ Aggiungi Cliente';
     const f = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
     f('mc_id',c?.id||''); f('mc_ragione',c?.ragione_sociale); f('mc_indirizzo',c?.indirizzo);
