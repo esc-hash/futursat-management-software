@@ -1579,7 +1579,7 @@
   let _sfActive = 'all';
   async function loadVeicoliTable() {
     document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id&order=targa.asc&limit=5000');
+    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id&order=targa.asc&limit=20000');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
   function getPiattNum(p) {
