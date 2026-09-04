@@ -149,6 +149,41 @@
     .piattaforma-badge.p2{background:rgba(59,130,246,0.15);border:2px solid rgba(59,130,246,0.5);color:#60a5fa;}
     .piattaforma-badge.p3{background:rgba(34,197,94,0.15);border:2px solid rgba(34,197,94,0.5);color:#4ade80;}
     .piattaforma-badge.show{display:flex;}
+    /* ── STATO BADGE ── */
+    .stato-badge{
+      display:none;flex-direction:column;align-items:center;justify-content:center;
+      padding:6px 14px;border-radius:10px;font-weight:800;font-size:11px;
+      letter-spacing:1px;text-transform:uppercase;line-height:1.3;text-align:center;
+      min-width:90px;
+    }
+    .stato-badge.show{display:flex;}
+    .stato-badge.s-incorso{background:rgba(34,197,94,0.15);border:2px solid rgba(34,197,94,0.5);color:#4ade80;}
+    .stato-badge.s-sospeso{background:rgba(249,115,22,0.15);border:2px solid rgba(249,115,22,0.5);color:#fb923c;}
+    .stato-badge.s-archiviato{background:rgba(100,116,139,0.15);border:2px solid rgba(100,116,139,0.5);color:#94a3b8;}
+    .stato-badge.s-bloccato{background:rgba(239,68,68,0.15);border:2px solid rgba(239,68,68,0.5);color:#f87171;}
+    .stato-badge.s-disattivato{background:rgba(75,85,99,0.15);border:2px solid rgba(75,85,99,0.4);color:#6b7280;}
+    .stato-badge.s-furto{background:rgba(239,68,68,0.25);border:2px solid rgba(239,68,68,0.7);color:#ef4444;}
+    .stato-badge.s-revocato{background:rgba(168,85,247,0.15);border:2px solid rgba(168,85,247,0.5);color:#c084fc;}
+    /* stato chip in table */
+    .stato-chip{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;}
+    .stato-chip.s-incorso{background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.4);}
+    .stato-chip.s-sospeso{background:rgba(249,115,22,0.15);color:#fb923c;border:1px solid rgba(249,115,22,0.4);}
+    .stato-chip.s-archiviato{background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.4);}
+    .stato-chip.s-bloccato{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.4);}
+    .stato-chip.s-disattivato{background:rgba(75,85,99,0.15);color:#6b7280;border:1px solid rgba(75,85,99,0.3);}
+    .stato-chip.s-furto{background:rgba(239,68,68,0.2);color:#ef4444;border:1px solid rgba(239,68,68,0.5);}
+    .stato-chip.s-revocato{background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.4);}
+    /* stato filter tabs */
+    .stato-filter-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
+    .s-filter-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+    .s-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .s-filter-btn.s-incorso.active{background:rgba(34,197,94,0.75);border-color:#22c55e;color:#fff;}
+    .s-filter-btn.s-sospeso.active{background:rgba(249,115,22,0.75);border-color:#f97316;color:#fff;}
+    .s-filter-btn.s-archiviato.active{background:rgba(100,116,139,0.6);border-color:#64748b;color:#fff;}
+    .s-filter-btn.s-bloccato.active{background:rgba(239,68,68,0.75);border-color:#ef4444;color:#fff;}
+    .s-filter-btn.s-disattivato.active{background:rgba(75,85,99,0.6);border-color:#4b5563;color:#fff;}
+    .s-filter-btn.s-furto.active{background:rgba(239,68,68,0.9);border-color:#ef4444;color:#fff;}
+    .s-filter-btn.s-revocato.active{background:rgba(168,85,247,0.75);border-color:#a855f7;color:#fff;}
     .result-title{font-size:22px;font-weight:700;}
     .result-subtitle{font-size:13px;color:var(--text2);margin-top:4px;}
     .close-btn{
@@ -453,6 +488,7 @@
           <div class="result-header">
             <div class="result-header-left">
               <div class="piattaforma-badge" id="piattaformaBadge"></div>
+              <div class="stato-badge" id="statoBadge"></div>
               <div class="result-plate-badge" id="resultPlate"></div>
               <div>
                 <div class="result-title" id="resultName"></div>
@@ -578,12 +614,24 @@
           <button class="p-filter-btn pnone" id="pfBtn-pnone" onclick="filterByPiattaforma('none')">— Nessuna</button>
           <span id="pfCount" style="margin-left:auto;font-size:12px;color:var(--text3)"></span>
         </div>
+        <div class="stato-filter-bar">
+          <span style="font-size:12px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.8px">Stato:</span>
+          <button class="s-filter-btn active" id="sfBtn-all" onclick="filterByStato('all')">Tutti</button>
+          <button class="s-filter-btn s-incorso" id="sfBtn-incorso" onclick="filterByStato('in corso')">🟢 In corso</button>
+          <button class="s-filter-btn s-sospeso" id="sfBtn-sospeso" onclick="filterByStato('sospeso')">🟠 Sospeso</button>
+          <button class="s-filter-btn s-archiviato" id="sfBtn-archiviato" onclick="filterByStato('archiviato')">⬜ Archiviato</button>
+          <button class="s-filter-btn s-bloccato" id="sfBtn-bloccato" onclick="filterByStato('bloccato')">🔴 Bloccato</button>
+          <button class="s-filter-btn s-disattivato" id="sfBtn-disattivato" onclick="filterByStato('disattivato')">⚫ Disattivato</button>
+          <button class="s-filter-btn s-furto" id="sfBtn-furto" onclick="filterByStato('furto')">🚨 Furto</button>
+          <button class="s-filter-btn s-revocato" id="sfBtn-revocato" onclick="filterByStato('revocato')">🟣 Revocato</button>
+          <button class="s-filter-btn" id="sfBtn-none" onclick="filterByStato('none')">— Nessuno</button>
+        </div>
         <div class="gest-table-wrap">
           <table class="gest-table" id="gestVeicoliTable">
             <thead><tr>
-              <th>Targa</th><th>Piattaforma</th><th>Cliente</th><th>Canone €</th><th>GPS</th><th>Azioni</th>
+              <th>Targa</th><th>Stato</th><th>Piattaforma</th><th>Cliente</th><th>Canone €</th><th>GPS</th><th>Azioni</th>
             </tr></thead>
-            <tbody id="gestVeicoliBody"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
+            <tbody id="gestVeicoliBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
           </table>
         </div>
         <div class="gest-pager">
@@ -900,6 +948,18 @@
     } else {
       pBadge.className = 'piattaforma-badge';
       pBadge.innerHTML = '';
+    }
+    // Badge stato
+    const sBadge = document.getElementById('statoBadge');
+    const sRaw = (veicolo.stato||'').trim().toLowerCase();
+    const statoIcons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣'};
+    if (sRaw) {
+      const sCls = 's-'+sRaw.replace(/ /g,'');
+      sBadge.className = 'stato-badge show ' + sCls;
+      sBadge.innerHTML = `<span style="font-size:9px;opacity:.7;margin-bottom:2px">STATO</span><span style="font-size:12px;font-weight:900">${(statoIcons[sRaw]||'')+' '+(veicolo.stato||'').toUpperCase()}</span>`;
+    } else {
+      sBadge.className = 'stato-badge';
+      sBadge.innerHTML = '';
     }
     document.getElementById('resultSub').textContent   = cliente ? `${[cliente.citta, cliente.provincia].filter(Boolean).join(', ')} · ID ${cliente.id}` : '';
 
@@ -1516,9 +1576,10 @@
   // ── VEICOLI TABLE ─────────────────────────────────
   let _veicoli=[], _veicoli_filtered=[], _vPage=0, _veicoliCache={}; const V_PER_PAGE=50;
   let _pfActive = 'all';
+  let _sfActive = 'all';
   async function loadVeicoliTable() {
     document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,cliente_id&order=targa.asc&limit=5000');
+    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id&order=targa.asc&limit=5000');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
   function getPiattNum(p) {
@@ -1540,9 +1601,23 @@
     else if (_pfActive === 'p3') list = list.filter(v => getPiattNum(v.piattaforma) === 3);
     else if (_pfActive === 'p1') list = list.filter(v => getPiattNum(v.piattaforma) === 1);
     else if (_pfActive === 'none') list = list.filter(v => !v.piattaforma || v.piattaforma.trim() === '');
+    if (_sfActive !== 'all') {
+      if (_sfActive === 'none') list = list.filter(v => !v.stato || v.stato.trim() === '');
+      else list = list.filter(v => (v.stato||'').trim().toLowerCase() === _sfActive);
+    }
     _veicoli_filtered = list; _vPage=0; renderVeicoliTable();
   }
   function filterVeicoliTable() { applyVeicoliFilters(); }
+  function filterByStato(key) {
+    _sfActive = key;
+    // Map stato value → button id suffix
+    const keyToId = {'all':'all','in corso':'incorso','sospeso':'sospeso','archiviato':'archiviato','bloccato':'bloccato','disattivato':'disattivato','furto':'furto','revocato':'revocato','none':'none'};
+    Object.keys(keyToId).forEach(k => {
+      const btn = document.getElementById('sfBtn-'+keyToId[k]);
+      if (btn) btn.classList.toggle('active', k === key);
+    });
+    applyVeicoliFilters();
+  }
   function filterByPiattaforma(key) {
     _pfActive = key;
     ['all','p2','p3','p1','pnone'].forEach(k => {
@@ -1566,9 +1641,14 @@
       const pChip = v.piattaforma && v.piattaforma.trim()
         ? `<span class="piatt-chip p${pn}">P${pn}</span>`
         : `<span class="piatt-chip pnone">—</span>`;
+      const sRaw = (v.stato||'').trim().toLowerCase();
+      const sCls = sRaw ? 's-'+sRaw.replace(/ /g,''): '';
+      const sLabel = sRaw ? v.stato : '—';
+      const sChip = sCls ? `<span class="stato-chip ${sCls}">${sLabel}</span>` : `<span style="color:var(--text3);font-size:11px">—</span>`;
       return `
       <tr onclick="openVeicoloModal(${v.id})" style="cursor:pointer">
         <td><b style="font-family:'Courier New';letter-spacing:1px">${v.targa||'—'}</b></td>
+        <td>${sChip}</td>
         <td>${pChip}</td>
         <td>${v.ragione_sociale||'—'}</td>
         <td>${v.canone!=null?'€ '+Number(v.canone).toFixed(2):'—'}</td>
@@ -1578,7 +1658,7 @@
           <button class="btn-danger" onclick="confirmDelete('veicolo',${v.id},'${(v.targa||'').replace(/'/g,"\\'")}')">🗑️</button>
         </div></td>
       </tr>`;
-    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
+    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
   }
   function veicoliPage(dir) { _vPage+=dir; renderVeicoliTable(); }
 
