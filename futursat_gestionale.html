@@ -2007,7 +2007,14 @@
       closeModal('modalVeicolo'); gestTabLoaded.veicoli=false; loadVeicoliTable();
       // Ricarica la lista telaio se visibile
       if (document.getElementById('page-telaio')?.style.display !== 'none') loadTelaioPage();
-    } catch(e) { alert('Errore: ' + e.message); }
+    } catch(e) {
+      const msg = e.message || '';
+      if (msg.includes('veicoli_targa_unique') || msg.includes('duplicate key value')) {
+        alert('⚠️ Targa già presente nel database.\n\nLa targa "' + data.targa + '" è già registrata per un altro veicolo.\nOgni targa deve essere univoca.');
+      } else {
+        alert('Errore: ' + msg);
+      }
+    }
   }
 
   // ── CLIENTE MODAL ─────────────────────────────────
