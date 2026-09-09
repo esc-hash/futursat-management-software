@@ -508,6 +508,7 @@
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <button class="btn-edit" style="padding:7px 14px;font-size:13px;border-radius:8px;" onclick="openVeicoloModalFromResult()">✏️ Modifica Veicolo</button>
+              <button class="btn-edit" style="padding:7px 14px;font-size:13px;border-radius:8px;background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.35);color:var(--green);" onclick="aggiungiTargaStessoCliente()">＋ Aggiungi Targa</button>
               <button class="close-btn" onclick="closeResult()">✕ Chiudi</button>
             </div>
           </div>
@@ -755,6 +756,7 @@
       <div class="modal-body">
         <input type="hidden" id="mv_id">
         <input type="hidden" id="mv_data_ins_telaio">
+        <input type="hidden" id="mv_cliente_id">
         <div class="form-grid">
           <!-- Immatricolata SI/NO (solo per nuovi veicoli) -->
           <div class="form-field full" id="mv_immat_row">
@@ -956,9 +958,17 @@
       clienti.forEach(c => {
         const div = document.createElement('div');
         div.className = 'client-item';
-        div.innerHTML = `<div class="client-item-name">${c.ragione_sociale||'—'}</div>
-          <div class="client-item-sub">${[c.citta, c.provincia].filter(Boolean).join(', ')||''} ${c.telefono?'· '+c.telefono:''} · ID: ${c.id}</div>`;
-        div.onclick = () => loadClienteVehicles(c.id, c.ragione_sociale);
+        div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;';
+        div.innerHTML = `
+          <div style="flex:1;min-width:0;cursor:pointer;" onclick="loadClienteVehicles('${c.id}','${(c.ragione_sociale||'').replace(/'/g,"\\'")}')">
+            <div class="client-item-name">${c.ragione_sociale||'—'}</div>
+            <div class="client-item-sub">${[c.citta, c.provincia].filter(Boolean).join(', ')||''} ${c.telefono?'· '+c.telefono:''}</div>
+          </div>
+          <button onclick="event.stopPropagation();openNuovaTargaPerCliente('${c.id}','${(c.ragione_sociale||'').replace(/'/g,"\\'")}')"
+            style="flex-shrink:0;padding:7px 13px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);
+                   border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">
+            ＋ Aggiungi Targa
+          </button>`;
         list.appendChild(div);
       });
     } catch(e) {
@@ -971,14 +981,24 @@
 
   async function loadClienteVehicles(clienteId, nome) {
     try {
-      const veicoli = await sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=*`);
-      if (!veicoli.length) return;
+      const [veicoli, cl] = await Promise.all([
+        sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=*`),
+        sbGet(`/rest/v1/clienti?id=eq.${clienteId}&select=*`)
+      ]);
+      if (!veicoli.length) {
+        // Cliente senza veicoli — offri di aggiungere la prima targa
+        if (confirm(`Il cliente "${nome}" non ha ancora veicoli registrati.\nVuoi aggiungere la prima targa?`)) {
+          openNuovaTargaPerCliente(clienteId, nome);
+        }
+        return;
+      }
       // Switch to targa page and show result
       showPage('targa');
-      document.getElementById('targaInput').value = veicoli[0].targa||'';
-      const cl = await sbGet(`/rest/v1/clienti?id=eq.${clienteId}&select=*`);
-      const servizi = await sbGet(`/rest/v1/veicoli_servizi?targa=ilike.${veicoli[0].targa}&select=*&order=numero_servizio.asc`);
-      renderResult(veicoli[0], cl[0]||null, veicoli.map(v=>{return {id:v.id,targa:v.targa}}), servizi);
+      document.getElementById('targaInput').value = veicoli[0].targa || (veicoli[0].numero_telaio ? 'TELAIO: '+veicoli[0].numero_telaio : '');
+      const servizi = veicoli[0].targa
+        ? await sbGet(`/rest/v1/veicoli_servizi?targa=ilike.${veicoli[0].targa}&select=*&order=numero_servizio.asc`)
+        : [];
+      renderResult(veicoli[0], cl[0]||null, veicoli.map(v=>({id:v.id, targa:v.targa||v.numero_telaio})), servizi);
     } catch(e) { console.error(e); }
   }
 
@@ -1879,7 +1899,7 @@
     const v = id ? (_veicoliCache[id] || null) : null;
     document.getElementById('modalVeicoloTitle').textContent = v ? '✏️ Modifica Veicolo — '+(v.targa||v.numero_telaio||'') : '＋ Aggiungi Veicolo';
     const f = (fid, val) => { const el=document.getElementById(fid); if(el) el.value=val||''; };
-    f('mv_id', v?.id||''); f('mv_ragione', v?.ragione_sociale);
+    f('mv_id', v?.id||''); f('mv_cliente_id', v?.cliente_id||''); f('mv_ragione', v?.ragione_sociale);
     f('mv_marca', v?.marca); f('mv_modello', v?.modello); f('mv_colore', v?.colore);
     f('mv_tipo_mezzo', v?.tipo_mezzo); f('mv_sim_voce', v?.sim_voce); f('mv_sim_dati', v?.sim_dati);
     f('mv_email', v?.email); f('mv_cellulare', v?.cellulare); f('mv_tel_ufficio', v?.telefono_ufficio);
@@ -1914,8 +1934,29 @@
       document.getElementById('mv_targa_row').style.display  = '';
       document.getElementById('mv_telaio_row').style.display = 'none';
       f('mv_targa', ''); f('mv_telaio', '');
+      // reset cliente_id unless pre-set
+      if (!document.getElementById('mv_cliente_id').value) f('mv_cliente_id', '');
     }
     openModal('modalVeicolo');
+  }
+
+  // ── AGGIUNGI NUOVA TARGA PER CLIENTE ESISTENTE ────────
+  function openNuovaTargaPerCliente(clienteId, ragioneSociale) {
+    // Reset modal as new vehicle
+    openVeicoloModal(null);
+    // Pre-fill client info
+    document.getElementById('mv_ragione').value = ragioneSociale || '';
+    document.getElementById('mv_cliente_id').value = clienteId || '';
+    document.getElementById('modalVeicoloTitle').textContent = '＋ Aggiungi Targa — ' + (ragioneSociale || '');
+  }
+
+  function aggiungiTargaStessoCliente() {
+    // Use current result vehicle's client info
+    const v = _currentResultVeicolo;
+    const c = _cliente;
+    const clienteId = v?.cliente_id || c?.id || null;
+    const nome = v?.ragione_sociale || c?.ragione_sociale || '';
+    openNuovaTargaPerCliente(clienteId, nome);
   }
   async function saveVeicolo() {
     const id = document.getElementById('mv_id').value;
@@ -1946,7 +1987,8 @@
       installatore: document.getElementById('mv_installatore').value||null,
       seriale_periferica: document.getElementById('mv_seriale').value||null,
       attivo_gps: document.getElementById('mv_attivo').value||null,
-      immatricolata: immatVal
+      immatricolata: immatVal,
+      cliente_id: document.getElementById('mv_cliente_id').value||null
     };
 
     if (immatVal === 'NO') {
@@ -2141,6 +2183,7 @@
     document.getElementById('modalVeicoloTitle').textContent = '✏️ Modifica — ' + (v.targa || v.numero_telaio || '');
     const f = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
     f('mv_id', v.id || '');
+    f('mv_cliente_id', v.cliente_id || '');
     f('mv_ragione', v.ragione_sociale);
     f('mv_marca', v.marca);
     f('mv_modello', v.modello);
