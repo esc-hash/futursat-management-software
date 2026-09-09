@@ -448,6 +448,9 @@
     <button class="nav-item" onclick="showPage('cliente')" id="nav-cliente">
       <span class="icon">👤</span> Ricerca per Cliente
     </button>
+    <button class="nav-item" onclick="showPage('telaio')" id="nav-telaio">
+      <span class="icon">🔩</span> Cerca per Telaio
+    </button>
     <div class="nav-section">Sezioni</div>
     <button class="nav-item" onclick="showPage('statistiche')" id="nav-statistiche">
       <span class="icon">📊</span> Statistiche
@@ -530,6 +533,28 @@
           <div><strong>Nessun cliente trovato</strong><br><span style="font-size:13px;color:var(--text2)">Prova con un termine diverso.</span></div>
         </div>
         <div class="client-results-list" id="clientResults"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGINA: CERCA PER TELAIO ═══ -->
+    <div id="page-telaio" style="display:none">
+      <div style="max-width:900px;margin:0 auto;">
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">🔩 Cerca per Numero di Telaio</h2>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:20px;">Veicoli salvati con numero di telaio — non ancora immatricolati. Clicca su un veicolo per modificarlo.</p>
+
+        <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center;">
+          <input type="text" id="telaioSearchInput" placeholder="🔍  Filtra per numero telaio o cliente..."
+            style="flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border);
+                   border-radius:10px;color:var(--text);font-size:14px;outline:none;font-family:inherit;"
+            oninput="filterTelaioList(this.value)">
+          <button onclick="loadTelaioPage()" style="padding:10px 16px;background:var(--surface);
+            border:1px solid var(--border);border-radius:10px;color:var(--text2);cursor:pointer;
+            font-size:13px;font-family:inherit;white-space:nowrap;">↻ Aggiorna</button>
+        </div>
+
+        <div id="telaioList" style="display:flex;flex-direction:column;gap:10px;">
+          <p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">Caricamento...</p>
+        </div>
       </div>
     </div>
 
@@ -865,8 +890,8 @@
   }
 
   // ── NAV ──────────────────────────────────────────────
-  const PAGES = ['targa','cliente','statistiche','contratti','gestione'];
-  const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
+  const PAGES = ['targa','cliente','telaio','statistiche','contratti','gestione'];
+  const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',telaio:'Cerca per Numero di Telaio',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
 
   function showPage(id) {
     PAGES.forEach(p => {
@@ -1297,11 +1322,12 @@
   // ── STATISTICHE ─────────────────────────────────────────────────
   let statsLoaded = false;
 
-  // Override showPage to trigger stats loading
+  // Override showPage to trigger stats loading + telaio loading
   const _origShow = showPage;
   showPage = function(id) {
     _origShow(id);
     if (id === 'statistiche' && !statsLoaded) { statsLoaded = true; loadStats(); }
+    if (id === 'telaio') { loadTelaioPage(); }
   };
 
   async function loadStats() {
@@ -1937,6 +1963,8 @@
       if (id) { await sbPatch(`/rest/v1/veicoli?id=eq.${id}`, data); }
       else     { await sbPost('/rest/v1/veicoli', data); }
       closeModal('modalVeicolo'); gestTabLoaded.veicoli=false; loadVeicoliTable();
+      // Ricarica la lista telaio se visibile
+      if (document.getElementById('page-telaio')?.style.display !== 'none') loadTelaioPage();
     } catch(e) { alert('Errore: ' + e.message); }
   }
 
@@ -2207,6 +2235,93 @@
 
   // Run MANCA TARGA check a few seconds after page load
   setTimeout(checkMancaTarga, 4000);
+
+  // ── CERCA PER NUMERO DI TELAIO ────────────────────────
+  let _telaioRows = [];
+
+  async function loadTelaioPage() {
+    const container = document.getElementById('telaioList');
+    if (!container) return;
+    container.innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">⏳ Caricamento...</p>';
+    try {
+      const rows = await sbGet('/rest/v1/veicoli?immatricolata=eq.NO&select=id,numero_telaio,ragione_sociale,data_inserimento_telaio,piattaforma,seriale_periferica,installatore&order=data_inserimento_telaio.desc&limit=1000');
+      _telaioRows = rows || [];
+      const q = (document.getElementById('telaioSearchInput')?.value || '').trim().toUpperCase();
+      renderTelaioList(q ? _telaioRows.filter(r =>
+        (r.numero_telaio||'').toUpperCase().includes(q) ||
+        (r.ragione_sociale||'').toUpperCase().includes(q)
+      ) : _telaioRows);
+    } catch(e) {
+      container.innerHTML = `<p style="color:var(--red);font-size:13px;text-align:center;padding:40px 0;">Errore: ${e.message}</p>`;
+    }
+  }
+
+  function filterTelaioList(val) {
+    if (!_telaioRows.length) return;
+    const q = val.trim().toUpperCase();
+    renderTelaioList(q ? _telaioRows.filter(r =>
+      (r.numero_telaio||'').toUpperCase().includes(q) ||
+      (r.ragione_sociale||'').toUpperCase().includes(q)
+    ) : _telaioRows);
+  }
+
+  function renderTelaioList(rows) {
+    const container = document.getElementById('telaioList');
+    if (!container) return;
+    if (!rows.length) {
+      container.innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">Nessun veicolo trovato con numero di telaio.</p>';
+      return;
+    }
+    const now = new Date();
+    container.innerHTML = rows.map(r => {
+      const giorni = r.data_inserimento_telaio
+        ? Math.floor((now - new Date(r.data_inserimento_telaio)) / 86400000)
+        : null;
+      const scaduto = giorni !== null && giorni >= 30;
+      const giorniLabel = giorni !== null
+        ? `<span style="font-size:11px;color:${scaduto ? 'var(--red)' : 'var(--text2)'}">📅 ${r.data_inserimento_telaio} (${giorni} giorni fa)</span>`
+        : '<span style="font-size:11px;color:var(--text3)">Data non disponibile</span>';
+      const alertBadge = scaduto
+        ? `<span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);color:#fca5a5;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;margin-left:8px;">🚨 MANCA TARGA</span>` : '';
+      return `
+        <div style="background:var(--surface);border:1px solid ${scaduto ? 'rgba(239,68,68,0.4)' : 'var(--border)'};
+             border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;
+             transition:background 0.15s;" onclick="openTelaioEdit('${r.id}')"
+             onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+          <div style="font-size:28px;flex-shrink:0;">🔩</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:4px;">
+              <span style="font-family:'Courier New';font-weight:700;font-size:15px;letter-spacing:1px;color:var(--text);">${r.numero_telaio || '—'}</span>
+              <span style="background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.5);color:#fb923c;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">IMMATRICOLATA NO</span>
+              ${alertBadge}
+            </div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:2px;">${r.ragione_sociale || 'Cliente sconosciuto'}</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">${giorniLabel}
+              ${r.piattaforma ? `<span style="font-size:11px;color:var(--text3)">📡 ${r.piattaforma}</span>` : ''}
+              ${r.installatore ? `<span style="font-size:11px;color:var(--text3)">🔧 ${r.installatore}</span>` : ''}
+            </div>
+          </div>
+          <div style="flex-shrink:0;">
+            <button style="padding:7px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);
+              border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;"
+              onclick="event.stopPropagation();openTelaioEdit('${r.id}')">✏️ Modifica</button>
+          </div>
+        </div>`;
+    }).join('');
+    // Counter
+    const totale = `<p style="font-size:12px;color:var(--text3);margin-bottom:10px;">${rows.length} veicolo/i trovati</p>`;
+    container.innerHTML = totale + container.innerHTML;
+  }
+
+  async function openTelaioEdit(id) {
+    try {
+      const rows = await sbGet(`/rest/v1/veicoli?id=eq.${id}&select=*`);
+      if (!rows.length) return;
+      const v = rows[0];
+      _currentResultVeicolo = v;
+      openVeicoloModalFromResult();
+    } catch(e) { alert('Errore: ' + e.message); }
+  }
 
   // ── BIND EVENTS + carica indice targhe ────────────────
   (function bindEvents() {
