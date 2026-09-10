@@ -449,7 +449,7 @@
       <span class="icon">👤</span> Ricerca per Cliente
     </button>
     <button class="nav-item" onclick="showPage('telaio')" id="nav-telaio">
-      <span class="icon">🔩</span> Cerca per Telaio
+      <span class="icon">🔩</span> Ricerca per Telaio
     </button>
     <div class="nav-section">Sezioni</div>
     <button class="nav-item" onclick="showPage('statistiche')" id="nav-statistiche">
@@ -672,6 +672,7 @@
         <div class="gest-tabs">
           <button class="gest-tab active" id="gtab-veicoli" onclick="showGestTab('veicoli')">🚗 Veicoli</button>
           <button class="gest-tab" id="gtab-clienti" onclick="showGestTab('clienti')">👤 Clienti</button>
+          <button class="gest-tab" id="gtab-telaio" onclick="showGestTab('telaio')">🔩 Telaio</button>
           <button class="gest-tab" id="gtab-import" onclick="showGestTab('import')">📥 Importa Excel</button>
           <button class="gest-tab" id="gtab-movimenti" onclick="showGestTab('movimenti')">📊 Movimenti</button>
         </div>
@@ -738,6 +739,22 @@
           <button class="pager-btn" id="gestCBtnPrev" onclick="clientiPage(-1)">◀ Prec</button>
           <button class="pager-btn" id="gestCBtnNext" onclick="clientiPage(1)">Succ ▶</button>
         </div>
+      </div>
+
+      <!-- TAB TELAIO -->
+      <div id="gtab-content-telaio" style="display:none">
+        <div class="gest-toolbar">
+          <input class="gest-search" id="gestTelaioSearch" placeholder="🔍 Cerca per telaio o cliente..." oninput="filterTelaioGest(this.value)">
+        </div>
+        <div class="gest-table-wrap">
+          <table class="gest-table" id="gestTelaioTable">
+            <thead><tr>
+              <th>Numero Telaio</th><th>Ragione Sociale</th><th>Data Inserimento</th><th>Giorni</th><th>Piattaforma</th><th>Stato</th><th>Azioni</th>
+            </tr></thead>
+            <tbody id="gestTelaioBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="gest-pager"><span id="gestTelaioInfo"></span></div>
       </div>
 
       <!-- TAB IMPORT EXCEL -->
@@ -829,14 +846,29 @@
           <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="mv_email" placeholder="email@esempio.it"></div>
           <div class="form-field"><label class="form-label">Cellulare cliente</label><input class="form-input" id="mv_cellulare" placeholder="3xxxxxxxxx"></div>
           <div class="form-field"><label class="form-label">Telefono ufficio</label><input class="form-input" id="mv_tel_ufficio" placeholder="0805xxxxxx"></div>
-          <div class="form-field"><label class="form-label">Canone mensile €</label><input class="form-input" id="mv_canone" type="number" step="0.01" placeholder="0.00"></div>
-          <div class="form-field"><label class="form-label">Prezzo riservato €</label><input class="form-input" id="mv_prezzo_ris" type="number" step="0.01" placeholder="0.00"></div>
-          <div class="form-field"><label class="form-label">Prezzo a noi €</label><input class="form-input" id="mv_prezzo_noi" type="number" step="0.01" placeholder="0.00"></div>
-          <div class="form-field"><label class="form-label">Servizio</label><input class="form-input" id="mv_servizio" placeholder="SVS - Web Base"></div>
-          <div class="form-field"><label class="form-label">Tipo Servizio</label><input class="form-input" id="mv_tipo_servizio" placeholder="LOG"></div>
+          <div class="form-field"><label class="form-label">Data Contratto</label><input class="form-input" id="mv_data_contratto" type="date"></div>
+          <div class="form-field"><label class="form-label">Tipo Contratto</label>
+            <select class="form-select" id="mv_tipo_contratto"><option value="">— Seleziona —</option><option value="ANNUALE">ANNUALE</option><option value="MENSILE">MENSILE</option></select>
+          </div>
           <div class="form-field"><label class="form-label">Data Attivazione</label><input class="form-input" id="mv_data_att" type="date"></div>
           <div class="form-field"><label class="form-label">Data Termine</label><input class="form-input" id="mv_data_termine" type="date"></div>
-          <div class="form-field"><label class="form-label">Piattaforma</label><input class="form-input" id="mv_piattaforma" placeholder="es. Guardone"></div>
+          <div class="form-field"><label class="form-label">Piattaforma</label>
+            <select class="form-select" id="mv_piattaforma"><option value="">— Seleziona —</option><option value="Piattaforma 1">Piattaforma 1</option><option value="Piattaforma 2">Piattaforma 2</option><option value="Piattaforma 3">Piattaforma 3</option></select>
+          </div>
+          <div class="form-field"><label class="form-label">Stato</label>
+            <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option></select>
+          </div>
+          <!-- ── MULTI SERVIZI ── -->
+          <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <label class="form-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);">Servizi</label>
+              <button type="button" onclick="addServizioRow()" style="padding:4px 11px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:6px;color:var(--accent);cursor:pointer;font-size:12px;font-family:inherit;">＋ Aggiungi Servizio</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 80px 90px 90px 90px 32px;gap:4px;padding:0 2px 4px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">
+              <span>Servizio</span><span>Tipo</span><span>Canone €</span><span>Ris. €</span><span>Noi €</span><span></span>
+            </div>
+            <div id="mv_servizi_list" style="display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
           <div class="form-field"><label class="form-label">Installatore</label><input class="form-input" id="mv_installatore" placeholder="Nome installatore"></div>
           <div class="form-field"><label class="form-label">Seriale GPS</label><input class="form-input" id="mv_seriale" placeholder="XXXXXXXX"></div>
           <div class="form-field"><label class="form-label">Attivo GPS</label>
@@ -973,7 +1005,7 @@
 
   // ── NAV ──────────────────────────────────────────────
   const PAGES = ['targa','cliente','telaio','statistiche','contratti','gestione'];
-  const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',telaio:'Cerca per Numero di Telaio',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
+  const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',telaio:'Ricerca per Telaio',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
 
   function showPage(id) {
     PAGES.forEach(p => {
@@ -1731,12 +1763,64 @@
   // Tab switching
   let gestTabLoaded = {veicoli:false, clienti:false};
   function showGestTab(tab) {
-    ['veicoli','clienti','import','movimenti'].forEach(t => {
+    ['veicoli','clienti','telaio','import','movimenti'].forEach(t => {
       document.getElementById('gtab-'+t).classList.toggle('active', t===tab);
       document.getElementById('gtab-content-'+t).style.display = t===tab?'block':'none';
     });
     if (tab==='veicoli' && !gestTabLoaded.veicoli) { gestTabLoaded.veicoli=true; loadVeicoliTable(); }
     if (tab==='clienti' && !gestTabLoaded.clienti) { gestTabLoaded.clienti=true; loadClientiTable(); }
+    if (tab==='telaio') loadTelaioGest();
+  }
+
+  // ── TELAIO TAB IN GESTIONE DATI ────────────────────────
+  let _telaioGestRows = [];
+  async function loadTelaioGest() {
+    const tbody = document.getElementById('gestTelaioBody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
+    try {
+      const rows = await sbGet('/rest/v1/veicoli?immatricolata=eq.NO&select=id,numero_telaio,ragione_sociale,data_inserimento_telaio,piattaforma,stato,immatricolata&order=data_inserimento_telaio.desc.nullslast&limit=2000');
+      _telaioGestRows = rows || [];
+      renderTelaioGest(_telaioGestRows);
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red);padding:24px">${e.message}</td></tr>`;
+    }
+  }
+
+  function filterTelaioGest(q) {
+    if (!_telaioGestRows.length) return;
+    const ql = q.trim().toLowerCase();
+    renderTelaioGest(ql ? _telaioGestRows.filter(r =>
+      (r.numero_telaio||'').toLowerCase().includes(ql) || (r.ragione_sociale||'').toLowerCase().includes(ql)
+    ) : _telaioGestRows);
+  }
+
+  function renderTelaioGest(rows) {
+    const tbody = document.getElementById('gestTelaioBody');
+    const info  = document.getElementById('gestTelaioInfo');
+    if (!tbody) return;
+    if (info) info.textContent = rows.length + ' veicolo/i';
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">Nessun risultato.</td></tr>'; return; }
+    const now = new Date();
+    tbody.innerHTML = rows.map(r => {
+      const giorni = r.data_inserimento_telaio ? Math.floor((now - new Date(r.data_inserimento_telaio)) / 86400000) : '—';
+      const scaduto = typeof giorni === 'number' && giorni >= 30;
+      const giorniCell = scaduto
+        ? `<span style="color:var(--red);font-weight:700;">${giorni} 🚨</span>`
+        : `<span style="color:var(--text2)">${giorni}</span>`;
+      return `<tr style="cursor:pointer" onclick="openTelaioEdit('${r.id}')" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+        <td style="font-family:'Courier New';font-weight:700">${r.numero_telaio||'—'}</td>
+        <td>${r.ragione_sociale||'—'}</td>
+        <td>${r.data_inserimento_telaio||'—'}</td>
+        <td>${giorniCell}</td>
+        <td>${r.piattaforma||'—'}</td>
+        <td>${r.stato||'—'}</td>
+        <td>
+          <button class="btn-edit" onclick="event.stopPropagation();openTelaioEdit('${r.id}')">✏️</button>
+          <button class="btn-del" onclick="event.stopPropagation();deleteVeicolo(${r.id},'telaio')">🗑️</button>
+        </td>
+      </tr>`;
+    }).join('');
   }
 
   // ── MOVIMENTI: ANALISI DISDETTE & NUOVE ATTIVAZIONI ───────────────────────
@@ -2003,12 +2087,15 @@
     f('mv_marca', v?.marca); f('mv_modello', v?.modello); f('mv_colore', v?.colore);
     f('mv_tipo_mezzo', v?.tipo_mezzo); f('mv_sim_voce', v?.sim_voce); f('mv_sim_dati', v?.sim_dati);
     f('mv_email', v?.email); f('mv_cellulare', v?.cellulare); f('mv_tel_ufficio', v?.telefono_ufficio);
-    f('mv_canone', v?.canone); f('mv_prezzo_ris', v?.prezzo_riservato); f('mv_prezzo_noi', v?.prezzo_a_noi);
-    f('mv_servizio', v?.servizio); f('mv_tipo_servizio', v?.tipo_servizio);
     f('mv_data_att', v?.data_attivazione?v.data_attivazione.substring(0,10):'');
     f('mv_data_termine', v?.data_termine?v.data_termine.substring(0,10):'');
-    f('mv_piattaforma', v?.piattaforma); f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
+    f('mv_data_contratto', v?.data_contratto?v.data_contratto.substring(0,10):'');
+    f('mv_tipo_contratto', v?.tipo_contratto||'');
+    f('mv_piattaforma', v?.piattaforma||'');
+    f('mv_stato', v?.stato||'');
+    f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
     f('mv_attivo', v?.attivo_gps||'');
+    loadServiziModal(v?.targa, v?.id);
     // Immatricolata handling
     const immatRow = document.getElementById('mv_immat_row');
     const immatSI  = document.getElementById('mv_immat_si');
@@ -2038,6 +2125,93 @@
       if (!document.getElementById('mv_cliente_id').value) f('mv_cliente_id', '');
     }
     openModal('modalVeicolo');
+  }
+
+  // ── MULTI-SERVIZI MODAL ────────────────────────────────
+  function getServiziRowsFromDOM() {
+    const list = document.getElementById('mv_servizi_list');
+    if (!list) return [];
+    const rows = [];
+    list.querySelectorAll('.servizio-row').forEach((row, i) => {
+      const s = row.querySelector('.sv_servizio')?.value?.trim() || null;
+      const t = row.querySelector('.sv_tipo')?.value?.trim() || null;
+      const c = row.querySelector('.sv_canone')?.value ? parseFloat(row.querySelector('.sv_canone').value) : null;
+      const r = row.querySelector('.sv_preis')?.value ? parseFloat(row.querySelector('.sv_preis').value) : null;
+      const n = row.querySelector('.sv_prenoi')?.value ? parseFloat(row.querySelector('.sv_prenoi').value) : null;
+      if (s || t || c) rows.push({ numero_servizio: i + 1, servizio: s, tipo_servizio: t, canone: c, prezzo_riservato: r, prezzo_a_noi: n });
+    });
+    return rows;
+  }
+
+  function renderServiziRows(rows) {
+    const list = document.getElementById('mv_servizi_list');
+    if (!list) return;
+    list.innerHTML = '';
+    if (!rows || !rows.length) {
+      list.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:6px 2px;">Nessun servizio. Clicca ＋ per aggiungere.</div>';
+      return;
+    }
+    rows.forEach((r, i) => {
+      const div = document.createElement('div');
+      div.className = 'servizio-row';
+      div.style.cssText = 'display:grid;grid-template-columns:1fr 80px 90px 90px 90px 32px;gap:5px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 8px;';
+      div.innerHTML = `
+        <input class="form-input sv_servizio" value="${(r.servizio||'').replace(/"/g,'&quot;')}" placeholder="Nome servizio" style="font-size:12px;padding:5px 8px;">
+        <input class="form-input sv_tipo" value="${(r.tipo_servizio||'').replace(/"/g,'&quot;')}" placeholder="Tipo" style="font-size:12px;padding:5px 8px;">
+        <input class="form-input sv_canone" type="number" step="0.01" value="${r.canone||''}" placeholder="0.00" style="font-size:12px;padding:5px 8px;">
+        <input class="form-input sv_preis" type="number" step="0.01" value="${r.prezzo_riservato||''}" placeholder="0.00" style="font-size:12px;padding:5px 8px;">
+        <input class="form-input sv_prenoi" type="number" step="0.01" value="${r.prezzo_a_noi||''}" placeholder="0.00" style="font-size:12px;padding:5px 8px;">
+        <button type="button" onclick="removeServizioRow(${i})" title="Rimuovi" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;border-radius:6px;cursor:pointer;font-size:14px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;padding:0;">✕</button>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function addServizioRow() {
+    const current = getServiziRowsFromDOM();
+    current.push({ servizio: null, tipo_servizio: null, canone: null, prezzo_riservato: null, prezzo_a_noi: null });
+    renderServiziRows(current);
+    // Focus on the new row's servizio input
+    const rows = document.querySelectorAll('#mv_servizi_list .servizio-row');
+    if (rows.length) rows[rows.length-1].querySelector('.sv_servizio')?.focus();
+  }
+
+  function removeServizioRow(idx) {
+    const current = getServiziRowsFromDOM();
+    // Rebuild without relying on index match (since idx is captured at render time)
+    const allRows = document.querySelectorAll('#mv_servizi_list .servizio-row');
+    const fresh = [];
+    allRows.forEach((row, i) => {
+      if (i !== idx) {
+        fresh.push({
+          servizio: row.querySelector('.sv_servizio')?.value||null,
+          tipo_servizio: row.querySelector('.sv_tipo')?.value||null,
+          canone: row.querySelector('.sv_canone')?.value ? parseFloat(row.querySelector('.sv_canone').value) : null,
+          prezzo_riservato: row.querySelector('.sv_preis')?.value ? parseFloat(row.querySelector('.sv_preis').value) : null,
+          prezzo_a_noi: row.querySelector('.sv_prenoi')?.value ? parseFloat(row.querySelector('.sv_prenoi').value) : null,
+        });
+      }
+    });
+    renderServiziRows(fresh);
+  }
+
+  async function loadServiziModal(targa, veicolo_id) {
+    renderServiziRows([]);
+    if (!targa) return;
+    try {
+      const rows = await sbGet(`/rest/v1/veicoli_servizi?targa=eq.${encodeURIComponent(targa)}&order=numero_servizio.asc&limit=50`);
+      renderServiziRows(rows || []);
+    } catch(e) { renderServiziRows([]); }
+  }
+
+  async function saveServiziVeicolo(targa) {
+    if (!targa) return;
+    const rows = getServiziRowsFromDOM();
+    await sbDelete(`/rest/v1/veicoli_servizi?targa=eq.${encodeURIComponent(targa)}`);
+    if (rows.length) {
+      const toInsert = rows.map((r, i) => ({ targa, numero_servizio: i + 1, servizio: r.servizio, tipo_servizio: r.tipo_servizio, canone: r.canone, prezzo_riservato: r.prezzo_riservato, prezzo_a_noi: r.prezzo_a_noi }));
+      await sbPost('/rest/v1/veicoli_servizi', toInsert);
+    }
   }
 
   // ── AGGIUNGI NUOVA TARGA PER CLIENTE ESISTENTE ────────
@@ -2077,13 +2251,12 @@
       sim_voce: document.getElementById('mv_sim_voce').value||null, sim_dati: document.getElementById('mv_sim_dati').value||null,
       email: document.getElementById('mv_email').value||null, cellulare: document.getElementById('mv_cellulare').value||null,
       telefono_ufficio: document.getElementById('mv_tel_ufficio').value||null,
-      canone: document.getElementById('mv_canone').value?parseFloat(document.getElementById('mv_canone').value):null,
-      prezzo_riservato: document.getElementById('mv_prezzo_ris').value?parseFloat(document.getElementById('mv_prezzo_ris').value):null,
-      prezzo_a_noi: document.getElementById('mv_prezzo_noi').value?parseFloat(document.getElementById('mv_prezzo_noi').value):null,
-      servizio: document.getElementById('mv_servizio').value||null, tipo_servizio: document.getElementById('mv_tipo_servizio').value||null,
       data_attivazione: document.getElementById('mv_data_att').value||null,
       data_termine: document.getElementById('mv_data_termine').value||null,
+      data_contratto: document.getElementById('mv_data_contratto').value||null,
+      tipo_contratto: document.getElementById('mv_tipo_contratto').value||null,
       piattaforma: document.getElementById('mv_piattaforma').value||null,
+      stato: document.getElementById('mv_stato').value||null,
       installatore: document.getElementById('mv_installatore').value||null,
       seriale_periferica: document.getElementById('mv_seriale').value||null,
       attivo_gps: document.getElementById('mv_attivo').value||null,
@@ -2123,6 +2296,8 @@
     try {
       if (id) { await sbPatch(`/rest/v1/veicoli?id=eq.${id}`, data); }
       else     { await sbPost('/rest/v1/veicoli', data); }
+      // Salva servizi se il veicolo ha una targa
+      if (data.targa) { try { await saveServiziVeicolo(data.targa); } catch(serr) { console.warn('Servizi non salvati:', serr); } }
       closeModal('modalVeicolo'); gestTabLoaded.veicoli=false; loadVeicoliTable();
       // Ricarica pagine visibili
       if (document.getElementById('page-telaio')?.style.display !== 'none') loadTelaioPage();
@@ -2169,6 +2344,21 @@
   }
 
   // ── ELIMINA ───────────────────────────────────────
+  function deleteVeicolo(id, fromTab) {
+    // fromTab: 'veicoli' | 'telaio' — which gestione tab to reload after deletion
+    document.getElementById('confirmMsg').innerHTML =
+      `Stai per eliminare questo veicolo.<br>L'operazione non può essere annullata. Continuare?`;
+    document.getElementById('confirmOkBtn').onclick = async () => {
+      try {
+        await sbDelete(`/rest/v1/veicoli?id=eq.${id}`);
+        closeModal('modalConfirm');
+        if (fromTab === 'telaio') { loadTelaioGest(); }
+        else { gestTabLoaded.veicoli=false; loadVeicoliTable(); }
+      } catch(e) { alert('Errore eliminazione: '+e.message); }
+    };
+    openModal('modalConfirm');
+  }
+
   function confirmDelete(tipo, id, nome) {
     document.getElementById('confirmMsg').innerHTML =
       `Stai per eliminare <b>${nome}</b>.<br>L'operazione non può essere annullata. Continuare?`;
@@ -2321,17 +2511,16 @@
     f('mv_email', v.email);
     f('mv_cellulare', v.cellulare);
     f('mv_tel_ufficio', v.telefono_ufficio);
-    f('mv_canone', v.canone);
-    f('mv_prezzo_ris', v.prezzo_riservato);
-    f('mv_prezzo_noi', v.prezzo_a_noi);
-    f('mv_servizio', v.servizio);
-    f('mv_tipo_servizio', v.tipo_servizio);
     f('mv_data_att', v.data_attivazione ? v.data_attivazione.substring(0, 10) : '');
     f('mv_data_termine', v.data_termine ? v.data_termine.substring(0, 10) : '');
-    f('mv_piattaforma', v.piattaforma);
+    f('mv_data_contratto', v.data_contratto ? v.data_contratto.substring(0, 10) : '');
+    f('mv_tipo_contratto', v.tipo_contratto || '');
+    f('mv_piattaforma', v.piattaforma || '');
+    f('mv_stato', v.stato || '');
     f('mv_installatore', v.installatore);
     f('mv_seriale', v.seriale_periferica);
     f('mv_attivo', v.attivo_gps || '');
+    loadServiziModal(v.targa, v.id);
 
     // Disdetta
     const dNO2 = document.getElementById('mv_disdetta_no');
