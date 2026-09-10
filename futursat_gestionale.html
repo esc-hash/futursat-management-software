@@ -617,8 +617,49 @@
 
     <!-- ═══ PAGINA: CONTRATTI ═══ -->
     <div id="page-contratti" style="display:none">
-      <h2 style="margin-bottom:8px">Contratti</h2>
-      <p style="color:var(--text2);font-size:13px">Sezione in costruzione — disponibile nella prossima versione.</p>
+      <div style="max-width:960px;margin:0 auto;">
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">📄 Contratti</h2>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:20px;">Gestisci scadenze contrattuali e disdette.</p>
+
+        <!-- Tab bar -->
+        <div style="display:flex;gap:4px;margin-bottom:20px;background:var(--surface);padding:4px;border-radius:12px;border:1px solid var(--border);width:fit-content;">
+          <button id="ct-tab-scad" onclick="showContrattiTab('scadenze')"
+            style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;
+                   background:var(--accent);color:#fff;transition:all .15s;">⏰ Scadenze</button>
+          <button id="ct-tab-disd" onclick="showContrattiTab('disdette')"
+            style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;
+                   background:transparent;color:var(--text2);transition:all .15s;">🚫 Disdette</button>
+        </div>
+
+        <!-- Scadenze -->
+        <div id="ct-scadenze">
+          <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;flex-wrap:wrap;">
+            <select id="ct-scad-giorni" onchange="loadScadenze()"
+              style="padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:inherit;">
+              <option value="30">Prossimi 30 giorni</option>
+              <option value="60">Prossimi 60 giorni</option>
+              <option value="90">Prossimi 90 giorni</option>
+            </select>
+            <button onclick="loadScadenze()" style="padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text2);cursor:pointer;font-size:13px;font-family:inherit;">↻ Aggiorna</button>
+          </div>
+          <div id="ct-scad-list" style="display:flex;flex-direction:column;gap:8px;">
+            <p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">Caricamento...</p>
+          </div>
+        </div>
+
+        <!-- Disdette -->
+        <div id="ct-disdette" style="display:none;">
+          <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;">
+            <input type="text" id="ct-disd-filter" placeholder="🔍  Filtra per targa o cliente..."
+              oninput="filterDisdette(this.value)"
+              style="flex:1;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:inherit;outline:none;">
+            <button onclick="loadDisdette()" style="padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text2);cursor:pointer;font-size:13px;font-family:inherit;">↻ Aggiorna</button>
+          </div>
+          <div id="ct-disd-list" style="display:flex;flex-direction:column;gap:8px;">
+            <p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">Caricamento...</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ═══ PAGINA: GESTIONE DATI ═══ -->
@@ -800,6 +841,45 @@
           <div class="form-field"><label class="form-label">Seriale GPS</label><input class="form-input" id="mv_seriale" placeholder="XXXXXXXX"></div>
           <div class="form-field"><label class="form-label">Attivo GPS</label>
             <select class="form-select" id="mv_attivo"><option value="">— Seleziona —</option><option value="SI">SI</option><option value="NO">NO</option></select>
+          </div>
+
+          <!-- ── DISDETTA ── -->
+          <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+            <label class="form-label" style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);">Disdetta contratto</label>
+            <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;align-items:center;">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+                <input type="radio" name="mv_disdetta" id="mv_disdetta_no" value="NO" checked onchange="toggleDisdetta()"> NO
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+                <input type="radio" name="mv_disdetta" id="mv_disdetta_si" value="SI" onchange="toggleDisdetta()">
+                <span>SI</span>
+                <span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">DISDETTA</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-field" id="mv_disdetta_data_row" style="display:none">
+            <label class="form-label">Data disdetta</label>
+            <input class="form-input" id="mv_data_disdetta" type="date">
+          </div>
+          <div class="form-field" id="mv_disdetta_note_row" style="display:none">
+            <label class="form-label">Note disdetta</label>
+            <input class="form-input" id="mv_note_disdetta" placeholder="Motivo, riferimento, ecc.">
+          </div>
+          <div class="form-field full" id="mv_disdetta_pdf_row" style="display:none">
+            <label class="form-label">PDF disdetta</label>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <input type="file" id="mv_pdf_disdetta" accept=".pdf" style="display:none" onchange="onPdfSelected(this)">
+              <button type="button" onclick="document.getElementById('mv_pdf_disdetta').click()"
+                style="padding:8px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;color:var(--accent);cursor:pointer;font-size:13px;font-family:inherit;">
+                📎 Carica PDF
+              </button>
+              <span id="mv_pdf_nome" style="font-size:13px;color:var(--text2);">Nessun file selezionato</span>
+              <input type="hidden" id="mv_pdf_url">
+            </div>
+            <div id="mv_pdf_link_row" style="margin-top:6px;display:none;">
+              <a id="mv_pdf_link" href="#" target="_blank"
+                style="font-size:13px;color:var(--accent);text-decoration:underline;">📄 Visualizza PDF salvato</a>
+            </div>
           </div>
         </div>
       </div>
@@ -1348,6 +1428,7 @@
     _origShow(id);
     if (id === 'statistiche' && !statsLoaded) { statsLoaded = true; loadStats(); }
     if (id === 'telaio') { loadTelaioPage(); }
+    if (id === 'contratti') { showContrattiTab('scadenze'); }
   };
 
   async function loadStats() {
@@ -1900,6 +1981,25 @@
     document.getElementById('modalVeicoloTitle').textContent = v ? '✏️ Modifica Veicolo — '+(v.targa||v.numero_telaio||'') : '＋ Aggiungi Veicolo';
     const f = (fid, val) => { const el=document.getElementById(fid); if(el) el.value=val||''; };
     f('mv_id', v?.id||''); f('mv_cliente_id', v?.cliente_id||''); f('mv_ragione', v?.ragione_sociale);
+    // Disdetta
+    const disdNo = document.getElementById('mv_disdetta_no');
+    const disdSi = document.getElementById('mv_disdetta_si');
+    if (v?.disdetta === 'SI') { if (disdSi) disdSi.checked = true; }
+    else { if (disdNo) disdNo.checked = true; }
+    toggleDisdetta();
+    f('mv_data_disdetta', v?.data_disdetta ? v.data_disdetta.substring(0,10) : '');
+    f('mv_note_disdetta', v?.note_disdetta);
+    f('mv_pdf_url', v?.pdf_disdetta_url || '');
+    const pdfNome = document.getElementById('mv_pdf_nome');
+    if (pdfNome) pdfNome.textContent = v?.pdf_disdetta_url ? 'PDF già caricato' : 'Nessun file selezionato';
+    const pdfLinkRow = document.getElementById('mv_pdf_link_row');
+    const pdfLink    = document.getElementById('mv_pdf_link');
+    if (pdfLinkRow && pdfLink) {
+      if (v?.pdf_disdetta_url) { pdfLinkRow.style.display = ''; pdfLink.href = v.pdf_disdetta_url; }
+      else { pdfLinkRow.style.display = 'none'; }
+    }
+    const pdfInput = document.getElementById('mv_pdf_disdetta');
+    if (pdfInput) pdfInput.value = '';
     f('mv_marca', v?.marca); f('mv_modello', v?.modello); f('mv_colore', v?.colore);
     f('mv_tipo_mezzo', v?.tipo_mezzo); f('mv_sim_voce', v?.sim_voce); f('mv_sim_dati', v?.sim_dati);
     f('mv_email', v?.email); f('mv_cellulare', v?.cellulare); f('mv_tel_ufficio', v?.telefono_ufficio);
@@ -1988,7 +2088,10 @@
       seriale_periferica: document.getElementById('mv_seriale').value||null,
       attivo_gps: document.getElementById('mv_attivo').value||null,
       immatricolata: immatVal,
-      cliente_id: document.getElementById('mv_cliente_id').value||null
+      cliente_id: document.getElementById('mv_cliente_id').value||null,
+      disdetta: document.querySelector('input[name="mv_disdetta"]:checked')?.value || 'NO',
+      data_disdetta: document.getElementById('mv_data_disdetta').value||null,
+      note_disdetta: document.getElementById('mv_note_disdetta').value||null
     };
 
     if (immatVal === 'NO') {
@@ -2001,12 +2104,29 @@
       data.data_inserimento_telaio = null;
     }
 
+    // Gestione PDF disdetta
+    const pdfInput = document.getElementById('mv_pdf_disdetta');
+    const pdfFile  = pdfInput?.files?.[0];
+    if (pdfFile && data.disdetta === 'SI') {
+      try {
+        const url = await uploadPdfDisdetta(pdfFile, data.targa || data.numero_telaio || id);
+        data.pdf_disdetta_url = url;
+      } catch(uploadErr) {
+        alert('⚠️ Upload PDF fallito: ' + uploadErr.message + '\n\nIl veicolo verrà salvato senza PDF.');
+      }
+    } else {
+      // Mantieni URL esistente se non viene caricato un nuovo file
+      const existingUrl = document.getElementById('mv_pdf_url').value;
+      if (existingUrl) data.pdf_disdetta_url = existingUrl;
+    }
+
     try {
       if (id) { await sbPatch(`/rest/v1/veicoli?id=eq.${id}`, data); }
       else     { await sbPost('/rest/v1/veicoli', data); }
       closeModal('modalVeicolo'); gestTabLoaded.veicoli=false; loadVeicoliTable();
-      // Ricarica la lista telaio se visibile
+      // Ricarica pagine visibili
       if (document.getElementById('page-telaio')?.style.display !== 'none') loadTelaioPage();
+      if (document.getElementById('page-contratti')?.style.display !== 'none') showContrattiTab('disdette');
     } catch(e) {
       const msg = e.message || '';
       if (msg.includes('veicoli_targa_unique') || msg.includes('duplicate key value')) {
@@ -2213,6 +2333,22 @@
     f('mv_seriale', v.seriale_periferica);
     f('mv_attivo', v.attivo_gps || '');
 
+    // Disdetta
+    const dNO2 = document.getElementById('mv_disdetta_no');
+    const dSI2 = document.getElementById('mv_disdetta_si');
+    if (v.disdetta === 'SI') { if (dSI2) dSI2.checked = true; } else { if (dNO2) dNO2.checked = true; }
+    toggleDisdetta();
+    f('mv_data_disdetta', v.data_disdetta ? v.data_disdetta.substring(0,10) : '');
+    f('mv_note_disdetta', v.note_disdetta);
+    f('mv_pdf_url', v.pdf_disdetta_url || '');
+    const pdfNome2 = document.getElementById('mv_pdf_nome');
+    if (pdfNome2) pdfNome2.textContent = v.pdf_disdetta_url ? 'PDF già caricato' : 'Nessun file selezionato';
+    const pdfLR2 = document.getElementById('mv_pdf_link_row');
+    const pdfL2  = document.getElementById('mv_pdf_link');
+    if (pdfLR2 && pdfL2) { if (v.pdf_disdetta_url) { pdfLR2.style.display=''; pdfL2.href=v.pdf_disdetta_url; } else { pdfLR2.style.display='none'; } }
+    const pdfInp2 = document.getElementById('mv_pdf_disdetta');
+    if (pdfInp2) pdfInp2.value = '';
+
     // Gestione immatricolata
     const immatRow = document.getElementById('mv_immat_row');
     const immatSI  = document.getElementById('mv_immat_si');
@@ -2256,6 +2392,206 @@
   }
 
   // ── ALERT MANCA TARGA (veicoli senza targa dopo 30 gg) ─
+  // ── CONTRATTI PAGE ────────────────────────────────────
+  let _ctScadRows = [], _ctDisdRows = [];
+
+  function showContrattiTab(tab) {
+    const tabScad = document.getElementById('ct-scadenze');
+    const tabDisd = document.getElementById('ct-disdette');
+    const btnScad = document.getElementById('ct-tab-scad');
+    const btnDisd = document.getElementById('ct-tab-disd');
+    const isScad = tab === 'scadenze';
+    tabScad.style.display = isScad ? '' : 'none';
+    tabDisd.style.display = isScad ? 'none' : '';
+    btnScad.style.background = isScad ? 'var(--accent)' : 'transparent';
+    btnScad.style.color = isScad ? '#fff' : 'var(--text2)';
+    btnDisd.style.background = isScad ? 'transparent' : 'var(--accent)';
+    btnDisd.style.color = isScad ? 'var(--text2)' : '#fff';
+    if (isScad) loadScadenze(); else loadDisdette();
+  }
+
+  async function loadScadenze() {
+    const el = document.getElementById('ct-scad-list');
+    if (!el) return;
+    el.innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">⏳ Caricamento...</p>';
+    const giorni = parseInt(document.getElementById('ct-scad-giorni')?.value || 30);
+    try {
+      const now = new Date();
+      const fino = new Date(now); fino.setDate(fino.getDate() + giorni);
+      const dal = now.toISOString().substring(0,10);
+      const al  = fino.toISOString().substring(0,10);
+      const rows = await sbGet(`/rest/v1/veicoli?data_termine=gte.${dal}&data_termine=lte.${al}&disdetta=neq.SI&select=id,targa,numero_telaio,ragione_sociale,data_termine,piattaforma,canone&order=data_termine.asc&limit=500`);
+      _ctScadRows = rows || [];
+      renderScadenze(_ctScadRows);
+    } catch(e) {
+      el.innerHTML = `<p style="color:var(--red);font-size:13px;text-align:center;padding:40px 0;">Errore: ${e.message}</p>`;
+    }
+  }
+
+  function renderScadenze(rows) {
+    const el = document.getElementById('ct-scad-list');
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text2);font-size:13px;">✅ Nessuna scadenza nel periodo selezionato.</div>';
+      return;
+    }
+    const now = new Date();
+    el.innerHTML = `<p style="font-size:12px;color:var(--text3);margin-bottom:8px;">${rows.length} contratto/i in scadenza</p>` +
+      rows.map(r => {
+        const fine = new Date(r.data_termine);
+        const diff = Math.ceil((fine - now) / 86400000);
+        const urgente = diff <= 7;
+        const col = urgente ? 'rgba(239,68,68,0.4)' : diff <= 14 ? 'rgba(249,115,22,0.3)' : 'rgba(59,130,246,0.2)';
+        const badge = urgente
+          ? `<span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,.5);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">🚨 ${diff}gg</span>`
+          : `<span style="background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,.4);color:#fb923c;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;">${diff} giorni</span>`;
+        return `<div style="background:var(--surface);border:1px solid ${col};border-radius:12px;padding:14px 18px;
+          display:flex;align-items:center;gap:14px;cursor:pointer;transition:background .15s;"
+          onclick="openTelaioEdit('${r.id}')"
+          onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+          <div style="font-size:22px;">📄</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
+              <span style="font-family:'Courier New';font-weight:700;font-size:14px;">${r.targa || r.numero_telaio || '—'}</span>
+              ${badge}
+            </div>
+            <div style="font-size:13px;color:var(--text2);">${r.ragione_sociale || '—'}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;">Scadenza: ${r.data_termine} ${r.piattaforma ? '· ' + r.piattaforma : ''} ${r.canone ? '· €' + r.canone + '/mese' : ''}</div>
+          </div>
+          <button onclick="event.stopPropagation();openTelaioEdit('${r.id}')"
+            style="padding:6px 12px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,.3);border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;">✏️ Modifica</button>
+        </div>`;
+      }).join('');
+  }
+
+  async function loadDisdette() {
+    const el = document.getElementById('ct-disd-list');
+    if (!el) return;
+    el.innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">⏳ Caricamento...</p>';
+    try {
+      const rows = await sbGet('/rest/v1/veicoli?disdetta=eq.SI&select=id,targa,numero_telaio,ragione_sociale,data_disdetta,note_disdetta,pdf_disdetta_url,piattaforma&order=data_disdetta.desc.nullslast&limit=1000');
+      _ctDisdRows = rows || [];
+      const q = (document.getElementById('ct-disd-filter')?.value || '').trim().toUpperCase();
+      renderDisdette(q ? _ctDisdRows.filter(r =>
+        (r.targa||'').toUpperCase().includes(q) || (r.ragione_sociale||'').toUpperCase().includes(q)
+      ) : _ctDisdRows);
+    } catch(e) {
+      el.innerHTML = `<p style="color:var(--red);font-size:13px;text-align:center;padding:40px 0;">Errore: ${e.message}</p>`;
+    }
+  }
+
+  function filterDisdette(val) {
+    if (!_ctDisdRows.length) return;
+    const q = val.trim().toUpperCase();
+    renderDisdette(q ? _ctDisdRows.filter(r =>
+      (r.targa||'').toUpperCase().includes(q) || (r.ragione_sociale||'').toUpperCase().includes(q)
+    ) : _ctDisdRows);
+  }
+
+  function renderDisdette(rows) {
+    const el = document.getElementById('ct-disd-list');
+    if (!el) return;
+    if (!rows.length) {
+      el.innerHTML = '<div style="text-align:center;padding:40px 0;color:var(--text2);font-size:13px;">Nessuna disdetta registrata.</div>';
+      return;
+    }
+    el.innerHTML = `<p style="font-size:12px;color:var(--text3);margin-bottom:8px;">${rows.length} disdetta/e registrate</p>` +
+      rows.map(r => {
+        const pdfBtn = r.pdf_disdetta_url
+          ? `<a href="${r.pdf_disdetta_url}" target="_blank"
+              style="padding:6px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;
+                     color:#fca5a5;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;white-space:nowrap;">📄 PDF</a>`
+          : `<span style="font-size:12px;color:var(--text3);">Nessun PDF</span>`;
+        return `<div style="background:var(--surface);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:14px 18px;
+          display:flex;align-items:center;gap:14px;">
+          <div style="font-size:22px;">🚫</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
+              <span style="font-family:'Courier New';font-weight:700;font-size:14px;">${r.targa || r.numero_telaio || '—'}</span>
+              <span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,.5);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">DISDETTA</span>
+            </div>
+            <div style="font-size:13px;color:var(--text2);">${r.ragione_sociale || '—'}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;">${r.data_disdetta ? 'Data: ' + r.data_disdetta : ''} ${r.note_disdetta ? '· ' + r.note_disdetta : ''}</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
+            ${pdfBtn}
+            <button onclick="openTelaioEdit('${r.id}')"
+              style="padding:6px 12px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,.3);border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;">✏️ Modifica</button>
+          </div>
+        </div>`;
+      }).join('');
+  }
+
+  // ── PDF DISDETTA UPLOAD ────────────────────────────────
+  function onPdfSelected(input) {
+    const file = input.files[0];
+    const nome = document.getElementById('mv_pdf_nome');
+    if (file) {
+      nome.textContent = file.name;
+    } else {
+      nome.textContent = 'Nessun file selezionato';
+    }
+  }
+
+  async function uploadPdfDisdetta(file, targa) {
+    const ts = Date.now();
+    const safeTarga = (targa || 'veicolo').replace(/[^a-zA-Z0-9]/g, '_');
+    const filename = `disdetta_${safeTarga}_${ts}.pdf`;
+    const r = await fetch(`${SUPABASE_URL}/storage/v1/object/disdette/${filename}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + (token || SUPABASE_KEY),
+        'Content-Type': 'application/pdf',
+        'x-upsert': 'true'
+      },
+      body: file
+    });
+    if (!r.ok) {
+      const txt = await r.text();
+      throw new Error('Upload PDF fallito: ' + txt);
+    }
+    return `${SUPABASE_URL}/storage/v1/object/public/disdette/${filename}`;
+  }
+
+  // ── TOGGLE DISDETTA ────────────────────────────────────
+  function toggleDisdetta() {
+    const val = document.querySelector('input[name="mv_disdetta"]:checked')?.value;
+    const show = val === 'SI';
+    ['mv_disdetta_data_row','mv_disdetta_note_row','mv_disdetta_pdf_row'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = show ? '' : 'none';
+    });
+  }
+
+  // ── NOTIFICA SCADENZA CONTRATTO ───────────────────────
+  async function checkScadenze() {
+    try {
+      const now = new Date();
+      const fra30 = new Date(now); fra30.setDate(fra30.getDate() + 30);
+      const dal = now.toISOString().substring(0,10);
+      const al  = fra30.toISOString().substring(0,10);
+      const rows = await sbGet(`/rest/v1/veicoli?data_termine=gte.${dal}&data_termine=lte.${al}&disdetta=neq.SI&select=id,targa,ragione_sociale,data_termine&limit=100`);
+      if (!rows.length) return;
+      const nomi = rows.slice(0,4).map(r => (r.targa||r.id) + ' (' + r.data_termine + ')').join(', ');
+      const more = rows.length > 4 ? ` e altri ${rows.length-4}` : '';
+      let banner = document.getElementById('scadenzeBanner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'scadenzeBanner';
+        banner.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9998;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.5);color:#fb923c;padding:14px 20px;border-radius:14px;max-width:420px;width:90%;font-size:13px;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,.5);text-align:left;';
+        document.body.appendChild(banner);
+      }
+      banner.innerHTML = `<b>⏰ SCADENZE CONTRATTI</b> — ${rows.length} contratto/i scadono entro 30 giorni:<br><span style="font-size:12px;opacity:.8">${nomi}${more}</span><br>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button onclick="showPage('contratti');showContrattiTab('scadenze');this.closest('div[id]').remove()"
+            style="background:rgba(249,115,22,0.3);border:1px solid rgba(249,115,22,.5);color:#fb923c;padding:3px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;">Vedi tutti</button>
+          <button onclick="this.closest('div[id]').remove()"
+            style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,.15);color:var(--text2);padding:3px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;">Ignora</button>
+        </div>`;
+    } catch(e) { /* silenzioso */ }
+  }
+
   async function checkMancaTarga() {
     try {
       const rows = await sbGet('/rest/v1/veicoli?immatricolata=eq.NO&targa=is.null&select=id,numero_telaio,ragione_sociale,data_inserimento_telaio&limit=200');
@@ -2278,13 +2614,20 @@
           banner.style.cssText = 'position:fixed;top:16px;right:16px;z-index:9999;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.5);color:#fca5a5;padding:14px 20px;border-radius:14px;max-width:380px;font-size:13px;line-height:1.5;box-shadow:0 4px 20px rgba(0,0,0,.5)';
           document.body.appendChild(banner);
         }
-        banner.innerHTML = `<b>🚨 MANCA TARGA</b><br>${scaduti.length} veicolo/i senza targa da più di 30 giorni:<br><span style="font-size:12px;opacity:.8">${nomi}${more}</span><br><button onclick="this.parentElement.remove()" style="margin-top:8px;background:rgba(239,68,68,0.3);border:1px solid rgba(239,68,68,.5);color:#fca5a5;padding:3px 10px;border-radius:8px;cursor:pointer;font-size:12px">OK, capito</button>`;
+        banner.innerHTML = `<b>🚨 MANCA TARGA</b> — ${scaduti.length} veicolo/i senza targa da più di 30 giorni:<br><span style="font-size:12px;opacity:.8">${nomi}${more}</span><br>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button onclick="showPage('telaio');this.closest('div[id]').remove()"
+              style="background:rgba(239,68,68,0.3);border:1px solid rgba(239,68,68,.5);color:#fca5a5;padding:3px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;">Vedi tutti</button>
+            <button onclick="this.closest('div[id]').remove()"
+              style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,.15);color:var(--text2);padding:3px 10px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;">Ignora</button>
+          </div>`;
       }
     } catch(e) { /* silenzioso */ }
   }
 
-  // Run MANCA TARGA check a few seconds after page load
+  // Run notification checks a few seconds after page load
   setTimeout(checkMancaTarga, 4000);
+  setTimeout(checkScadenze, 6000);
 
   // ── CERCA PER NUMERO DI TELAIO ────────────────────────
   let _telaioRows = [];
