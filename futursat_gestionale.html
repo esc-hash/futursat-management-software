@@ -1003,6 +1003,24 @@
     return r.json();
   }
 
+  // Carica TUTTI i record con paginazione automatica (aggira il limite 1000 righe di Supabase)
+  async function sbGetAll(basePath) {
+    const BATCH = 1000;
+    let offset = 0;
+    let all = [];
+    // Rimuove limit/offset già presenti nel path
+    const cleanPath = basePath.replace(/[&?]limit=\d+/g, '').replace(/[&?]offset=\d+/g, '');
+    const sep = cleanPath.includes('?') ? '&' : '?';
+    while (true) {
+      const rows = await sbGet(`${cleanPath}${sep}limit=${BATCH}&offset=${offset}`);
+      if (!Array.isArray(rows)) return rows; // fallback per risposte non-array
+      all = all.concat(rows);
+      if (rows.length < BATCH) break;
+      offset += BATCH;
+    }
+    return all;
+  }
+
   // ── NAV ──────────────────────────────────────────────
   const PAGES = ['targa','cliente','telaio','statistiche','contratti','gestione'];
   const TITLES = {targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',telaio:'Ricerca per Telaio',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
@@ -1332,7 +1350,7 @@
   async function loadTargheIndex() {
     if (_targheIndex.length > 0) return;
     try {
-      const rows = await sbGet('/rest/v1/veicoli?select=targa,ragione_sociale&order=targa.asc&limit=20000');
+      const rows = await sbGetAll('/rest/v1/veicoli?select=targa,ragione_sociale&order=targa.asc');
       _targheIndex = (rows || []).filter(r => r.targa);
     } catch(e) { console.error('[AC] errore caricamento indice:', e); }
   }
@@ -1861,7 +1879,7 @@
       }
 
       // 2. Leggi le targhe attuali dal DB
-      const dbVeicoli = await sbGet('/rest/v1/veicoli?select=targa&limit=10000');
+      const dbVeicoli = await sbGetAll('/rest/v1/veicoli?select=targa');
       const dbTarge = new Set(dbVeicoli.map(v => (v.targa||'').trim().toUpperCase()));
 
       // 3. Calcola differenze
@@ -1932,7 +1950,7 @@
   let _sfActive = 'all';
   async function loadVeicoliTable() {
     document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGet('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id&order=targa.asc&limit=20000');
+    _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id&order=targa.asc');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
   function getPiattNum(p) {
@@ -1991,8 +2009,10 @@
     document.getElementById('gestVeicoliBody').innerHTML = slice.length ? slice.map(v => {
       _veicoliCache[v.id] = v;
       const pn = getPiattNum(v.piattaforma);
-      const pChip = v.piattaforma && v.piattaforma.trim()
-        ? `<span class="piatt-chip p${pn}">P${pn}</span>`
+      const pRawChip = (v.piattaforma||'').trim();
+      const pLabel = pRawChip.toUpperCase() === 'POSIZIO' ? 'POS' : pRawChip.toUpperCase() === 'SNAPROUTE' ? 'SNAP' : (pRawChip ? `P${pn}` : '—');
+      const pChip = pRawChip
+        ? `<span class="piatt-chip p${pn}">${pLabel}</span>`
         : `<span class="piatt-chip pnone">—</span>`;
       const sRaw = (v.stato||'').trim().toLowerCase();
       const sCls = sRaw ? 's-'+sRaw.replace(/ /g,''): '';
