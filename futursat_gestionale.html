@@ -68,16 +68,47 @@
     .btn-logout:hover{background:rgba(239,68,68,0.18);}
 
     /* ── MAIN CONTENT ── */
-    .main-wrap{margin-left:0;flex:1;min-height:100vh;display:flex;flex-direction:column;}
-    .topbar{
-      padding:0 24px;height:56px;background:rgba(22,26,36,0.85);backdrop-filter:blur(10px);
-      border-bottom:1px solid var(--border);display:flex;align-items:center;
-      justify-content:space-between;position:sticky;top:0;z-index:100;
+    /* ── LEFT NAV SIDEBAR ── */
+    .left-nav{
+      position:fixed;top:0;left:0;width:180px;height:100vh;z-index:200;
+      background:rgba(13,17,30,0.92);backdrop-filter:blur(14px);
+      border-right:1px solid rgba(96,165,250,0.15);
+      display:flex;flex-direction:column;
     }
-    .topbar-title{font-size:13px;font-weight:600;color:var(--text);}
-    .topbar-right{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);}
-    .hamburger{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;}
+    .left-nav-logo{
+      padding:18px 16px 14px;border-bottom:1px solid rgba(96,165,250,0.12);
+      font-size:11px;font-weight:800;letter-spacing:2px;color:rgba(96,165,250,0.7);
+      text-transform:uppercase;
+    }
+    .left-nav-user{
+      padding:14px 16px;border-bottom:1px solid rgba(96,165,250,0.1);
+      display:flex;align-items:center;gap:8px;
+    }
+    .left-nav-dot{width:7px;height:7px;background:#22c55e;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px #22c55e;}
+    .left-nav-email{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.4;}
+    .left-nav-btns{padding:16px 12px;display:flex;flex-direction:column;gap:10px;}
+    .left-nav-btn{
+      display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
+      border:1px solid rgba(96,165,250,0.25);border-radius:10px;
+      background:rgba(59,130,246,0.08);color:#60a5fa;
+      font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;
+      transition:all 0.2s;letter-spacing:0.5px;
+    }
+    .left-nav-btn:hover{background:rgba(59,130,246,0.22);border-color:rgba(96,165,250,0.5);}
+    .left-nav-btn.danger{background:rgba(239,68,68,0.07);border-color:rgba(239,68,68,0.25);color:#fca5a5;}
+    .left-nav-btn.danger:hover{background:rgba(239,68,68,0.18);border-color:rgba(239,68,68,0.5);}
+    .left-nav-spacer{flex:1;}
+    /* page title shown in left nav bottom area */
+    .left-nav-page{
+      padding:12px 16px;border-top:1px solid rgba(96,165,250,0.1);
+      font-size:10px;color:rgba(148,163,184,0.5);text-transform:uppercase;
+      letter-spacing:1.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+
+    .main-wrap{margin-left:180px;flex:1;min-height:100vh;display:flex;flex-direction:column;}
+    .topbar{display:none;}
     .content{padding:24px;flex:1;}
+    .hamburger{display:none;}
 
     /* ── SEZIONE RICERCA TARGA ── */
     .search-page{max-width:700px;margin:0 auto;}
@@ -273,7 +304,7 @@
     }
     .info-btn:hover{background:var(--accent);color:#fff;}
     .price-tooltip{
-      display:none;position:fixed;z-index:1000;
+      display:none;position:fixed;top:-9999px;left:-9999px;z-index:10000;
       background:var(--surface2);border:1px solid var(--border);border-radius:10px;
       padding:12px 16px;min-width:220px;
       box-shadow:0 8px 30px rgba(0,0,0,0.4);
@@ -391,7 +422,8 @@
       .sidebar{display:none!important;/*transform:translateX(-100%);}
       .sidebar.open{transform:translateX(0);}
       .sidebar-overlay.show{display:block;}
-      .main-wrap{margin-left:0;}
+      .left-nav{width:160px;}
+      .main-wrap{margin-left:160px;}
       .hamburger{display:block;}
       .result-body{grid-template-columns:1fr;}
       .anagrafica-grid{grid-template-columns:1fr;}
@@ -487,11 +519,24 @@
 </aside>
 
 <!-- MAIN -->
+<!-- LEFT NAV SIDEBAR -->
+<div class="left-nav">
+  <div class="left-nav-logo">🛰 Futursat</div>
+  <div class="left-nav-user">
+    <div class="left-nav-dot"></div>
+    <div class="left-nav-email" id="navEmail">—</div>
+  </div>
+  <div class="left-nav-btns">
+    <button class="left-nav-btn" onclick="showPage('home')">🏠 Home</button>
+    <button class="left-nav-btn danger" onclick="logout()">⏻ Esci</button>
+  </div>
+  <div class="left-nav-spacer"></div>
+  <div class="left-nav-page" id="navPageTitle"></div>
+</div>
+
 <div class="main-wrap">
-  <div class="topbar">
-    <button onclick="showPage('home')" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.4);color:#60a5fa;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">🏠 Home</button>
-    <div class="topbar-title" id="topbarTitle" style="position:absolute;left:50%;transform:translateX(-50%);font-size:14px;font-weight:700;letter-spacing:1px;"></div>
-    <div class="topbar-right" style="font-size:12px;color:var(--text2);">Futursat Gestionale</div>
+  <div class="topbar" style="display:none">
+    <div class="topbar-title" id="topbarTitle"></div>
   </div>
 
   <div class="content">
@@ -500,13 +545,14 @@
     <div id="page-home">
       <style>
         /* ── HOME VISUAL SECTIONS ── */
-        .home-bg { position:relative; min-height:calc(100vh - 104px); background:transparent;
-          padding: 32px 0;
+        .home-bg { position:relative; min-height:calc(100vh - 56px); background:transparent;
+          padding: 32px 0; display:flex; flex-direction:column; align-items:center;
         }
         /* home-bg overlay removed - body has global overlay */
         .home-title {
           position:relative;z-index:2;
-          text-align:center;margin-bottom:40px;padding-top:24px;
+          text-align:center;margin-bottom:48px;padding-top:32px;
+          width:100%;
         }
         .home-title h1 {
           font-size:32px;font-weight:900;letter-spacing:3px;
@@ -524,10 +570,11 @@
         /* ── MAIN CARDS ROW ── */
         .home-cards {
           position:relative;z-index:2;
-          display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:0 20px;
+          display:flex;gap:32px;justify-content:center;flex-wrap:wrap;padding:0 40px;
+          width:100%;
         }
         .home-card {
-          width:380px;border-radius:20px;overflow:hidden;cursor:pointer;
+          width:440px;border-radius:20px;overflow:hidden;cursor:pointer;
           position:relative;
           transform:perspective(900px) rotateX(6deg);
           transition:transform 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
@@ -540,7 +587,7 @@
           filter:brightness(1.15) saturate(1.3);
         }
         .home-card-img {
-          width:100%;height:300px;object-fit:cover;display:block;
+          width:100%;height:340px;object-fit:cover;display:block;
           transition:transform 0.35s ease;
         }
         .home-card:hover .home-card-img {transform:scale(1.06);}
@@ -585,7 +632,7 @@
           display:flex;gap:20px;justify-content:center;flex-wrap:wrap;
         }
         .sub-card {
-          width:300px;border-radius:16px;overflow:hidden;cursor:pointer;
+          width:340px;border-radius:16px;overflow:hidden;cursor:pointer;
           position:relative;
           transform:perspective(700px) rotateX(5deg);
           transition:transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
@@ -1249,7 +1296,7 @@
 
 
 <!-- Price tooltip -->
-<div class="price-tooltip" id="priceTooltip">
+<div class="price-tooltip" id="priceTooltip" style="display:none">
   <div class="price-tooltip-title">💶 Dettaglio Prezzi</div>
   <div class="price-line"><span class="price-line-label">Prezzo riservato</span><span class="price-line-val" id="tipPrezRis">—</span></div>
   <div class="price-line"><span class="price-line-label">Prezzo a noi</span><span class="price-line-val" id="tipPrezNoi">—</span></div>
@@ -1263,7 +1310,11 @@
   const token = localStorage.getItem('sb_access_token');
   if (!token) window.location.href = 'futursat_login.html';
   const userEmail = localStorage.getItem('sb_user_email') || 'Amministratore';
-  document.getElementById('sidebarEmail').textContent = userEmail;
+  const _ne = document.getElementById('navEmail');
+  if (_ne) _ne.textContent = userEmail;
+  // sidebarEmail fallback (sidebar hidden)
+  const _se = document.getElementById('sidebarEmail');
+  if (_se) _se.textContent = userEmail;
 
   function logout() {
     localStorage.clear();
@@ -1310,7 +1361,11 @@
       document.getElementById('page-'+p).style.display = p===id?'block':'none';
       document.getElementById('nav-'+p)?.classList.toggle('active', p===id);
     });
-    document.getElementById('topbarTitle').textContent = TITLES[id]||id;
+    const ttl = TITLES[id]||id;
+    const tb = document.getElementById('topbarTitle');
+    if(tb) tb.textContent = ttl;
+    const np = document.getElementById('navPageTitle');
+    if(np) np.textContent = ttl;
     closeSidebar();
   }
 
