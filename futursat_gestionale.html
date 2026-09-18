@@ -945,6 +945,7 @@
           <button class="gest-tab" id="gtab-telaio" onclick="showGestTab('telaio')">🔩 Telaio</button>
           <button class="gest-tab" id="gtab-import" onclick="showGestTab('import')">📥 Importa Excel</button>
           <button class="gest-tab" id="gtab-movimenti" onclick="showGestTab('movimenti')">📊 Movimenti</button>
+          <button class="gest-tab" id="gtab-esporta" onclick="showGestTab('esporta')">📤 Esporta Excel</button>
         </div>
       </div>
 
@@ -1070,6 +1071,39 @@
           <button class="btn-cancel" onclick="resetMov()" style="margin-top:16px">✕ Nuova analisi</button>
         </div>
       </div>
+
+      <!-- TAB ESPORTA -->
+      <div id="gtab-content-esporta" style="display:none">
+        <div style="max-width:560px">
+          <p style="color:var(--text2);font-size:13px;margin-bottom:24px;line-height:1.6">
+            Scarica tutti i dati del database in un unico file <b style="color:var(--text)">Excel (.xlsx)</b> con tre fogli separati: <b style="color:#a5b4fc">Veicoli</b>, <b style="color:#a5b4fc">Clienti</b> e <b style="color:#a5b4fc">Servizi</b>.
+          </p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:28px">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 16px;text-align:center">
+              <div style="font-size:28px;margin-bottom:8px">🚗</div>
+              <div style="font-size:20px;font-weight:800;color:var(--text)" id="expCountVeicoli">—</div>
+              <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Veicoli</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 16px;text-align:center">
+              <div style="font-size:28px;margin-bottom:8px">👤</div>
+              <div style="font-size:20px;font-weight:800;color:var(--text)" id="expCountClienti">—</div>
+              <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Clienti</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 16px;text-align:center">
+              <div style="font-size:28px;margin-bottom:8px">⚙️</div>
+              <div style="font-size:20px;font-weight:800;color:var(--text)" id="expCountServizi">—</div>
+              <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Servizi</div>
+            </div>
+          </div>
+
+          <button id="expBtn" class="btn-add" onclick="esportaExcel()" style="font-size:14px;padding:12px 28px;width:100%;justify-content:center;gap:10px">
+            📥 Scarica Excel completo
+          </button>
+          <div id="expStatus" style="margin-top:14px;font-size:13px;color:var(--text2);text-align:center;min-height:20px"></div>
+        </div>
+      </div>
+
     </div>
 
   </div><!-- /content -->
@@ -2187,12 +2221,13 @@
   // Tab switching
   let gestTabLoaded = {veicoli:false, clienti:false};
   function showGestTab(tab) {
-    ['veicoli','clienti','telaio','import','movimenti'].forEach(t => {
+    ['veicoli','clienti','telaio','import','movimenti','esporta'].forEach(t => {
       document.getElementById('gtab-'+t).classList.toggle('active', t===tab);
       document.getElementById('gtab-content-'+t).style.display = t===tab?'block':'none';
     });
     if (tab==='veicoli' && !gestTabLoaded.veicoli) { gestTabLoaded.veicoli=true; loadVeicoliTable(); }
     if (tab==='clienti' && !gestTabLoaded.clienti) { gestTabLoaded.clienti=true; loadClientiTable(); }
+    if (tab==='esporta') { loadEsportaCounts(); }
     if (tab==='telaio') loadTelaioGest();
   }
 
@@ -3392,6 +3427,73 @@
     // Carica l'indice targhe in background
     loadTargheIndex();
   })();
+
+  // ═══════════════════════════════════════════════
+  // ESPORTA EXCEL — scarica tutto il database
+  // ═══════════════════════════════════════════════
+
+  async function loadEsportaCounts() {
+    const hdr = {...sbHeaders(), 'Prefer':'count=exact','Range-Unit':'items','Range':'0-0'};
+    const parseCount = h => { const m=(h||'').match(/\/(\d+)$/); return m?Number(m[1]).toLocaleString('it-IT'):'—'; };
+    try {
+      const [rv, rc, rs] = await Promise.all([
+        fetch(SUPABASE_URL+'/rest/v1/veicoli?select=id', {headers:hdr}).then(r=>r.headers.get('content-range')),
+        fetch(SUPABASE_URL+'/rest/v1/clienti?select=id', {headers:hdr}).then(r=>r.headers.get('content-range')),
+        fetch(SUPABASE_URL+'/rest/v1/veicoli_servizi?select=id', {headers:hdr}).then(r=>r.headers.get('content-range')),
+      ]);
+      document.getElementById('expCountVeicoli').textContent = parseCount(rv);
+      document.getElementById('expCountClienti').textContent = parseCount(rc);
+      document.getElementById('expCountServizi').textContent = parseCount(rs);
+    } catch(e) { console.warn('esporta counts error', e); }
+  }
+
+  async function esportaExcel() {
+    const btn = document.getElementById('expBtn');
+    const status = document.getElementById('expStatus');
+    btn.disabled = true;
+    btn.textContent = '⏳ Download in corso...';
+
+    const setStatus = (msg, color) => { status.textContent = msg; status.style.color = color||'var(--text2)'; };
+
+    try {
+      setStatus('Caricamento veicoli...', '');
+      const veicoli = await sbGetAll('/rest/v1/veicoli?select=*&order=targa.asc');
+      setStatus('Caricamento clienti...', '');
+      const clienti = await sbGetAll('/rest/v1/clienti?select=*&order=ragione_sociale.asc');
+      setStatus('Caricamento servizi...', '');
+      const servizi = await sbGetAll('/rest/v1/veicoli_servizi?select=*&order=veicolo_id.asc');
+
+      setStatus('Creazione file Excel...', '');
+
+      const wb = XLSX.utils.book_new();
+
+      // Sheet Veicoli
+      if (veicoli && veicoli.length) {
+        const ws_v = XLSX.utils.json_to_sheet(veicoli);
+        XLSX.utils.book_append_sheet(wb, ws_v, 'Veicoli');
+      }
+      // Sheet Clienti
+      if (clienti && clienti.length) {
+        const ws_c = XLSX.utils.json_to_sheet(clienti);
+        XLSX.utils.book_append_sheet(wb, ws_c, 'Clienti');
+      }
+      // Sheet Servizi
+      if (servizi && servizi.length) {
+        const ws_s = XLSX.utils.json_to_sheet(servizi);
+        XLSX.utils.book_append_sheet(wb, ws_s, 'Servizi');
+      }
+
+      const today = new Date().toISOString().slice(0,10);
+      XLSX.writeFile(wb, `futursat_export_${today}.xlsx`);
+      setStatus(`✅ Download completato! ${(veicoli||[]).length} veicoli · ${(clienti||[]).length} clienti · ${(servizi||[]).length} servizi`, 'var(--green)');
+    } catch(e) {
+      console.error('esporta error', e);
+      setStatus('❌ Errore: ' + (e.message||e), 'var(--red)');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '📥 Scarica Excel completo';
+  }
 
 </script>
 </body>
