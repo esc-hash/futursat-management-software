@@ -874,6 +874,14 @@
           <div class="form-field"><label class="form-label">Attivo GPS</label>
             <select class="form-select" id="mv_attivo"><option value="">— Seleziona —</option><option value="SI">SI</option><option value="NO">NO</option></select>
           </div>
+          <!-- ── NUOVI CAMPI GPS ── -->
+          <div class="form-field"><label class="form-label">Tipo Periferica</label><input class="form-input" id="mv_periferica" placeholder="es. BCE FMS500 ONE"></div>
+          <div class="form-field"><label class="form-label">UID GPS</label><input class="form-input" id="mv_uid_gps" placeholder="868184060544031"></div>
+          <div class="form-field"><label class="form-label">Telefono GPS</label><input class="form-input" id="mv_phone_gps" placeholder="+39..."></div>
+          <div class="form-field"><label class="form-label">Gruppo 1</label><input class="form-input" id="mv_gruppo1" placeholder="Cliente / Gruppo 1"></div>
+          <div class="form-field"><label class="form-label">Gruppo 2</label><input class="form-input" id="mv_gruppo2" placeholder="Gruppo 2"></div>
+          <div class="form-field"><label class="form-label">Gruppo 3</label><input class="form-input" id="mv_gruppo3" placeholder="Gruppo 3"></div>
+          <div class="form-field"><label class="form-label">Gruppo 4</label><input class="form-input" id="mv_gruppo4" placeholder="Gruppo 4"></div>
 
           <!-- ── DISDETTA ── -->
           <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
@@ -1212,6 +1220,13 @@
         ${row('Seriale', veicolo.seriale_periferica)}
         ${row('Modello GPS', veicolo.modello_periferica)}
         ${row('Produttore', veicolo.produttore_periferica)}
+        ${row('Tipo Periferica', veicolo.periferica)}
+        ${row('UID GPS', veicolo.uid_gps)}
+        ${row('Telefono GPS', veicolo.phone_gps)}
+        ${row('Gruppo 1', veicolo.gruppo1)}
+        ${row('Gruppo 2', veicolo.gruppo2)}
+        ${row('Gruppo 3', veicolo.gruppo3)}
+        ${row('Gruppo 4', veicolo.gruppo4)}
         ${row('Installatore', veicolo.installatore)}
         ${row('Data Installazione', fmtDate(veicolo.data_installazione))}
         ${row('SIM Voce', veicolo.sim_voce)}
@@ -1950,7 +1965,7 @@
   let _sfActive = 'all';
   async function loadVeicoliTable() {
     document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id&order=targa.asc');
+    _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id,periferica,uid_gps,phone_gps,gruppo1,gruppo2,gruppo3,gruppo4&order=targa.asc');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
   function getPiattNum(p) {
@@ -2114,6 +2129,8 @@
     f('mv_piattaforma', v?.piattaforma||'');
     f('mv_stato', v?.stato||'');
     f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
+    f('mv_periferica', v?.periferica); f('mv_uid_gps', v?.uid_gps); f('mv_phone_gps', v?.phone_gps);
+    f('mv_gruppo1', v?.gruppo1); f('mv_gruppo2', v?.gruppo2); f('mv_gruppo3', v?.gruppo3); f('mv_gruppo4', v?.gruppo4);
     f('mv_attivo', v?.attivo_gps||'');
     loadServiziModal(v?.targa, v?.id);
     // Immatricolata handling
@@ -2279,6 +2296,13 @@
       stato: document.getElementById('mv_stato').value||null,
       installatore: document.getElementById('mv_installatore').value||null,
       seriale_periferica: document.getElementById('mv_seriale').value||null,
+      periferica:  document.getElementById('mv_periferica').value||null,
+      uid_gps:     document.getElementById('mv_uid_gps').value||null,
+      phone_gps:   document.getElementById('mv_phone_gps').value||null,
+      gruppo1:     document.getElementById('mv_gruppo1').value||null,
+      gruppo2:     document.getElementById('mv_gruppo2').value||null,
+      gruppo3:     document.getElementById('mv_gruppo3').value||null,
+      gruppo4:     document.getElementById('mv_gruppo4').value||null,
       attivo_gps: document.getElementById('mv_attivo').value||null,
       immatricolata: immatVal,
       cliente_id: document.getElementById('mv_cliente_id').value||null,
@@ -2539,6 +2563,8 @@
     f('mv_stato', v.stato || '');
     f('mv_installatore', v.installatore);
     f('mv_seriale', v.seriale_periferica);
+    f('mv_periferica', v.periferica); f('mv_uid_gps', v.uid_gps); f('mv_phone_gps', v.phone_gps);
+    f('mv_gruppo1', v.gruppo1); f('mv_gruppo2', v.gruppo2); f('mv_gruppo3', v.gruppo3); f('mv_gruppo4', v.gruppo4);
     f('mv_attivo', v.attivo_gps || '');
     loadServiziModal(v.targa, v.id);
 
