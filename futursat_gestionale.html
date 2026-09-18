@@ -3461,7 +3461,7 @@
       setStatus('Caricamento clienti...', '');
       const clienti = await sbGetAll('/rest/v1/clienti?select=*&order=ragione_sociale.asc');
       setStatus('Caricamento servizi...', '');
-      const servizi = await sbGetAll('/rest/v1/veicoli_servizi?select=*&order=veicolo_id.asc');
+      const servizi = await sbGetAll('/rest/v1/veicoli_servizi?select=*&order=targa.asc');
 
       setStatus('Creazione file Excel...', '');
 
