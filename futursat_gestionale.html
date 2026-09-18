@@ -336,9 +336,9 @@
     .pager-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 12px;cursor:pointer;font-family:inherit;font-size:13px;}
     .pager-btn:disabled{opacity:0.35;cursor:default;}
     /* Modal */
-    .modal-overlay{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;}
-    .modal-overlay.show{display:flex;}
-    .modal-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;background:rgba(0,0,0,0.82);align-items:center;justify-content:center;padding:16px;}
+    .modal-overlay.show{display:flex;}  /* kept for compatibility */
+    .modal-card{background:#1a2240;border:1px solid rgba(96,165,250,0.3);border-radius:16px;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;box-shadow:0 32px 80px rgba(0,0,0,0.9);}
     .modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border);}
     .modal-title{font-size:16px;font-weight:700;}
     .modal-close{background:transparent;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:2px 6px;}
@@ -1070,178 +1070,183 @@
 
   </div><!-- /content -->
 
-  <!-- ── MODAL VEICOLO ── -->
-  <div class="modal-overlay" id="modalVeicolo">
-    <div class="modal-card">
-      <div class="modal-head">
-        <span class="modal-title" id="modalVeicoloTitle">Aggiungi Veicolo</span>
-        <button class="modal-close" onclick="closeModal('modalVeicolo')">✕</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="mv_id">
-        <input type="hidden" id="mv_data_ins_telaio">
-        <input type="hidden" id="mv_cliente_id">
-        <div class="form-grid">
-          <!-- Immatricolata SI/NO (solo per nuovi veicoli) -->
-          <div class="form-field full" id="mv_immat_row">
-            <label class="form-label">Immatricolata</label>
-            <div style="display:flex;gap:12px;margin-top:4px;">
-              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-                <input type="radio" name="mv_immat" id="mv_immat_si" value="SI" checked onchange="toggleImmat()"> SI — inserisci targa
-              </label>
-              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-                <input type="radio" name="mv_immat" id="mv_immat_no" value="NO" onchange="toggleImmat()"> NO — inserisci numero telaio
-              </label>
-            </div>
-          </div>
-          <div class="form-field" id="mv_targa_row"><label class="form-label">Targa *</label><input class="form-input" id="mv_targa" placeholder="ES345AB" style="text-transform:uppercase"></div>
-          <div class="form-field" id="mv_telaio_row" style="display:none">
-            <label class="form-label">Numero Telaio</label>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <input class="form-input" id="mv_telaio" placeholder="VIN/Telaio" style="flex:1;text-transform:uppercase">
-              <span style="background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.5);color:#fb923c;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;">IMMATRICOLATA NO</span>
-            </div>
-          </div>
-          <div class="form-field"><label class="form-label">Ragione Sociale</label><input class="form-input" id="mv_ragione" placeholder="Nome cliente"></div>
-          <div class="form-field"><label class="form-label">Marca</label><input class="form-input" id="mv_marca" placeholder="Fiat"></div>
-          <div class="form-field"><label class="form-label">Modello</label><input class="form-input" id="mv_modello" placeholder="Ducato"></div>
-          <div class="form-field"><label class="form-label">Colore</label><input class="form-input" id="mv_colore" placeholder="Bianco"></div>
-          <div class="form-field"><label class="form-label">Tipo Mezzo</label><input class="form-input" id="mv_tipo_mezzo" placeholder="Autocarro"></div>
-          <div class="form-field"><label class="form-label">SIM Voce</label><input class="form-input" id="mv_sim_voce" placeholder="3xxxxxxxxx"></div>
-          <div class="form-field"><label class="form-label">SIM Dati</label><input class="form-input" id="mv_sim_dati" placeholder="3xxxxxxxxx"></div>
-          <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="mv_email" placeholder="email@esempio.it"></div>
-          <div class="form-field"><label class="form-label">Cellulare cliente</label><input class="form-input" id="mv_cellulare" placeholder="3xxxxxxxxx"></div>
-          <div class="form-field"><label class="form-label">Telefono ufficio</label><input class="form-input" id="mv_tel_ufficio" placeholder="0805xxxxxx"></div>
-          <div class="form-field"><label class="form-label">Data Contratto</label><input class="form-input" id="mv_data_contratto" type="date"></div>
-          <div class="form-field"><label class="form-label">Tipo Contratto</label>
-            <select class="form-select" id="mv_tipo_contratto"><option value="">— Seleziona —</option><option value="ANNUALE">ANNUALE</option><option value="MENSILE">MENSILE</option></select>
-          </div>
-          <div class="form-field"><label class="form-label">Data Attivazione</label><input class="form-input" id="mv_data_att" type="date"></div>
-          <div class="form-field"><label class="form-label">Data Termine</label><input class="form-input" id="mv_data_termine" type="date"></div>
-          <div class="form-field"><label class="form-label">Piattaforma</label>
-            <select class="form-select" id="mv_piattaforma"><option value="">— Seleziona —</option><option value="Piattaforma 1">Piattaforma 1</option><option value="Piattaforma 2">Piattaforma 2</option><option value="Piattaforma 3">Piattaforma 3</option><option value="POSIZIO">POSIZIO</option><option value="SNAPROUTE">SNAPROUTE</option></select>
-          </div>
-          <div class="form-field"><label class="form-label">Stato</label>
-            <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option></select>
-          </div>
-          <!-- ── MULTI SERVIZI ── -->
-          <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <label class="form-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);">Servizi</label>
-              <button type="button" onclick="addServizioRow()" style="padding:4px 11px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:6px;color:var(--accent);cursor:pointer;font-size:12px;font-family:inherit;">＋ Aggiungi Servizio</button>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 80px 90px 90px 90px 32px;gap:4px;padding:0 2px 4px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">
-              <span>Servizio</span><span>Tipo</span><span>Canone €</span><span>Ris. €</span><span>Noi €</span><span></span>
-            </div>
-            <div id="mv_servizi_list" style="display:flex;flex-direction:column;gap:6px;"></div>
-          </div>
-          <div class="form-field"><label class="form-label">Installatore</label><input class="form-input" id="mv_installatore" placeholder="Nome installatore"></div>
-          <div class="form-field"><label class="form-label">Seriale GPS</label><input class="form-input" id="mv_seriale" placeholder="XXXXXXXX"></div>
-          <div class="form-field"><label class="form-label">Attivo GPS</label>
-            <select class="form-select" id="mv_attivo"><option value="">— Seleziona —</option><option value="SI">SI</option><option value="NO">NO</option></select>
-          </div>
-          <!-- ── NUOVI CAMPI GPS ── -->
-          <div class="form-field"><label class="form-label">Tipo Periferica</label><input class="form-input" id="mv_periferica" placeholder="es. BCE FMS500 ONE"></div>
-          <div class="form-field"><label class="form-label">UID GPS</label><input class="form-input" id="mv_uid_gps" placeholder="868184060544031"></div>
-          <div class="form-field"><label class="form-label">Telefono GPS</label><input class="form-input" id="mv_phone_gps" placeholder="+39..."></div>
-          <div class="form-field"><label class="form-label">Gruppo 1</label><input class="form-input" id="mv_gruppo1" placeholder="Cliente / Gruppo 1"></div>
-          <div class="form-field"><label class="form-label">Gruppo 2</label><input class="form-input" id="mv_gruppo2" placeholder="Gruppo 2"></div>
-          <div class="form-field"><label class="form-label">Gruppo 3</label><input class="form-input" id="mv_gruppo3" placeholder="Gruppo 3"></div>
-          <div class="form-field"><label class="form-label">Gruppo 4</label><input class="form-input" id="mv_gruppo4" placeholder="Gruppo 4"></div>
 
-          <!-- ── DISDETTA ── -->
-          <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
-            <label class="form-label" style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);">Disdetta contratto</label>
-            <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;align-items:center;">
-              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-                <input type="radio" name="mv_disdetta" id="mv_disdetta_no" value="NO" checked onchange="toggleDisdetta()"> NO
-              </label>
-              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
-                <input type="radio" name="mv_disdetta" id="mv_disdetta_si" value="SI" onchange="toggleDisdetta()">
-                <span>SI</span>
-                <span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">DISDETTA</span>
-              </label>
-            </div>
-          </div>
-          <div class="form-field" id="mv_disdetta_data_row" style="display:none">
-            <label class="form-label">Data disdetta</label>
-            <input class="form-input" id="mv_data_disdetta" type="date">
-          </div>
-          <div class="form-field" id="mv_disdetta_note_row" style="display:none">
-            <label class="form-label">Note disdetta</label>
-            <input class="form-input" id="mv_note_disdetta" placeholder="Motivo, riferimento, ecc.">
-          </div>
-          <div class="form-field full" id="mv_disdetta_pdf_row" style="display:none">
-            <label class="form-label">PDF disdetta</label>
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-              <input type="file" id="mv_pdf_disdetta" accept=".pdf" style="display:none" onchange="onPdfSelected(this)">
-              <button type="button" onclick="document.getElementById('mv_pdf_disdetta').click()"
-                style="padding:8px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;color:var(--accent);cursor:pointer;font-size:13px;font-family:inherit;">
-                📎 Carica PDF
-              </button>
-              <span id="mv_pdf_nome" style="font-size:13px;color:var(--text2);">Nessun file selezionato</span>
-              <input type="hidden" id="mv_pdf_url">
-            </div>
-            <div id="mv_pdf_link_row" style="margin-top:6px;display:none;">
-              <a id="mv_pdf_link" href="#" target="_blank"
-                style="font-size:13px;color:var(--accent);text-decoration:underline;">📄 Visualizza PDF salvato</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeModal('modalVeicolo')">Annulla</button>
-        <button class="btn-save" onclick="saveVeicolo()">💾 Salva</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── MODAL CLIENTE ── -->
-  <div class="modal-overlay" id="modalCliente">
-    <div class="modal-card">
-      <div class="modal-head">
-        <span class="modal-title" id="modalClienteTitle">Aggiungi Cliente</span>
-        <button class="modal-close" onclick="closeModal('modalCliente')">✕</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="mc_id">
-        <div class="form-grid">
-          <div class="form-field full"><label class="form-label">Ragione Sociale *</label><input class="form-input" id="mc_ragione" placeholder="Nome azienda o cliente"></div>
-          <div class="form-field full"><label class="form-label">Indirizzo</label><input class="form-input" id="mc_indirizzo" placeholder="Via Roma 1"></div>
-          <div class="form-field"><label class="form-label">CAP</label><input class="form-input" id="mc_cap" placeholder="70100"></div>
-          <div class="form-field"><label class="form-label">Città</label><input class="form-input" id="mc_citta" placeholder="Bari"></div>
-          <div class="form-field"><label class="form-label">Provincia</label><input class="form-input" id="mc_provincia" placeholder="BA"></div>
-          <div class="form-field"><label class="form-label">Partita IVA</label><input class="form-input" id="mc_piva" placeholder="12345678901"></div>
-          <div class="form-field"><label class="form-label">Telefono</label><input class="form-input" id="mc_tel" placeholder="0801234567"></div>
-          <div class="form-field"><label class="form-label">Fax</label><input class="form-input" id="mc_fax" placeholder="0801234567"></div>
-          <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="mc_email" placeholder="info@azienda.it"></div>
-          <div class="form-field"><label class="form-label">Pagamento</label><input class="form-input" id="mc_pagamento" placeholder="RIBA 30 GGFM"></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeModal('modalCliente')">Annulla</button>
-        <button class="btn-save" onclick="saveCliente()">💾 Salva</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── MODAL CONFERMA ELIMINA ── -->
-  <div class="modal-overlay" id="modalConfirm">
-    <div class="modal-card" style="max-width:400px">
-      <div class="modal-head">
-        <span class="modal-title">⚠️ Conferma eliminazione</span>
-        <button class="modal-close" onclick="closeModal('modalConfirm')">✕</button>
-      </div>
-      <div class="modal-body">
-        <p id="confirmMsg" style="color:var(--text2);font-size:14px;line-height:1.6"></p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeModal('modalConfirm')">Annulla</button>
-        <button class="btn-danger" style="padding:9px 20px;font-size:13px" id="confirmOkBtn">🗑️ Elimina</button>
-      </div>
-    </div>
-  </div>
 </div><!-- /main-wrap -->
+
+
+<!-- ── MODALS (body-level, sempre fissi su viewport) ── -->
+<!-- ── MODAL VEICOLO ── -->
+<div class="modal-overlay" id="modalVeicolo" style="display:none">
+  <div class="modal-card">
+    <div class="modal-head">
+      <span class="modal-title" id="modalVeicoloTitle">Aggiungi Veicolo</span>
+      <button class="modal-close" onclick="closeModal('modalVeicolo')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="mv_id">
+      <input type="hidden" id="mv_data_ins_telaio">
+      <input type="hidden" id="mv_cliente_id">
+      <div class="form-grid">
+        <!-- Immatricolata SI/NO (solo per nuovi veicoli) -->
+        <div class="form-field full" id="mv_immat_row">
+          <label class="form-label">Immatricolata</label>
+          <div style="display:flex;gap:12px;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="mv_immat" id="mv_immat_si" value="SI" checked onchange="toggleImmat()"> SI — inserisci targa
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="mv_immat" id="mv_immat_no" value="NO" onchange="toggleImmat()"> NO — inserisci numero telaio
+            </label>
+          </div>
+        </div>
+        <div class="form-field" id="mv_targa_row"><label class="form-label">Targa *</label><input class="form-input" id="mv_targa" placeholder="ES345AB" style="text-transform:uppercase"></div>
+        <div class="form-field" id="mv_telaio_row" style="display:none">
+          <label class="form-label">Numero Telaio</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input class="form-input" id="mv_telaio" placeholder="VIN/Telaio" style="flex:1;text-transform:uppercase">
+            <span style="background:rgba(249,115,22,0.2);border:1px solid rgba(249,115,22,0.5);color:#fb923c;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;">IMMATRICOLATA NO</span>
+          </div>
+        </div>
+        <div class="form-field"><label class="form-label">Ragione Sociale</label><input class="form-input" id="mv_ragione" placeholder="Nome cliente"></div>
+        <div class="form-field"><label class="form-label">Marca</label><input class="form-input" id="mv_marca" placeholder="Fiat"></div>
+        <div class="form-field"><label class="form-label">Modello</label><input class="form-input" id="mv_modello" placeholder="Ducato"></div>
+        <div class="form-field"><label class="form-label">Colore</label><input class="form-input" id="mv_colore" placeholder="Bianco"></div>
+        <div class="form-field"><label class="form-label">Tipo Mezzo</label><input class="form-input" id="mv_tipo_mezzo" placeholder="Autocarro"></div>
+        <div class="form-field"><label class="form-label">SIM Voce</label><input class="form-input" id="mv_sim_voce" placeholder="3xxxxxxxxx"></div>
+        <div class="form-field"><label class="form-label">SIM Dati</label><input class="form-input" id="mv_sim_dati" placeholder="3xxxxxxxxx"></div>
+        <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="mv_email" placeholder="email@esempio.it"></div>
+        <div class="form-field"><label class="form-label">Cellulare cliente</label><input class="form-input" id="mv_cellulare" placeholder="3xxxxxxxxx"></div>
+        <div class="form-field"><label class="form-label">Telefono ufficio</label><input class="form-input" id="mv_tel_ufficio" placeholder="0805xxxxxx"></div>
+        <div class="form-field"><label class="form-label">Data Contratto</label><input class="form-input" id="mv_data_contratto" type="date"></div>
+        <div class="form-field"><label class="form-label">Tipo Contratto</label>
+          <select class="form-select" id="mv_tipo_contratto"><option value="">— Seleziona —</option><option value="ANNUALE">ANNUALE</option><option value="MENSILE">MENSILE</option></select>
+        </div>
+        <div class="form-field"><label class="form-label">Data Attivazione</label><input class="form-input" id="mv_data_att" type="date"></div>
+        <div class="form-field"><label class="form-label">Data Termine</label><input class="form-input" id="mv_data_termine" type="date"></div>
+        <div class="form-field"><label class="form-label">Piattaforma</label>
+          <select class="form-select" id="mv_piattaforma"><option value="">— Seleziona —</option><option value="Piattaforma 1">Piattaforma 1</option><option value="Piattaforma 2">Piattaforma 2</option><option value="Piattaforma 3">Piattaforma 3</option><option value="POSIZIO">POSIZIO</option><option value="SNAPROUTE">SNAPROUTE</option></select>
+        </div>
+        <div class="form-field"><label class="form-label">Stato</label>
+          <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option></select>
+        </div>
+        <!-- ── MULTI SERVIZI ── -->
+        <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <label class="form-label" style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);">Servizi</label>
+            <button type="button" onclick="addServizioRow()" style="padding:4px 11px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:6px;color:var(--accent);cursor:pointer;font-size:12px;font-family:inherit;">＋ Aggiungi Servizio</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 80px 90px 90px 90px 32px;gap:4px;padding:0 2px 4px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;">
+            <span>Servizio</span><span>Tipo</span><span>Canone €</span><span>Ris. €</span><span>Noi €</span><span></span>
+          </div>
+          <div id="mv_servizi_list" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+        <div class="form-field"><label class="form-label">Installatore</label><input class="form-input" id="mv_installatore" placeholder="Nome installatore"></div>
+        <div class="form-field"><label class="form-label">Seriale GPS</label><input class="form-input" id="mv_seriale" placeholder="XXXXXXXX"></div>
+        <div class="form-field"><label class="form-label">Attivo GPS</label>
+          <select class="form-select" id="mv_attivo"><option value="">— Seleziona —</option><option value="SI">SI</option><option value="NO">NO</option></select>
+        </div>
+        <!-- ── NUOVI CAMPI GPS ── -->
+        <div class="form-field"><label class="form-label">Tipo Periferica</label><input class="form-input" id="mv_periferica" placeholder="es. BCE FMS500 ONE"></div>
+        <div class="form-field"><label class="form-label">UID GPS</label><input class="form-input" id="mv_uid_gps" placeholder="868184060544031"></div>
+        <div class="form-field"><label class="form-label">Telefono GPS</label><input class="form-input" id="mv_phone_gps" placeholder="+39..."></div>
+        <div class="form-field"><label class="form-label">Gruppo 1</label><input class="form-input" id="mv_gruppo1" placeholder="Cliente / Gruppo 1"></div>
+        <div class="form-field"><label class="form-label">Gruppo 2</label><input class="form-input" id="mv_gruppo2" placeholder="Gruppo 2"></div>
+        <div class="form-field"><label class="form-label">Gruppo 3</label><input class="form-input" id="mv_gruppo3" placeholder="Gruppo 3"></div>
+        <div class="form-field"><label class="form-label">Gruppo 4</label><input class="form-input" id="mv_gruppo4" placeholder="Gruppo 4"></div>
+
+        <!-- ── DISDETTA ── -->
+        <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
+          <label class="form-label" style="font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--text3);">Disdetta contratto</label>
+          <div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;align-items:center;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="mv_disdetta" id="mv_disdetta_no" value="NO" checked onchange="toggleDisdetta()"> NO
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;">
+              <input type="radio" name="mv_disdetta" id="mv_disdetta_si" value="SI" onchange="toggleDisdetta()">
+              <span>SI</span>
+              <span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">DISDETTA</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-field" id="mv_disdetta_data_row" style="display:none">
+          <label class="form-label">Data disdetta</label>
+          <input class="form-input" id="mv_data_disdetta" type="date">
+        </div>
+        <div class="form-field" id="mv_disdetta_note_row" style="display:none">
+          <label class="form-label">Note disdetta</label>
+          <input class="form-input" id="mv_note_disdetta" placeholder="Motivo, riferimento, ecc.">
+        </div>
+        <div class="form-field full" id="mv_disdetta_pdf_row" style="display:none">
+          <label class="form-label">PDF disdetta</label>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <input type="file" id="mv_pdf_disdetta" accept=".pdf" style="display:none" onchange="onPdfSelected(this)">
+            <button type="button" onclick="document.getElementById('mv_pdf_disdetta').click()"
+              style="padding:8px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;color:var(--accent);cursor:pointer;font-size:13px;font-family:inherit;">
+              📎 Carica PDF
+            </button>
+            <span id="mv_pdf_nome" style="font-size:13px;color:var(--text2);">Nessun file selezionato</span>
+            <input type="hidden" id="mv_pdf_url">
+          </div>
+          <div id="mv_pdf_link_row" style="margin-top:6px;display:none;">
+            <a id="mv_pdf_link" href="#" target="_blank"
+              style="font-size:13px;color:var(--accent);text-decoration:underline;">📄 Visualizza PDF salvato</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalVeicolo')">Annulla</button>
+      <button class="btn-save" onclick="saveVeicolo()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL CLIENTE ── -->
+<div class="modal-overlay" id="modalCliente" style="display:none">
+  <div class="modal-card">
+    <div class="modal-head">
+      <span class="modal-title" id="modalClienteTitle">Aggiungi Cliente</span>
+      <button class="modal-close" onclick="closeModal('modalCliente')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="mc_id">
+      <div class="form-grid">
+        <div class="form-field full"><label class="form-label">Ragione Sociale *</label><input class="form-input" id="mc_ragione" placeholder="Nome azienda o cliente"></div>
+        <div class="form-field full"><label class="form-label">Indirizzo</label><input class="form-input" id="mc_indirizzo" placeholder="Via Roma 1"></div>
+        <div class="form-field"><label class="form-label">CAP</label><input class="form-input" id="mc_cap" placeholder="70100"></div>
+        <div class="form-field"><label class="form-label">Città</label><input class="form-input" id="mc_citta" placeholder="Bari"></div>
+        <div class="form-field"><label class="form-label">Provincia</label><input class="form-input" id="mc_provincia" placeholder="BA"></div>
+        <div class="form-field"><label class="form-label">Partita IVA</label><input class="form-input" id="mc_piva" placeholder="12345678901"></div>
+        <div class="form-field"><label class="form-label">Telefono</label><input class="form-input" id="mc_tel" placeholder="0801234567"></div>
+        <div class="form-field"><label class="form-label">Fax</label><input class="form-input" id="mc_fax" placeholder="0801234567"></div>
+        <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="mc_email" placeholder="info@azienda.it"></div>
+        <div class="form-field"><label class="form-label">Pagamento</label><input class="form-input" id="mc_pagamento" placeholder="RIBA 30 GGFM"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalCliente')">Annulla</button>
+      <button class="btn-save" onclick="saveCliente()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL CONFERMA ELIMINA ── -->
+<div class="modal-overlay" id="modalConfirm" style="display:none">
+  <div class="modal-card" style="max-width:400px">
+    <div class="modal-head">
+      <span class="modal-title">⚠️ Conferma eliminazione</span>
+      <button class="modal-close" onclick="closeModal('modalConfirm')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmMsg" style="color:var(--text2);font-size:14px;line-height:1.6"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalConfirm')">Annulla</button>
+      <button class="btn-danger" style="padding:9px 20px;font-size:13px" id="confirmOkBtn">🗑️ Elimina</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- Price tooltip -->
 <div class="price-tooltip" id="priceTooltip">
@@ -1300,6 +1305,7 @@
   const TITLES = {home:'Home',targa:'Ricerca per Targa',cliente:'Ricerca per Cliente',telaio:'Ricerca per Telaio',statistiche:'Statistiche',contratti:'Contratti',gestione:'Gestione Dati'};
 
   function showPage(id) {
+    closeAllModals();
     PAGES.forEach(p => {
       document.getElementById('page-'+p).style.display = p===id?'block':'none';
       document.getElementById('nav-'+p)?.classList.toggle('active', p===id);
@@ -2357,8 +2363,27 @@
   function clientiPage(dir) { _cPage+=dir; renderClientiTable(); }
 
   // ── MODAL HELPERS ─────────────────────────────────
-  function openModal(id) { document.getElementById(id).classList.add('show'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function openModal(id) {
+    // Close all other modals first
+    ['modalVeicolo','modalCliente','modalConfirm'].forEach(m => {
+      const el = document.getElementById(m);
+      if (el && el !== document.getElementById(id)) el.style.display = 'none';
+    });
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'flex'; void el.offsetWidth; }
+  }
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  }
+  function closeAllModals() {
+    ['modalVeicolo','modalCliente','modalConfirm'].forEach(m => {
+      const el = document.getElementById(m);
+      if (el) el.style.display = 'none';
+    });
+    const tip = document.getElementById('priceTooltip');
+    if (tip) tip.classList.remove('show');
+  }
 
   // ── VEICOLO MODAL ─────────────────────────────────
   function openVeicoloModal(id=null) {
