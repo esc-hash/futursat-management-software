@@ -2873,6 +2873,9 @@
     const list = document.getElementById('mcTargheList');
     const cnt = document.getElementById('mcTargheCount');
     const chev = document.getElementById('mcTargheChevron');
+    _mcTargheOpen = false;
+    _mcTargheLoaded = false;
+    _mcTargheData = [];
     if (sec) sec.style.display = c ? 'block' : 'none';
     if (list) { list.style.display='none'; list.innerHTML=''; }
     if (cnt) cnt.textContent = '';
@@ -2891,8 +2894,8 @@
       provincia: document.getElementById('mc_provincia').value||null,
       partita_iva: document.getElementById('mc_piva').value||null,
       telefono: document.getElementById('mc_tel').value||null, fax: document.getElementById('mc_fax').value||null,
-      email: document.getElementById('mc_email').value||null,
       descriz_pagamento: document.getElementById('mc_pagamento').value||null
+      // email non presente nella tabella clienti del DB
     };
     try {
       if (id) { await sbPatch(`/rest/v1/clienti?id=eq.${id}`, data); }
@@ -2911,11 +2914,15 @@
     const chev = document.getElementById('mcTargheChevron');
     _mcTargheOpen = !_mcTargheOpen;
     if (list) list.style.display = _mcTargheOpen ? 'block' : 'none';
-    if (chev) { chev.textContent = _mcTargheOpen ? '▲' : '▼'; chev.style.transform = _mcTargheOpen ? 'rotate(0)' : ''; }
-    if (_mcTargheOpen && !_mcTargheLoaded) {
-      const clienteId = document.getElementById('mc_id').value;
-      const ragione = document.getElementById('mc_ragione').value;
-      loadTargheAssociate(clienteId, ragione, true);
+    if (chev) { chev.textContent = _mcTargheOpen ? '▲' : '▼'; }
+    if (_mcTargheOpen) {
+      if (_mcTargheLoaded) {
+        // Dati già pronti — renderizza subito
+        renderTargheAssociate(list);
+      } else {
+        // Ancora in caricamento — mostra spinner e aspetta
+        if (list) list.innerHTML = '<p style="color:var(--text2);font-size:13px;padding:8px 0">⏳ Caricamento targhe...</p>';
+      }
     }
   }
 
@@ -2939,7 +2946,7 @@
       _mcTargheData = rows || [];
       _mcTargheLoaded = true;
       if (cnt) cnt.textContent = _mcTargheData.length;
-      if (list && (showList || list.style.display !== 'none')) renderTargheAssociate(list);
+      if (list && list.style.display !== 'none') renderTargheAssociate(list);
     } catch(e) {
       _mcTargheLoaded = true;
       if (cnt) cnt.textContent = '!';
