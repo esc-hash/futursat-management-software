@@ -9,13 +9,13 @@
   <style>
     :root {
       --bg:#060a14; --surface:#0d1322; --surface2:#141d36; --surface3:#1a2540;
-      --border:#1d2c4a; --accent:#6366f1; --accent2:#4f46e5;
-      --violet:#8b5cf6; --cyan:#22d3ee;
+      --border:#1d2c4a; --accent:#1e90ff; --accent2:#0060df;
+      --violet:#3b82f6; --cyan:#22d3ee;
       --green:#10b981; --red:#ef4444; --orange:#f59e0b;
       --text:#e8edf8; --text2:#7c8aaa; --text3:#3a4a6a;
       --nav-w:240px; --radius:12px;
-      --glow-accent:rgba(99,102,241,0.18);
-      --glow-strong:rgba(99,102,241,0.3);
+      --glow-accent:rgba(30,144,255,0.18);
+      --glow-strong:rgba(30,144,255,0.3);
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     .sidebar{display:none!important;}
@@ -65,8 +65,8 @@
     }
     .nav-link:hover{background:rgba(255,255,255,0.04);color:var(--text);}
     .nav-link.active{
-      background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(139,92,246,0.07));
-      color:#a5b4fc;font-weight:600;border-color:rgba(99,102,241,0.18);
+      background:linear-gradient(135deg,rgba(30,144,255,0.14),rgba(59,130,246,0.07));
+      color:#a5b4fc;font-weight:600;border-color:rgba(30,144,255,0.18);
     }
     .nav-link.active::before{
       content:'';position:absolute;left:0;top:20%;bottom:20%;
@@ -83,11 +83,11 @@
       border:1px solid var(--border);background:var(--surface2);
       transition:all 0.2s;font-family:inherit;
     }
-    .nav-user-btn:hover{background:var(--surface3);border-color:rgba(99,102,241,0.3);}
+    .nav-user-btn:hover{background:var(--surface3);border-color:rgba(30,144,255,0.3);}
     .nav-user-avatar{
       width:32px;height:32px;border-radius:50%;
-      background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.25));
-      border:1px solid rgba(99,102,241,0.35);
+      background:linear-gradient(135deg,rgba(30,144,255,0.25),rgba(59,130,246,0.25));
+      border:1px solid rgba(30,144,255,0.35);
       display:flex;align-items:center;justify-content:center;
       font-size:13px;font-weight:700;color:#a5b4fc;flex-shrink:0;
     }
@@ -129,15 +129,15 @@
     .search-page h2{font-size:20px;font-weight:700;margin-bottom:4px;}
     .search-page .sub{font-size:13px;color:var(--text2);margin-bottom:22px;}
     .plate-visual{width:240px;margin:0 auto 18px;display:block;}
-    .plate-visual img{width:100%;border-radius:10px;box-shadow:0 0 40px rgba(99,102,241,0.18);}
+    .plate-visual img{width:100%;border-radius:10px;box-shadow:0 0 40px rgba(30,144,255,0.18);}
     .plate-input-box{
       width:100%;max-width:340px;margin:0 auto 22px;
-      background:#fff;border:2px solid rgba(99,102,241,0.55);border-radius:12px;
+      background:#fff;border:2px solid rgba(30,144,255,0.55);border-radius:12px;
       padding:12px 18px;display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 0 6px rgba(99,102,241,0.07),0 8px 30px rgba(0,0,0,0.4);
+      box-shadow:0 0 0 6px rgba(30,144,255,0.07),0 8px 30px rgba(0,0,0,0.4);
       transition:border-color 0.2s,box-shadow 0.2s;
     }
-    .plate-input-box:focus-within{border-color:rgba(99,102,241,0.85);box-shadow:0 0 0 6px rgba(99,102,241,0.12),0 8px 30px rgba(0,0,0,0.4);}
+    .plate-input-box:focus-within{border-color:rgba(30,144,255,0.85);box-shadow:0 0 0 6px rgba(30,144,255,0.12),0 8px 30px rgba(0,0,0,0.4);}
     .plate-input-box input{
       width:100%;background:transparent;border:none;outline:none;
       font-family:'Courier New',monospace;font-size:30px;font-weight:900;
@@ -177,7 +177,7 @@
       background:var(--surface);border:1px solid var(--border);border-radius:12px;
       padding:14px 20px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;
     }
-    .client-item:hover{border-color:rgba(99,102,241,0.4);background:var(--surface2);transform:translateX(3px);box-shadow:0 4px 20px rgba(0,0,0,0.35);}
+    .client-item:hover{border-color:rgba(30,144,255,0.4);background:var(--surface2);transform:translateX(3px);box-shadow:0 4px 20px rgba(0,0,0,0.35);}
     .client-item-name{font-size:14px;font-weight:600;}
     .client-item-sub{font-size:12px;color:var(--text2);margin-top:4px;}
 
@@ -207,7 +207,7 @@
       letter-spacing:1px;text-transform:uppercase;line-height:1.3;text-align:center;min-width:110px;
     }
     .piattaforma-badge.p1{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.35);color:#94a3b8;}
-    .piattaforma-badge.p2{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.35);color:#a5b4fc;}
+    .piattaforma-badge.p2{background:rgba(30,144,255,0.1);border:1px solid rgba(30,144,255,0.35);color:#a5b4fc;}
     .piattaforma-badge.p3{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);color:#6ee7b7;}
     .piattaforma-badge.show{display:flex;}
     .stato-badge{
@@ -222,7 +222,7 @@
     .stato-badge.s-bloccato{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);color:#fca5a5;}
     .stato-badge.s-disattivato{background:rgba(75,85,99,0.1);border:1px solid rgba(75,85,99,0.3);color:#6b7280;}
     .stato-badge.s-furto{background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.6);color:#ef4444;}
-    .stato-badge.s-revocato{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.35);color:#c4b5fd;}
+    .stato-badge.s-revocato{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.35);color:#c4b5fd;}
     .stato-chip{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;}
     .stato-chip.s-incorso{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.28);}
     .stato-chip.s-sospeso{background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.28);}
@@ -230,7 +230,7 @@
     .stato-chip.s-bloccato{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.28);}
     .stato-chip.s-disattivato{background:rgba(75,85,99,0.1);color:#6b7280;border:1px solid rgba(75,85,99,0.22);}
     .stato-chip.s-furto{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4);}
-    .stato-chip.s-revocato{background:rgba(139,92,246,0.1);color:#c4b5fd;border:1px solid rgba(139,92,246,0.28);}
+    .stato-chip.s-revocato{background:rgba(59,130,246,0.1);color:#c4b5fd;border:1px solid rgba(59,130,246,0.28);}
 
     /* AUTOCOMPLETE */
     .targa-ac-wrap{position:relative;width:100%;}
@@ -261,7 +261,7 @@
     .s-filter-btn.s-bloccato.active{background:rgba(239,68,68,0.65);border-color:#ef4444;color:#fff;}
     .s-filter-btn.s-disattivato.active{background:rgba(75,85,99,0.5);border-color:#4b5563;color:#fff;}
     .s-filter-btn.s-furto.active{background:rgba(239,68,68,0.8);border-color:#ef4444;color:#fff;}
-    .s-filter-btn.s-revocato.active{background:rgba(139,92,246,0.65);border-color:#8b5cf6;color:#fff;}
+    .s-filter-btn.s-revocato.active{background:rgba(59,130,246,0.65);border-color:#3b82f6;color:#fff;}
 
     .result-title{font-size:22px;font-weight:700;}
     .result-subtitle{font-size:13px;color:var(--text2);margin-top:4px;}
@@ -275,11 +275,11 @@
     .vehicles-list{padding:16px 28px;border-bottom:1px solid var(--border);position:relative;}
     .altre-targhe-btn{
       display:inline-flex;align-items:center;gap:8px;
-      background:var(--surface2);border:1px solid rgba(99,102,241,0.3);color:#a5b4fc;
+      background:var(--surface2);border:1px solid rgba(30,144,255,0.3);color:#a5b4fc;
       padding:8px 18px;border-radius:9px;font-size:13px;font-weight:600;
       cursor:pointer;font-family:inherit;transition:all 0.2s;
     }
-    .altre-targhe-btn:hover{background:rgba(99,102,241,0.12);border-color:var(--accent);}
+    .altre-targhe-btn:hover{background:rgba(30,144,255,0.12);border-color:var(--accent);}
     .altre-targhe-btn .chevron{transition:transform 0.2s;font-size:11px;}
     .altre-targhe-btn.open .chevron{transform:rotate(180deg);}
     .targhe-dropdown{
@@ -296,14 +296,14 @@
       padding:9px 14px;border-radius:8px;cursor:pointer;transition:all 0.12s;
     }
     .targa-drop-item:hover{background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;}
-    .targa-drop-item.active{background:rgba(99,102,241,0.14);color:#a5b4fc;}
+    .targa-drop-item.active{background:rgba(30,144,255,0.14);color:#a5b4fc;}
 
     .result-body{padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:18px;}
     .info-card{
       background:var(--surface2);border:1px solid var(--border);border-radius:14px;
       padding:20px 24px;transition:border-color 0.2s;
     }
-    .info-card:hover{border-color:rgba(99,102,241,0.18);}
+    .info-card:hover{border-color:rgba(30,144,255,0.18);}
     .info-card-title{
       font-size:10.5px;text-transform:uppercase;letter-spacing:2px;
       color:#a5b4fc;margin-bottom:14px;display:flex;align-items:center;gap:6px;font-weight:700;
@@ -328,8 +328,8 @@
     .info-btn{
       display:inline-flex;align-items:center;justify-content:center;
       width:18px;height:18px;border-radius:50%;
-      background:rgba(99,102,241,0.1);color:#a5b4fc;
-      font-size:11px;font-weight:700;cursor:pointer;border:1px solid rgba(99,102,241,0.22);
+      background:rgba(30,144,255,0.1);color:#a5b4fc;
+      font-size:11px;font-weight:700;cursor:pointer;border:1px solid rgba(30,144,255,0.22);
       transition:all 0.15s;flex-shrink:0;
     }
     .info-btn:hover{background:var(--accent);color:#fff;}
@@ -337,7 +337,7 @@
       display:none;position:fixed;top:-9999px;left:-9999px;z-index:10000;
       background:var(--surface3);border:1px solid var(--border);border-radius:13px;
       padding:14px 18px;min-width:220px;
-      box-shadow:0 16px 50px rgba(0,0,0,0.6),0 0 0 1px rgba(99,102,241,0.08);
+      box-shadow:0 16px 50px rgba(0,0,0,0.6),0 0 0 1px rgba(30,144,255,0.08);
     }
     .price-tooltip.show{display:block;}
     .price-tooltip-title{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:10px;font-weight:700;}
@@ -365,13 +365,13 @@
     .p-filter-btn{border:1px solid var(--border);background:var(--surface2);color:var(--text2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
     .p-filter-btn:hover{border-color:var(--accent);color:var(--text);}
     .p-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-    .p-filter-btn.p2.active{background:rgba(99,102,241,0.8);border-color:#6366f1;}
+    .p-filter-btn.p2.active{background:rgba(30,144,255,0.8);border-color:#6366f1;}
     .p-filter-btn.p3.active{background:rgba(16,185,129,0.8);border-color:#10b981;}
     .p-filter-btn.p1.active{background:rgba(148,163,184,0.5);border-color:#94a3b8;color:var(--text);}
     .p-filter-btn.pnone.active{background:var(--surface2);border-color:var(--text3);color:var(--text3);}
     .piatt-chip{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.5px;}
     .piatt-chip.p1{background:rgba(148,163,184,0.1);color:#94a3b8;border:1px solid rgba(148,163,184,0.28);}
-    .piatt-chip.p2{background:rgba(99,102,241,0.1);color:#a5b4fc;border:1px solid rgba(99,102,241,0.28);}
+    .piatt-chip.p2{background:rgba(30,144,255,0.1);color:#a5b4fc;border:1px solid rgba(30,144,255,0.28);}
     .piatt-chip.p3{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.28);}
     .piatt-chip.pnone{color:var(--text3);font-style:italic;}
     .gest-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
@@ -381,14 +381,14 @@
     .btn-add:hover{opacity:0.9;}
     .btn-danger{background:rgba(239,68,68,0.08);color:#fca5a5;border:1px solid rgba(239,68,68,0.22);border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
     .btn-danger:hover{background:#ef4444;color:#fff;}
-    .btn-edit{background:rgba(99,102,241,0.08);color:#a5b4fc;border:1px solid rgba(99,102,241,0.18);border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+    .btn-edit{background:rgba(30,144,255,0.08);color:#a5b4fc;border:1px solid rgba(30,144,255,0.18);border-radius:7px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
     .btn-edit:hover{background:var(--accent);color:#fff;}
     .gest-table-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border);}
     .gest-table{width:100%;border-collapse:collapse;font-size:13px;}
     .gest-table th{background:var(--surface2);color:var(--text3);padding:11px 16px;text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;white-space:nowrap;border-bottom:1px solid var(--border);font-weight:700;}
     .gest-table td{padding:11px 16px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap;}
     .gest-table tr:last-child td{border-bottom:none;}
-    .gest-table tr:hover td{background:rgba(99,102,241,0.04);}
+    .gest-table tr:hover td{background:rgba(30,144,255,0.04);}
     .gest-table .actions{display:flex;gap:6px;}
     .gest-pager{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:14px;font-size:13px;color:var(--text2);}
     .pager-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit;font-size:13px;}
@@ -417,7 +417,7 @@
 
     /* DROP ZONE */
     .drop-zone{border:2px dashed var(--border);border-radius:16px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:20px;}
-    .drop-zone.drag{border-color:var(--accent);background:rgba(99,102,241,0.05);}
+    .drop-zone.drag{border-color:var(--accent);background:rgba(30,144,255,0.05);}
     .drop-zone-icon{font-size:42px;margin-bottom:10px;}
     .drop-zone-txt{font-size:14px;color:var(--text2);}
     .drop-zone-sub{font-size:12px;color:var(--text3);margin-top:4px;}
@@ -455,7 +455,7 @@
       padding:20px 22px;transition:all 0.22s;position:relative;overflow:hidden;
     }
     .kpi-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);}
-    .kpi-card:hover{border-color:rgba(99,102,241,0.25);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+    .kpi-card:hover{border-color:rgba(30,144,255,0.25);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
     .kpi-card.accent::after{background:linear-gradient(90deg,var(--accent),var(--violet));}
     .kpi-card.warn::after{background:linear-gradient(90deg,var(--orange),#fbbf24);}
     .kpi-val{font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:6px;}
@@ -624,7 +624,7 @@
     .hp-hero{text-align:center;max-width:600px;}
     .hp-hero-badge{
       display:inline-flex;align-items:center;gap:8px;
-      background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.22);
+      background:rgba(30,144,255,0.1);border:1px solid rgba(30,144,255,0.22);
       border-radius:20px;padding:5px 14px;margin-bottom:22px;
       font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#a5b4fc;
     }
@@ -641,7 +641,7 @@
       padding:20px 22px;position:relative;overflow:hidden;transition:all 0.25s;
     }
     .hp-stat::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--violet));}
-    .hp-stat:hover{border-color:rgba(99,102,241,0.3);transform:translateY(-3px);box-shadow:0 10px 40px rgba(0,0,0,0.45);}
+    .hp-stat:hover{border-color:rgba(30,144,255,0.3);transform:translateY(-3px);box-shadow:0 10px 40px rgba(0,0,0,0.45);}
     .hp-stat-val{
       font-size:32px;font-weight:800;line-height:1.1;margin-bottom:5px;
       background:linear-gradient(135deg,var(--text),#a5b4fc);
@@ -657,20 +657,20 @@
     }
     .hp-card::before{
       content:'';position:absolute;inset:0;opacity:0;
-      background:radial-gradient(ellipse at top left,rgba(99,102,241,0.08),transparent 60%);
+      background:radial-gradient(ellipse at top left,rgba(30,144,255,0.08),transparent 60%);
       transition:opacity 0.25s;
     }
-    .hp-card:hover{border-color:rgba(99,102,241,0.35);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,0.45),0 0 0 1px rgba(99,102,241,0.08);}
+    .hp-card:hover{border-color:rgba(30,144,255,0.35);transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,0.45),0 0 0 1px rgba(30,144,255,0.08);}
     .hp-card:hover::before{opacity:1;}
     .hp-card-icon{
       width:44px;height:44px;border-radius:12px;
-      background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.18);
+      background:rgba(30,144,255,0.1);border:1px solid rgba(30,144,255,0.18);
       display:flex;align-items:center;justify-content:center;font-size:20px;transition:all 0.25s;
     }
-    .hp-card:hover .hp-card-icon{background:rgba(99,102,241,0.2);border-color:rgba(99,102,241,0.35);}
-    .hp-card.accent{border-color:rgba(99,102,241,0.22);background:linear-gradient(135deg,rgba(99,102,241,0.06),rgba(139,92,246,0.03));}
-    .hp-card.accent:hover{border-color:rgba(99,102,241,0.5);background:linear-gradient(135deg,rgba(99,102,241,0.12),rgba(139,92,246,0.07));}
-    .hp-card.accent .hp-card-icon{background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(139,92,246,0.15));border-color:rgba(99,102,241,0.35);}
+    .hp-card:hover .hp-card-icon{background:rgba(30,144,255,0.2);border-color:rgba(30,144,255,0.35);}
+    .hp-card.accent{border-color:rgba(30,144,255,0.22);background:linear-gradient(135deg,rgba(30,144,255,0.06),rgba(59,130,246,0.03));}
+    .hp-card.accent:hover{border-color:rgba(30,144,255,0.5);background:linear-gradient(135deg,rgba(30,144,255,0.12),rgba(59,130,246,0.07));}
+    .hp-card.accent .hp-card-icon{background:linear-gradient(135deg,rgba(30,144,255,0.25),rgba(59,130,246,0.15));border-color:rgba(30,144,255,0.35);}
     .hp-card-title{font-size:14px;font-weight:700;color:var(--text);}
     .hp-card-desc{font-size:12px;color:var(--text3);line-height:1.55;}
     @media(max-width:880px){.hp-stats,.hp-grid{max-width:100%;}}
@@ -800,14 +800,14 @@
           <input type="text" id="telaioSearchInput" placeholder="🔍  Filtra per numero telaio o cliente..."
             style="flex:1;padding:10px 14px;background:var(--surface);border:1px solid var(--border);
                    border-radius:10px;color:var(--text);font-size:14px;outline:none;font-family:inherit;"
-            oninput="filterTelaioList(this.value)">
-          <button onclick="loadTelaioPage()" style="padding:10px 16px;background:var(--surface);
+            oninput="searchTelaioOnDemand(this.value)">
+          <button onclick="searchTelaioOnDemand(document.getElementById('telaioSearchInput').value,true)" style="padding:10px 16px;background:var(--surface);
             border:1px solid var(--border);border-radius:10px;color:var(--text2);cursor:pointer;
             font-size:13px;font-family:inherit;white-space:nowrap;">↻ Aggiorna</button>
         </div>
 
         <div id="telaioList" style="display:flex;flex-direction:column;gap:10px;">
-          <p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">Caricamento...</p>
+          <p id="telaioPlaceholder" style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">🔍 Digita almeno 2 caratteri per cercare...</p>
         </div>
       </div>
     </div>
@@ -962,7 +962,7 @@
         <div class="gest-table-wrap">
           <table class="gest-table" id="gestVeicoliTable">
             <thead><tr>
-              <th>Targa</th><th>Stato</th><th>Piattaforma</th><th>Cliente</th><th>Canone €</th><th>GPS</th><th>Azioni</th>
+              <th>Targa</th><th>Telaio</th><th>Stato</th><th>Piattaforma</th><th>Cliente</th><th>Canone €</th><th>GPS</th><th>Azioni</th>
             </tr></thead>
             <tbody id="gestVeicoliBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
           </table>
@@ -1873,7 +1873,7 @@
       const hi   = idx >= 0
         ? name.slice(0, idx) + '<b>' + name.slice(idx, idx + q.length) + '</b>' + name.slice(idx + q.length)
         : name;
-      return `<div class="targa-ac-item" data-idx="${i}" onmousedown="selectClienteAC(${i})">${hi}</div>`;
+      return `<div class="targa-ac-item" data-idx="${i}" onmousedown="selectClienteAC(${i})"><span>${hi}</span></div>`;
     }).join('');
     const box = document.getElementById('clienteInput');
     if (box) {
@@ -1914,7 +1914,7 @@
   showPage = function(id) {
     _origShow(id);
     if (id === 'statistiche' && !statsLoaded) { statsLoaded = true; loadStats(); }
-    if (id === 'telaio') { loadTelaioPage(); }
+    if (id === 'telaio') { /* carica solo su digitazione */ }
     if (id === 'contratti') { showContrattiTab('scadenze'); }
     if (id === 'home') { loadHomeStats(); }
     if (id === 'cliente') { loadClientiIndex(); }
@@ -2390,8 +2390,8 @@
   let _pfActive = 'all';
   let _sfActive = 'all';
   async function loadVeicoliTable() {
-    document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id,periferica,uid_gps,phone_gps,gruppo1,gruppo2,gruppo3,gruppo4&order=targa.asc');
+    document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
+    _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,numero_telaio,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id,periferica,uid_gps,phone_gps,gruppo1,gruppo2,gruppo3,gruppo4&order=targa.asc');
     _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
   }
   function getPiattNum(p) {
@@ -2406,6 +2406,7 @@
     let list = _veicoli;
     if (q) list = list.filter(v =>
       (v.targa||'').toLowerCase().includes(q) ||
+      (v.numero_telaio||'').toLowerCase().includes(q) ||
       (v.ragione_sociale||'').toLowerCase().includes(q) ||
       (v.marca||'').toLowerCase().includes(q)
     );
@@ -2462,6 +2463,7 @@
       return `
       <tr onclick="openVeicoloModal(${v.id})" style="cursor:pointer">
         <td><b style="font-family:'Courier New';letter-spacing:1px">${v.targa||'—'}</b></td>
+        <td style="font-family:'Courier New';font-size:12px;color:var(--text2)">${v.numero_telaio||'—'}</td>
         <td>${sChip}</td>
         <td>${pChip}</td>
         <td>${v.ragione_sociale||'—'}</td>
@@ -2479,7 +2481,7 @@
   // ── CLIENTI TABLE ─────────────────────────────────
   let _clienti=[], _clienti_filtered=[], _cPage=0, _clientiCache={}; const C_PER_PAGE=50;
   async function loadClientiTable() {
-    document.getElementById('gestClientiBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
+    document.getElementById('gestClientiBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
     _clienti = await sbGet('/rest/v1/clienti?select=id,ragione_sociale,indirizzo,cap,citta,provincia,partita_iva,telefono,fax,email,descriz_pagamento&order=ragione_sociale.asc&limit=5000');
     _clienti_filtered = [..._clienti]; _cPage=0; renderClientiTable();
   }
@@ -3333,31 +3335,30 @@
   // ── CERCA PER NUMERO DI TELAIO ────────────────────────
   let _telaioRows = [];
 
-  async function loadTelaioPage() {
+  async function searchTelaioOnDemand(val, force) {
     const container = document.getElementById('telaioList');
     if (!container) return;
-    container.innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">⏳ Caricamento...</p>';
+    const q = (val || '').trim().toUpperCase();
+    if (!force && q.length < 2) {
+      container.innerHTML = '<p id="telaioPlaceholder" style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">🔍 Digita almeno 2 caratteri per cercare...</p>';
+      return;
+    }
+    container.innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:40px 0;">⏳ Ricerca in corso...</p>';
     try {
-      const rows = await sbGet('/rest/v1/veicoli?immatricolata=eq.NO&select=id,numero_telaio,ragione_sociale,data_inserimento_telaio,piattaforma,seriale_periferica,installatore&order=data_inserimento_telaio.desc&limit=1000');
+      const filter = q
+        ? `/rest/v1/veicoli?immatricolata=eq.NO&or=(numero_telaio.ilike.*${q}*,ragione_sociale.ilike.*${q}*)&select=id,numero_telaio,ragione_sociale,data_inserimento_telaio,piattaforma,seriale_periferica,installatore&order=data_inserimento_telaio.desc&limit=200`
+        : '/rest/v1/veicoli?immatricolata=eq.NO&select=id,numero_telaio,ragione_sociale,data_inserimento_telaio,piattaforma,seriale_periferica,installatore&order=data_inserimento_telaio.desc&limit=200';
+      const rows = await sbGet(filter);
       _telaioRows = rows || [];
-      const q = (document.getElementById('telaioSearchInput')?.value || '').trim().toUpperCase();
-      renderTelaioList(q ? _telaioRows.filter(r =>
-        (r.numero_telaio||'').toUpperCase().includes(q) ||
-        (r.ragione_sociale||'').toUpperCase().includes(q)
-      ) : _telaioRows);
+      renderTelaioList(_telaioRows);
     } catch(e) {
       container.innerHTML = `<p style="color:var(--red);font-size:13px;text-align:center;padding:40px 0;">Errore: ${e.message}</p>`;
     }
   }
 
-  function filterTelaioList(val) {
-    if (!_telaioRows.length) return;
-    const q = val.trim().toUpperCase();
-    renderTelaioList(q ? _telaioRows.filter(r =>
-      (r.numero_telaio||'').toUpperCase().includes(q) ||
-      (r.ragione_sociale||'').toUpperCase().includes(q)
-    ) : _telaioRows);
-  }
+  async function loadTelaioPage() { searchTelaioOnDemand(document.getElementById('telaioSearchInput')?.value || ''); }
+
+  function filterTelaioList(val) { searchTelaioOnDemand(val); }
 
   function renderTelaioList(rows) {
     const container = document.getElementById('telaioList');
@@ -3524,7 +3525,7 @@
       const name = r.ragione_sociale||'';
       const idx = name.toLowerCase().indexOf(ql);
       const hi = idx>=0 ? name.slice(0,idx)+'<b>'+name.slice(idx,idx+q.length)+'</b>'+name.slice(idx+q.length) : name;
-      return `<div class="targa-ac-item" onmousedown="selectModalCliente(${i})">${hi}</div>`;
+      return `<div class="targa-ac-item" onmousedown="selectModalCliente(${i})"><span>${hi}</span></div>`;
     }).join('');
     dd.style.display = 'block';
   }
