@@ -1251,6 +1251,21 @@
         <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="mc_email" placeholder="info@azienda.it"></div>
         <div class="form-field"><label class="form-label">Pagamento</label><input class="form-input" id="mc_pagamento" placeholder="RIBA 30 GGFM"></div>
       </div>
+      <!-- Targhe Associate -->
+      <div id="mcTargheSection" style="margin-top:16px;display:none">
+        <div style="border-top:1px solid var(--border);padding-top:14px">
+          <button type="button" onclick="toggleTargheAssociate()" id="mcTargheToggleBtn" style="
+            display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--border);
+            border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;color:var(--text);
+            font-weight:600;width:100%;text-align:left;transition:background .15s;
+          " onmouseenter="this.style.background='var(--hover)'" onmouseleave="this.style.background='none'">
+            <span>🚗 Targhe Associate</span>
+            <span id="mcTargheCount" style="background:var(--accent);color:#fff;border-radius:12px;padding:1px 8px;font-size:11px;min-width:20px;text-align:center"></span>
+            <span style="margin-left:auto;transition:transform .2s" id="mcTargheChevron">▼</span>
+          </button>
+          <div id="mcTargheList" style="display:none;margin-top:10px"></div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modalCliente')">Annulla</button>
@@ -2848,11 +2863,22 @@
   function openClienteModal(id=null) {
     const c = id ? (_clientiCache[id] || null) : null;
     document.getElementById('modalClienteTitle').textContent = c ? '✏️ Modifica Cliente — '+c.ragione_sociale : '＋ Aggiungi Cliente';
-    const f = (id, val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+    const f = (fid, val) => { const el=document.getElementById(fid); if(el) el.value=val||''; };
     f('mc_id',c?.id||''); f('mc_ragione',c?.ragione_sociale); f('mc_indirizzo',c?.indirizzo);
     f('mc_cap',c?.cap); f('mc_citta',c?.citta); f('mc_provincia',c?.provincia);
     f('mc_piva',c?.partita_iva); f('mc_tel',c?.telefono); f('mc_fax',c?.fax);
     f('mc_email',c?.email); f('mc_pagamento',c?.descriz_pagamento);
+    // Reset targhe section
+    const sec = document.getElementById('mcTargheSection');
+    const list = document.getElementById('mcTargheList');
+    const cnt = document.getElementById('mcTargheCount');
+    const chev = document.getElementById('mcTargheChevron');
+    if (sec) sec.style.display = c ? 'block' : 'none';
+    if (list) { list.style.display='none'; list.innerHTML=''; }
+    if (cnt) cnt.textContent = '';
+    if (chev) { chev.textContent='▼'; chev.style.transform=''; }
+    // Load targhe in background if editing
+    if (c) loadTargheAssociate(c.id, c.ragione_sociale);
     openModal('modalCliente');
   }
   async function saveCliente() {
@@ -2873,6 +2899,81 @@
       else     { await sbPost('/rest/v1/clienti', data); }
       closeModal('modalCliente'); gestTabLoaded.clienti=false; loadClientiTable();
     } catch(e) { alert('Errore: ' + e.message); }
+  }
+
+  // ── TARGHE ASSOCIATE ─────────────────────────────
+  let _mcTargheOpen = false;
+  let _mcTargheLoaded = false;
+  let _mcTargheData = [];
+
+  function toggleTargheAssociate() {
+    const list = document.getElementById('mcTargheList');
+    const chev = document.getElementById('mcTargheChevron');
+    _mcTargheOpen = !_mcTargheOpen;
+    if (list) list.style.display = _mcTargheOpen ? 'block' : 'none';
+    if (chev) { chev.textContent = _mcTargheOpen ? '▲' : '▼'; chev.style.transform = _mcTargheOpen ? 'rotate(0)' : ''; }
+    if (_mcTargheOpen && !_mcTargheLoaded) {
+      const clienteId = document.getElementById('mc_id').value;
+      const ragione = document.getElementById('mc_ragione').value;
+      loadTargheAssociate(clienteId, ragione, true);
+    }
+  }
+
+  async function loadTargheAssociate(clienteId, ragione, showList=false) {
+    _mcTargheLoaded = false;
+    _mcTargheData = [];
+    const cnt = document.getElementById('mcTargheCount');
+    const list = document.getElementById('mcTargheList');
+    if (cnt) cnt.textContent = '…';
+    if (showList && list) list.innerHTML = '<p style="color:var(--text2);font-size:13px;padding:8px 0">⏳ Caricamento targhe...</p>';
+    try {
+      let rows = [];
+      // Try by cliente_id first, then by ragione_sociale
+      if (clienteId) {
+        rows = await sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=id,targa,stato,piattaforma,canone&order=targa.asc`);
+      }
+      if ((!rows || rows.length === 0) && ragione) {
+        const enc = encodeURIComponent(ragione);
+        rows = await sbGet(`/rest/v1/veicoli?ragione_sociale=eq.${enc}&select=id,targa,stato,piattaforma,canone&order=targa.asc`);
+      }
+      _mcTargheData = rows || [];
+      _mcTargheLoaded = true;
+      if (cnt) cnt.textContent = _mcTargheData.length;
+      if (list && (showList || list.style.display !== 'none')) renderTargheAssociate(list);
+    } catch(e) {
+      _mcTargheLoaded = true;
+      if (cnt) cnt.textContent = '!';
+      if (list && (showList || list.style.display !== 'none')) {
+        list.innerHTML = `<p style="color:#f87171;font-size:13px;padding:8px 0">❌ Errore: ${e.message}</p>`;
+      }
+    }
+  }
+
+  function renderTargheAssociate(container) {
+    if (!container) return;
+    if (_mcTargheData.length === 0) {
+      container.innerHTML = '<p style="color:var(--text2);font-size:13px;padding:8px 0;text-align:center">Nessuna targa associata a questo cliente.</p>';
+      return;
+    }
+    const statoColor = s => s==='ATTIVO'?'#22c55e':s==='SOSPESO'?'#f59e0b':s==='DISDETTO'?'#f87171':'#94a3b8';
+    const cards = _mcTargheData.map(v => `
+      <div onclick="openVeicoloFromCliente(${v.id})" style="
+        display:flex;align-items:center;gap:10px;padding:9px 12px;
+        border:1px solid var(--border);border-radius:8px;margin-bottom:7px;
+        cursor:pointer;transition:background .15s;background:var(--card);
+      " onmouseenter="this.style.background='var(--hover)'" onmouseleave="this.style.background='var(--card)'">
+        <span style="font-family:'Courier New';font-weight:700;font-size:14px;letter-spacing:1px;min-width:90px;color:var(--text)">${v.targa||'—'}</span>
+        <span style="font-size:11px;font-weight:700;color:#fff;background:${statoColor(v.stato)};padding:2px 8px;border-radius:10px">${v.stato||'—'}</span>
+        <span style="font-size:12px;color:var(--text2);flex:1">${v.piattaforma||''}</span>
+        ${v.canone?`<span style="font-size:12px;color:var(--text2)">€ ${v.canone}</span>`:''}
+        <span style="color:var(--accent);font-size:14px">›</span>
+      </div>`).join('');
+    container.innerHTML = cards;
+  }
+
+  function openVeicoloFromCliente(veicoloId) {
+    closeModal('modalCliente');
+    setTimeout(() => openVeicoloModal(veicoloId), 150);
   }
 
   // ── ELIMINA ───────────────────────────────────────
