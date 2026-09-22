@@ -983,9 +983,9 @@
         <div class="gest-table-wrap">
           <table class="gest-table" id="gestClientiTable">
             <thead><tr>
-              <th>Ragione Sociale</th><th>Città</th><th>Provincia</th><th>Partita IVA</th><th>Telefono</th><th>Azioni</th>
+              <th>Ragione Sociale</th><th>Città</th><th>Provincia</th><th>Partita IVA</th><th>Telefono</th><th>Email</th><th>Azioni</th>
             </tr></thead>
-            <tbody id="gestClientiBody"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
+            <tbody id="gestClientiBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text2)">Caricamento...</td></tr></tbody>
           </table>
         </div>
         <div class="gest-pager">
@@ -2503,7 +2503,7 @@
   let _clienti=[], _clienti_filtered=[], _cPage=0, _clientiCache={}; const C_PER_PAGE=50;
   async function loadClientiTable() {
     const tbody = document.getElementById('gestClientiBody');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">⏳ Caricamento...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">⏳ Caricamento...</td></tr>';
     try {
       // Prova prima con email, poi fallback senza
       let rows;
@@ -2537,19 +2537,21 @@
     _clientiCache = {};
     document.getElementById('gestClientiBody').innerHTML = slice.length ? slice.map(c => {
       _clientiCache[c.id] = c;
+      const safeRag = (c.ragione_sociale||'').replace(/'/g,"\\'");
       return `
-      <tr>
+      <tr style="cursor:pointer" onclick="openClienteModal(${c.id})">
         <td><b>${c.ragione_sociale||'—'}</b></td>
         <td>${c.citta||'—'}</td>
         <td>${c.provincia||'—'}</td>
         <td>${c.partita_iva||'—'}</td>
         <td>${c.telefono||'—'}</td>
-        <td><div class="actions">
+        <td style="color:var(--text2);font-size:13px">${c.email||'—'}</td>
+        <td><div class="actions" onclick="event.stopPropagation()">
           <button class="btn-edit" onclick="openClienteModal(${c.id})">✏️ Modifica</button>
-          <button class="btn-danger" onclick="confirmDelete('cliente',${c.id},'${(c.ragione_sociale||'').replace(/'/g,"\\'")}')">🗑️</button>
+          <button class="btn-danger" onclick="confirmDelete('cliente',${c.id},'${safeRag}')">🗑️</button>
         </div></td>
       </tr>`;
-    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
+    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">Nessun risultato.</td></tr>';
   }
   function clientiPage(dir) { _cPage+=dir; renderClientiTable(); }
 
@@ -2972,7 +2974,6 @@
         <span style="font-family:'Courier New';font-weight:700;font-size:14px;letter-spacing:1px;min-width:90px;color:var(--text)">${v.targa||'—'}</span>
         <span style="font-size:11px;font-weight:700;color:#fff;background:${statoColor(v.stato)};padding:2px 8px;border-radius:10px">${v.stato||'—'}</span>
         <span style="font-size:12px;color:var(--text2);flex:1">${v.piattaforma||''}</span>
-        ${v.canone?`<span style="font-size:12px;color:var(--text2)">€ ${v.canone}</span>`:''}
         <span style="color:var(--accent);font-size:14px">›</span>
       </div>`).join('');
     container.innerHTML = cards;
