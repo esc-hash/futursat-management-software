@@ -2226,7 +2226,7 @@
       document.getElementById('gtab-content-'+t).style.display = t===tab?'block':'none';
     });
     if (tab==='veicoli' && !gestTabLoaded.veicoli) { gestTabLoaded.veicoli=true; loadVeicoliTable(); }
-    if (tab==='clienti' && !gestTabLoaded.clienti) { gestTabLoaded.clienti=true; loadClientiTable(); }
+    if (tab==='clienti' && !gestTabLoaded.clienti) { gestTabLoaded.clienti=true; loadClientiTable().catch(()=>{ gestTabLoaded.clienti=false; }); }
     if (tab==='esporta') { loadEsportaCounts(); }
     if (tab==='telaio') loadTelaioGest();
   }
@@ -2390,9 +2390,15 @@
   let _pfActive = 'all';
   let _sfActive = 'all';
   async function loadVeicoliTable() {
-    document.getElementById('gestVeicoliBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,numero_telaio,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id,periferica,uid_gps,phone_gps,gruppo1,gruppo2,gruppo3,gruppo4&order=targa.asc');
-    _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
+    const tbody = document.getElementById('gestVeicoliBody');
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">⏳ Caricamento...</td></tr>';
+    try {
+      _veicoli = await sbGetAll('/rest/v1/veicoli?select=id,targa,numero_telaio,marca,modello,ragione_sociale,colore,tipo_mezzo,canone,canone_mensile,prezzo_riservato,prezzo_a_noi,servizio,tipo_servizio,data_attivazione,data_termine,installatore,seriale_periferica,sim_voce,sim_dati,email,cellulare,telefono_ufficio,attivo_gps,piattaforma,stato,cliente_id,periferica,uid_gps,phone_gps,gruppo1,gruppo2,gruppo3,gruppo4&order=targa.asc');
+      _veicoli_filtered = [..._veicoli]; _vPage=0; renderVeicoliTable();
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:24px;color:#f87171;">❌ Errore caricamento veicoli: ${e.message}</td></tr>`;
+      gestTabLoaded.veicoli = false; // permetti retry
+    }
   }
   function getPiattNum(p) {
     const s = (p||'').toLowerCase().trim();
@@ -2481,9 +2487,23 @@
   // ── CLIENTI TABLE ─────────────────────────────────
   let _clienti=[], _clienti_filtered=[], _cPage=0, _clientiCache={}; const C_PER_PAGE=50;
   async function loadClientiTable() {
-    document.getElementById('gestClientiBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">Caricamento...</td></tr>';
-    _clienti = await sbGet('/rest/v1/clienti?select=id,ragione_sociale,indirizzo,cap,citta,provincia,partita_iva,telefono,fax,email,descriz_pagamento&order=ragione_sociale.asc&limit=5000');
-    _clienti_filtered = [..._clienti]; _cPage=0; renderClientiTable();
+    const tbody = document.getElementById('gestClientiBody');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">⏳ Caricamento...</td></tr>';
+    try {
+      // Prova prima con email, poi fallback senza
+      let rows;
+      try {
+        rows = await sbGet('/rest/v1/clienti?select=id,ragione_sociale,indirizzo,cap,citta,provincia,partita_iva,telefono,fax,email,descriz_pagamento&order=ragione_sociale.asc&limit=5000');
+      } catch(e1) {
+        // email probabilmente non esiste — riprova senza
+        rows = await sbGet('/rest/v1/clienti?select=id,ragione_sociale,indirizzo,cap,citta,provincia,partita_iva,telefono,fax,descriz_pagamento&order=ragione_sociale.asc&limit=5000');
+      }
+      _clienti = rows || [];
+      _clienti_filtered = [..._clienti]; _cPage=0; renderClientiTable();
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:24px;color:#f87171;">❌ Errore caricamento clienti: ${e.message}</td></tr>`;
+      gestTabLoaded.clienti = false; // permetti retry
+    }
   }
   function filterClientiTable() {
     const q = document.getElementById('gestClientiSearch').value.toLowerCase();
