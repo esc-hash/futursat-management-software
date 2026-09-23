@@ -797,6 +797,88 @@
       </div>
     </div>
 
+    <!-- ═══ PAGINA: DETTAGLIO CLIENTE ═══ -->
+    <div id="page-cliente-detail" style="display:none;min-height:100vh;">
+    <style>
+      .cd-back-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;flex-shrink:0;}
+      .cd-back-btn:hover{border-color:var(--accent);color:var(--accent);}
+      .cd-client-name{font-size:24px;font-weight:800;background:linear-gradient(135deg,#e8edf8 30%,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .cd-section-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px 52px;display:flex;flex-direction:column;align-items:center;gap:14px;cursor:pointer;transition:all .2s;min-width:180px;position:relative;overflow:hidden;}
+      .cd-section-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--violet));transform:scaleX(0);transition:transform .2s;}
+      .cd-section-card:hover::after{transform:scaleX(1);}
+      .cd-section-card:hover{border-color:rgba(30,144,255,0.4);transform:translateY(-5px);box-shadow:0 18px 48px rgba(0,0,0,0.45);}
+      .cd-card-icon{font-size:42px;}
+      .cd-card-label{font-size:15px;font-weight:800;letter-spacing:2.5px;color:var(--text);text-transform:uppercase;}
+      .cd-section-tag{background:rgba(30,144,255,0.12);border:1px solid rgba(30,144,255,0.3);color:#a5b4fc;padding:4px 13px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+      .cd-count-num{display:block;font-size:38px;font-weight:900;color:var(--accent);line-height:1;}
+      .cd-count-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:4px;display:block;}
+      .cd-plate-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));margin-top:28px;}
+      .cd-plate-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 16px;cursor:pointer;transition:all .2s;text-align:center;}
+      .cd-plate-card:hover{border-color:rgba(30,144,255,0.45);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.35);}
+      .cd-plate-num{font-family:'Courier New';font-size:19px;font-weight:700;letter-spacing:2px;color:var(--text);}
+    </style>
+
+      <!-- ── OVERVIEW ── -->
+      <div id="cd-overview" style="padding:40px;min-height:100vh;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:18px;margin-bottom:56px;">
+          <button class="cd-back-btn" onclick="showPage('cliente')">← Clienti</button>
+          <h1 class="cd-client-name" id="cd-nome"></h1>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+          <div style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center;align-items:stretch;">
+            <div class="cd-section-card" onclick="showCdSection('mezzi')">
+              <span class="cd-card-icon">🚗</span>
+              <span class="cd-card-label">MEZZI</span>
+            </div>
+            <div class="cd-section-card" onclick="showCdSection('piattaforme')">
+              <span class="cd-card-icon">📡</span>
+              <span class="cd-card-label">PIATTAFORME</span>
+            </div>
+            <div class="cd-section-card" onclick="showCdSection('fatturato')">
+              <span class="cd-card-icon">💰</span>
+              <span class="cd-card-label">FATTURATO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MEZZI ── -->
+      <div id="cd-mezzi" style="display:none;padding:40px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;">
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <button class="cd-back-btn" onclick="showCdSection('overview')">← Indietro</button>
+            <span class="cd-client-name" id="cd-mezzi-nome"></span>
+            <span class="cd-section-tag">MEZZI</span>
+          </div>
+          <div style="text-align:right;">
+            <span class="cd-count-num" id="cd-mezzi-count">0</span>
+            <span class="cd-count-lbl">NUMERO DI MEZZI</span>
+          </div>
+        </div>
+        <div class="cd-plate-grid" id="cd-mezzi-list"></div>
+      </div>
+
+      <!-- ── PIATTAFORME ── -->
+      <div id="cd-piattaforme" style="display:none;padding:40px;">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:36px;">
+          <button class="cd-back-btn" onclick="showCdSection('overview')">← Indietro</button>
+          <span class="cd-client-name" id="cd-piatt-nome"></span>
+          <span class="cd-section-tag">PIATTAFORME</span>
+        </div>
+        <div id="cd-piatt-content"></div>
+      </div>
+
+      <!-- ── FATTURATO ── -->
+      <div id="cd-fatturato" style="display:none;padding:40px;">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:36px;">
+          <button class="cd-back-btn" onclick="showCdSection('overview')">← Indietro</button>
+          <span class="cd-client-name" id="cd-fatt-nome"></span>
+          <span class="cd-section-tag">FATTURATO</span>
+        </div>
+        <div id="cd-fatt-content"></div>
+      </div>
+    </div>
+
     <!-- ═══ PAGINA: CERCA PER TELAIO ═══ -->
     <div id="page-telaio" style="display:none">
       <div style="max-width:900px;margin:0 auto;">
@@ -1403,6 +1485,8 @@
 
   function showPage(id) {
     closeAllModals();
+    const cdp = document.getElementById('page-cliente-detail');
+    if (cdp) cdp.style.display = 'none';
     PAGES.forEach(p => {
       const pg = document.getElementById('page-'+p);
       if(pg) pg.style.display = p===id?'block':'none';
@@ -1512,26 +1596,134 @@
   }
 
   async function loadClienteVehicles(clienteId, nome) {
+    await showClienteDetail(clienteId, nome);
+  }
+
+  // ── CLIENTE DETAIL PAGE ───────────────────────────────
+  let _cdClienteId = null;
+  let _cdClienteNome = '';
+  let _cdVeicoli = [];
+
+  async function showClienteDetail(clienteId, nome) {
+    _cdClienteId = clienteId;
+    _cdClienteNome = nome;
     try {
-      const [veicoli, cl] = await Promise.all([
-        sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=*`),
-        sbGet(`/rest/v1/clienti?id=eq.${clienteId}&select=*`)
-      ]);
-      if (!veicoli.length) {
-        // Cliente senza veicoli — offri di aggiungere la prima targa
-        if (confirm(`Il cliente "${nome}" non ha ancora veicoli registrati.\nVuoi aggiungere la prima targa?`)) {
-          openNuovaTargaPerCliente(clienteId, nome);
-        }
-        return;
-      }
-      // Switch to targa page and show result
-      showPage('home');
-      document.getElementById('targaInput').value = veicoli[0].targa || (veicoli[0].numero_telaio ? 'TELAIO: '+veicoli[0].numero_telaio : '');
-      const servizi = veicoli[0].targa
-        ? await sbGet(`/rest/v1/veicoli_servizi?targa=ilike.${veicoli[0].targa}&select=*&order=numero_servizio.asc`)
-        : [];
-      renderResult(veicoli[0], cl[0]||null, veicoli.map(v=>({id:v.id, targa:v.targa||v.numero_telaio})), servizi);
-    } catch(e) { console.error(e); }
+      _cdVeicoli = await sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=id,targa,numero_telaio,marca,modello,stato,piattaforma,canone&order=targa.asc`);
+    } catch(e) { _cdVeicoli = []; }
+
+    // Hide all standard pages, hide cliente-detail to reset
+    PAGES.forEach(p => {
+      const pg = document.getElementById('page-'+p);
+      if (pg) pg.style.display = 'none';
+      const nl = document.getElementById('nav-'+p);
+      if (nl) nl.classList.remove('active');
+    });
+    // Keep 'cliente' nav highlighted
+    const navC = document.getElementById('nav-cliente');
+    if (navC) navC.classList.add('active');
+
+    document.getElementById('cd-nome').textContent = nome;
+    showCdSection('overview');
+    document.getElementById('page-cliente-detail').style.display = 'block';
+  }
+
+  function showCdSection(section) {
+    ['overview','mezzi','piattaforme','fatturato'].forEach(s => {
+      const el = document.getElementById('cd-' + s);
+      if (el) el.style.display = 'none';
+    });
+    const el = document.getElementById('cd-' + section);
+    if (!el) return;
+    el.style.display = 'block';
+
+    if (section === 'mezzi') {
+      document.getElementById('cd-mezzi-nome').textContent = _cdClienteNome;
+      document.getElementById('cd-mezzi-count').textContent = _cdVeicoli.length;
+      renderCdMezzi();
+    } else if (section === 'piattaforme') {
+      document.getElementById('cd-piatt-nome').textContent = _cdClienteNome;
+      renderCdPiattaforme();
+    } else if (section === 'fatturato') {
+      document.getElementById('cd-fatt-nome').textContent = _cdClienteNome;
+      renderCdFatturato();
+    }
+  }
+
+  function renderCdMezzi() {
+    const grid = document.getElementById('cd-mezzi-list');
+    if (!_cdVeicoli.length) {
+      grid.innerHTML = '<p style="color:var(--text2);text-align:center;padding:60px 0;grid-column:1/-1;">Nessun veicolo registrato per questo cliente.</p>';
+      return;
+    }
+    const icons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣','in attesa di attivazione':'🟡'};
+    grid.innerHTML = _cdVeicoli.map(v => {
+      const label = v.targa || v.numero_telaio || '—';
+      const sRaw = (v.stato||'').trim().toLowerCase();
+      const sCls = sRaw ? 's-'+sRaw.replace(/ /g,'') : '';
+      const sIcon = icons[sRaw] || '';
+      const sub = [v.marca, v.modello].filter(Boolean).join(' ');
+      return `<div class="cd-plate-card" onclick="openPlateFromCliente('${label.replace(/'/g,"\\'")}')">
+        <div class="cd-plate-num">${label}</div>
+        ${sub ? `<div style="margin-top:6px;font-size:12px;color:var(--text2);">${sub}</div>` : ''}
+        ${sCls ? `<span class="stato-chip ${sCls}" style="margin-top:10px;display:inline-block;">${sIcon} ${v.stato}</span>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  function renderCdPiattaforme() {
+    const el = document.getElementById('cd-piatt-content');
+    if (!_cdVeicoli.length) { el.innerHTML = '<p style="color:var(--text2);text-align:center;padding:40px 0;">Nessun dato disponibile.</p>'; return; }
+    const map = {};
+    _cdVeicoli.forEach(v => { const p = v.piattaforma || '—'; map[p] = (map[p]||[]).concat(v); });
+    el.innerHTML = Object.entries(map).map(([p, vv]) => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📡 ${p} <span style="color:var(--text3);font-weight:500;font-size:12px;">(${vv.length} mezz${vv.length===1?'o':'i'})</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">${vv.map(v=>`<span style="font-family:'Courier New';font-size:12px;font-weight:600;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px 10px;">${v.targa||v.numero_telaio||'—'}</span>`).join('')}</div>
+      </div>`).join('');
+  }
+
+  function renderCdFatturato() {
+    const el = document.getElementById('cd-fatt-content');
+    if (!_cdVeicoli.length) { el.innerHTML = '<p style="color:var(--text2);text-align:center;padding:40px 0;">Nessun dato disponibile.</p>'; return; }
+    const canoni = _cdVeicoli.filter(v => v.canone != null).map(v => Number(v.canone));
+    const totMensile = canoni.reduce((a,b)=>a+b, 0);
+    el.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;">
+          <div style="font-size:28px;font-weight:900;color:var(--accent);">€ ${totMensile.toFixed(2)}</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:6px;">Canone mensile totale</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;">
+          <div style="font-size:28px;font-weight:900;color:var(--accent);">€ ${(totMensile*12).toFixed(2)}</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:6px;">Fatturato annuale stimato</div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;">
+          <div style="font-size:28px;font-weight:900;color:var(--text);">${canoni.length}</div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:6px;">Mezzi con canone attivo</div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="border-bottom:1px solid var(--border);">
+            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--text3);text-transform:uppercase;">Targa</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--text3);text-transform:uppercase;">Piattaforma</th>
+            <th style="padding:10px 16px;text-align:right;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--text3);text-transform:uppercase;">Canone/mese</th>
+          </tr></thead>
+          <tbody>${_cdVeicoli.map(v=>`<tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:10px 16px;font-family:'Courier New';font-weight:600;font-size:13px;">${v.targa||v.numero_telaio||'—'}</td>
+            <td style="padding:10px 16px;font-size:13px;color:var(--text2);">${v.piattaforma||'—'}</td>
+            <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;">${v.canone!=null?'€ '+Number(v.canone).toFixed(2):'—'}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+  }
+
+  async function openPlateFromCliente(targa) {
+    if (!targa || targa === '—') return;
+    const inp = document.getElementById('targaInput');
+    if (inp) inp.value = targa;
+    showPage('targa');
+    await searchTarga();
   }
 
   // ── RENDER RESULT ─────────────────────────────────────
