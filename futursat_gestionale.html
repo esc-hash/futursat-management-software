@@ -223,6 +223,7 @@
     .stato-badge.s-disattivato{background:rgba(75,85,99,0.1);border:1px solid rgba(75,85,99,0.3);color:#6b7280;}
     .stato-badge.s-furto{background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.6);color:#ef4444;}
     .stato-badge.s-revocato{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.35);color:#c4b5fd;}
+    .stato-badge.s-inattesadiattivazione{background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.35);color:#fde047;}
     .stato-chip{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;}
     .stato-chip.s-incorso{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.28);}
     .stato-chip.s-sospeso{background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.28);}
@@ -231,6 +232,7 @@
     .stato-chip.s-disattivato{background:rgba(75,85,99,0.1);color:#6b7280;border:1px solid rgba(75,85,99,0.22);}
     .stato-chip.s-furto{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4);}
     .stato-chip.s-revocato{background:rgba(59,130,246,0.1);color:#c4b5fd;border:1px solid rgba(59,130,246,0.28);}
+    .stato-chip.s-inattesadiattivazione{background:rgba(234,179,8,0.1);color:#fde047;border:1px solid rgba(234,179,8,0.28);}
 
     /* AUTOCOMPLETE */
     .targa-ac-wrap{position:relative;width:100%;}
@@ -262,6 +264,7 @@
     .s-filter-btn.s-disattivato.active{background:rgba(75,85,99,0.5);border-color:#4b5563;color:#fff;}
     .s-filter-btn.s-furto.active{background:rgba(239,68,68,0.8);border-color:#ef4444;color:#fff;}
     .s-filter-btn.s-revocato.active{background:rgba(59,130,246,0.65);border-color:#3b82f6;color:#fff;}
+    .s-filter-btn.s-inattesadiattivazione.active{background:rgba(234,179,8,0.65);border-color:#eab308;color:#fff;}
 
     .result-title{font-size:22px;font-weight:700;}
     .result-subtitle{font-size:13px;color:var(--text2);margin-top:4px;}
@@ -369,10 +372,14 @@
     .p-filter-btn.p3.active{background:rgba(16,185,129,0.8);border-color:#10b981;}
     .p-filter-btn.p1.active{background:rgba(148,163,184,0.5);border-color:#94a3b8;color:var(--text);}
     .p-filter-btn.pnone.active{background:var(--surface2);border-color:var(--text3);color:var(--text3);}
+    .p-filter-btn.posizio.active{background:rgba(251,146,60,0.65);border-color:#f97316;color:#fff;}
+    .p-filter-btn.snaproute.active{background:rgba(167,139,250,0.65);border-color:#8b5cf6;color:#fff;}
     .piatt-chip{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.5px;}
     .piatt-chip.p1{background:rgba(148,163,184,0.1);color:#94a3b8;border:1px solid rgba(148,163,184,0.28);}
     .piatt-chip.p2{background:rgba(30,144,255,0.1);color:#a5b4fc;border:1px solid rgba(30,144,255,0.28);}
     .piatt-chip.p3{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.28);}
+    .piatt-chip.p4{background:rgba(251,146,60,0.1);color:#fdba74;border:1px solid rgba(251,146,60,0.28);}
+    .piatt-chip.p5{background:rgba(167,139,250,0.1);color:#c4b5fd;border:1px solid rgba(167,139,250,0.28);}
     .piatt-chip.pnone{color:var(--text3);font-style:italic;}
     .gest-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
     .gest-search{flex:1;min-width:180px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 16px;color:var(--text);font-size:13px;font-family:inherit;transition:all 0.2s;}
@@ -945,6 +952,8 @@
           <button class="p-filter-btn p3" id="pfBtn-p3" onclick="filterByPiattaforma('p3')">🟢 Piattaforma 3</button>
           <button class="p-filter-btn p1" id="pfBtn-p1" onclick="filterByPiattaforma('p1')">⚪ Piattaforma 1</button>
           <button class="p-filter-btn pnone" id="pfBtn-pnone" onclick="filterByPiattaforma('none')">— Nessuna</button>
+          <button class="p-filter-btn posizio" id="pfBtn-posizio" onclick="filterByPiattaforma('posizio')">📍 Posizio</button>
+          <button class="p-filter-btn snaproute" id="pfBtn-snaproute" onclick="filterByPiattaforma('snaproute')">🗺️ Snaproute</button>
           <span id="pfCount" style="margin-left:auto;font-size:12px;color:var(--text3)"></span>
         </div>
         <div class="stato-filter-bar">
@@ -957,6 +966,7 @@
           <button class="s-filter-btn s-disattivato" id="sfBtn-disattivato" onclick="filterByStato('disattivato')">⚫ Disattivato</button>
           <button class="s-filter-btn s-furto" id="sfBtn-furto" onclick="filterByStato('furto')">🚨 Furto</button>
           <button class="s-filter-btn s-revocato" id="sfBtn-revocato" onclick="filterByStato('revocato')">🟣 Revocato</button>
+          <button class="s-filter-btn s-inattesadiattivazione" id="sfBtn-inattesadiattivazione" onclick="filterByStato('in attesa di attivazione')">🟡 In attesa di attivazione</button>
           <button class="s-filter-btn" id="sfBtn-none" onclick="filterByStato('none')">— Nessuno</button>
         </div>
         <div class="gest-table-wrap">
@@ -1156,7 +1166,7 @@
           <select class="form-select" id="mv_piattaforma"><option value="">— Seleziona —</option><option value="Piattaforma 1">Piattaforma 1</option><option value="Piattaforma 2">Piattaforma 2</option><option value="Piattaforma 3">Piattaforma 3</option><option value="POSIZIO">POSIZIO</option><option value="SNAPROUTE">SNAPROUTE</option></select>
         </div>
         <div class="form-field"><label class="form-label">Stato</label>
-          <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option></select>
+          <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option><option value="In attesa di attivazione">🟡 In attesa di attivazione</option></select>
         </div>
         <!-- ── MULTI SERVIZI ── -->
         <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
@@ -1518,7 +1528,7 @@
     // Badge stato
     const sBadge = document.getElementById('statoBadge');
     const sRaw = (veicolo.stato||'').trim().toLowerCase();
-    const statoIcons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣'};
+    const statoIcons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣','in attesa di attivazione':'🟡'};
     if (sRaw) {
       const sCls = 's-'+sRaw.replace(/ /g,'');
       sBadge.className = 'stato-badge show ' + sCls;
@@ -2285,7 +2295,7 @@
       return `<tr style="cursor:pointer" onclick="openTelaioEdit('${r.id}')" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
         <td style="font-family:'Courier New';font-weight:700">${r.numero_telaio||'—'}</td>
         <td>${r.ragione_sociale||'—'}</td>
-        <td>${r.data_inserimento_telaio||'—'}</td>
+        <td>${r.data_inserimento_telaio ? r.data_inserimento_telaio.substring(0,10).split('-').reverse().join('/') : '—'}</td>
         <td>${giorniCell}</td>
         <td>${r.piattaforma||'—'}</td>
         <td>${r.stato||'—'}</td>
@@ -2420,6 +2430,8 @@
     if (!s) return 0;
     if (s.includes('guardone') || s.includes('piattaforma 2')) return 2;
     if (s.includes('watch') || s.includes('piattaforma 3')) return 3;
+    if (s === 'posizio') return 4;
+    if (s === 'snaproute') return 5;
     return 1;
   }
   function applyVeicoliFilters() {
@@ -2435,6 +2447,8 @@
     else if (_pfActive === 'p3') list = list.filter(v => getPiattNum(v.piattaforma) === 3);
     else if (_pfActive === 'p1') list = list.filter(v => getPiattNum(v.piattaforma) === 1);
     else if (_pfActive === 'none') list = list.filter(v => !v.piattaforma || v.piattaforma.trim() === '');
+    else if (_pfActive === 'posizio') list = list.filter(v => (v.piattaforma||'').toUpperCase().trim() === 'POSIZIO');
+    else if (_pfActive === 'snaproute') list = list.filter(v => (v.piattaforma||'').toUpperCase().trim() === 'SNAPROUTE');
     if (_sfActive !== 'all') {
       if (_sfActive === 'none') list = list.filter(v => !v.stato || v.stato.trim() === '');
       else list = list.filter(v => (v.stato||'').trim().toLowerCase() === _sfActive);
@@ -2445,7 +2459,7 @@
   function filterByStato(key) {
     _sfActive = key;
     // Map stato value → button id suffix
-    const keyToId = {'all':'all','in corso':'incorso','sospeso':'sospeso','archiviato':'archiviato','bloccato':'bloccato','disattivato':'disattivato','furto':'furto','revocato':'revocato','none':'none'};
+    const keyToId = {'all':'all','in corso':'incorso','sospeso':'sospeso','archiviato':'archiviato','bloccato':'bloccato','disattivato':'disattivato','furto':'furto','revocato':'revocato','in attesa di attivazione':'inattesadiattivazione','none':'none'};
     Object.keys(keyToId).forEach(k => {
       const btn = document.getElementById('sfBtn-'+keyToId[k]);
       if (btn) btn.classList.toggle('active', k === key);
@@ -2454,7 +2468,7 @@
   }
   function filterByPiattaforma(key) {
     _pfActive = key;
-    ['all','p2','p3','p1','pnone'].forEach(k => {
+    ['all','p2','p3','p1','pnone','posizio','snaproute'].forEach(k => {
       const btn = document.getElementById('pfBtn-'+k);
       if (btn) btn.classList.toggle('active', k === key);
     });
@@ -3343,7 +3357,7 @@
               <span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,.5);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">DISDETTA</span>
             </div>
             <div style="font-size:13px;color:var(--text2);">${r.ragione_sociale || '—'}</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px;">${r.data_disdetta ? 'Data: ' + r.data_disdetta : ''} ${r.note_disdetta ? '· ' + r.note_disdetta : ''}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;">${r.data_disdetta ? 'Data: ' + r.data_disdetta.substring(0,10).split('-').reverse().join('/') : ''} ${r.note_disdetta ? '· ' + r.note_disdetta : ''}</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
             ${pdfBtn}
