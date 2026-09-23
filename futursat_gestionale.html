@@ -416,6 +416,10 @@
     .form-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;}
     .form-input,.form-select{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 13px;color:var(--text);font-size:13px;font-family:inherit;width:100%;transition:all 0.2s;}
     .form-input:focus,.form-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow-accent);}
+    .piatt-check-item{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:13px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text2);}
+    .piatt-check-item:hover{border-color:var(--accent);color:var(--text);}
+    .piatt-check-item input[type="checkbox"]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
+    .piatt-check-item:has(input:checked){border-color:var(--accent);color:var(--text);background:rgba(30,144,255,0.08);}
     .modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border);}
     .btn-cancel{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:9px;padding:9px 22px;font-size:13px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
     .btn-cancel:hover{border-color:var(--text2);color:var(--text);}
@@ -1244,8 +1248,14 @@
         </div>
         <div class="form-field"><label class="form-label">Data Attivazione</label><input class="form-input" id="mv_data_att" type="date"></div>
         <div class="form-field"><label class="form-label">Data Termine</label><input class="form-input" id="mv_data_termine" type="date"></div>
-        <div class="form-field"><label class="form-label">Piattaforma</label>
-          <select class="form-select" id="mv_piattaforma"><option value="">— Seleziona —</option><option value="Piattaforma 1">Piattaforma 1</option><option value="Piattaforma 2">Piattaforma 2</option><option value="Piattaforma 3">Piattaforma 3</option><option value="POSIZIO">POSIZIO</option><option value="SNAPROUTE">SNAPROUTE</option></select>
+        <div class="form-field full"><label class="form-label">Piattaforme <span style="font-size:11px;font-weight:400;color:var(--text3)">(seleziona una o più)</span></label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+            <label class="piatt-check-item"><input type="checkbox" id="mvP_p1" value="Piattaforma 1"> Piattaforma 1</label>
+            <label class="piatt-check-item"><input type="checkbox" id="mvP_p2" value="Piattaforma 2"> Piattaforma 2</label>
+            <label class="piatt-check-item"><input type="checkbox" id="mvP_p3" value="Piattaforma 3"> Piattaforma 3</label>
+            <label class="piatt-check-item"><input type="checkbox" id="mvP_posizio" value="POSIZIO"> POSIZIO</label>
+            <label class="piatt-check-item"><input type="checkbox" id="mvP_snaproute" value="SNAPROUTE"> SNAPROUTE</label>
+          </div>
         </div>
         <div class="form-field"><label class="form-label">Stato</label>
           <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option><option value="In attesa di attivazione">🟡 In attesa di attivazione</option></select>
@@ -1674,7 +1684,11 @@
     const el = document.getElementById('cd-piatt-content');
     if (!_cdVeicoli.length) { el.innerHTML = '<p style="color:var(--text2);text-align:center;padding:40px 0;">Nessun dato disponibile.</p>'; return; }
     const map = {};
-    _cdVeicoli.forEach(v => { const p = v.piattaforma || '—'; map[p] = (map[p]||[]).concat(v); });
+    _cdVeicoli.forEach(v => {
+      const parts = getPiattaforme(v.piattaforma);
+      const keys = parts.length ? parts : ['—'];
+      keys.forEach(p => { map[p] = (map[p]||[]).concat(v); });
+    });
     el.innerHTML = Object.entries(map).map(([p, vv]) => `
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;">
         <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📡 ${p} <span style="color:var(--text3);font-weight:500;font-size:12px;">(${vv.length} mezz${vv.length===1?'o':'i'})</span></div>
@@ -1736,16 +1750,20 @@
     _currentResultVeicolo = veicolo;  // save for openVeicoloModalFromResult
     document.getElementById('resultPlate').textContent = veicolo.targa||'';
     document.getElementById('resultName').textContent  = veicolo.ragione_sociale || cliente?.ragione_sociale || '—';
-    // Badge piattaforma
+    // Badge piattaforma (supporta più piattaforme)
     const pBadge = document.getElementById('piattaformaBadge');
-    const pRaw = (veicolo.piattaforma||'').toLowerCase().trim();
-    let pNum = 0, pClass = '';
-    if (pRaw.includes('guardone') || pRaw === 'piattaforma 2') { pNum=2; pClass='p2'; }
-    else if (pRaw.includes('watch') || pRaw === 'piattaforma 3') { pNum=3; pClass='p3'; }
-    else if (pRaw !== '') { pNum=1; pClass='p1'; }
-    if (pNum) {
-      pBadge.className = 'piattaforma-badge show ' + pClass;
-      pBadge.innerHTML = `<span style="font-size:10px;opacity:.7;margin-bottom:2px">PIATTAFORMA</span><span style="font-size:20px">${pNum}</span>`;
+    const piattParts = getPiattNums(veicolo.piattaforma);
+    if (piattParts.length === 1) {
+      const pp = piattParts[0];
+      pBadge.className = 'piattaforma-badge show p'+pp.num;
+      const lbl = pp.raw.toUpperCase()==='POSIZIO'?'POS':pp.raw.toUpperCase()==='SNAPROUTE'?'SNAP':pp.num||pp.raw;
+      pBadge.innerHTML = `<span style="font-size:10px;opacity:.7;margin-bottom:2px">PIATTAFORMA</span><span style="font-size:18px;font-weight:900">${lbl}</span>`;
+    } else if (piattParts.length > 1) {
+      pBadge.className = 'piattaforma-badge show p1';
+      pBadge.innerHTML = `<span style="font-size:9px;opacity:.7;margin-bottom:5px">PIATTAFORME</span><div style="display:flex;gap:4px;flex-wrap:wrap;">${piattParts.map(pp=>{
+        const lbl=pp.raw.toUpperCase()==='POSIZIO'?'POS':pp.raw.toUpperCase()==='SNAPROUTE'?'SNAP':`P${pp.num}`;
+        return `<span class="piatt-chip p${pp.num}">${lbl}</span>`;
+      }).join('')}</div>`;
     } else {
       pBadge.className = 'piattaforma-badge';
       pBadge.innerHTML = '';
@@ -1794,7 +1812,7 @@
         ${row('Modello', veicolo.modello)}
         ${row('Colore', veicolo.colore)}
         ${row('Tipo Mezzo', veicolo.tipo_mezzo)}
-        ${row('Piattaforma', veicolo.piattaforma)}
+        ${row('Piattaforma', getPiattaforme(veicolo.piattaforma).join(', ') || null)}
         ${row('Numero Contratto', veicolo.numero_contratto)}
         ${row('Articolo', veicolo.articolo)}
         ${row('Attivazione', fmtDate(veicolo.data_attivazione))}
@@ -2657,6 +2675,33 @@
     if (s === 'snaproute') return 5;
     return 1;
   }
+  function getPiattaforme(piattaforma) {
+    return (piattaforma||'').split('|').map(p=>p.trim()).filter(Boolean);
+  }
+  function getPiattNums(piattaforma) {
+    return getPiattaforme(piattaforma).map(p => ({ raw: p, num: getPiattNum(p) }));
+  }
+  const _PIATT_CB_MAP = [
+    {id:'mvP_p1',  val:'Piattaforma 1'},
+    {id:'mvP_p2',  val:'Piattaforma 2'},
+    {id:'mvP_p3',  val:'Piattaforma 3'},
+    {id:'mvP_posizio',   val:'POSIZIO'},
+    {id:'mvP_snaproute', val:'SNAPROUTE'},
+  ];
+  function setMvPiattaforme(piattaforma) {
+    const vals = getPiattaforme(piattaforma).map(p=>p.toLowerCase());
+    _PIATT_CB_MAP.forEach(({id, val}) => {
+      const cb = document.getElementById(id);
+      if (cb) cb.checked = vals.includes(val.toLowerCase());
+    });
+  }
+  function getMvPiattaforme() {
+    const checked = _PIATT_CB_MAP.map(({id,val}) => {
+      const cb = document.getElementById(id);
+      return (cb && cb.checked) ? val : '';
+    }).filter(Boolean);
+    return checked.length ? checked.join('|') : null;
+  }
   function applyVeicoliFilters() {
     const q = document.getElementById('gestVeicoliSearch').value.toLowerCase();
     let list = _veicoli;
@@ -2666,12 +2711,12 @@
       (v.ragione_sociale||'').toLowerCase().includes(q) ||
       (v.marca||'').toLowerCase().includes(q)
     );
-    if (_pfActive === 'p2') list = list.filter(v => getPiattNum(v.piattaforma) === 2);
-    else if (_pfActive === 'p3') list = list.filter(v => getPiattNum(v.piattaforma) === 3);
-    else if (_pfActive === 'p1') list = list.filter(v => getPiattNum(v.piattaforma) === 1);
+    if (_pfActive === 'p2') list = list.filter(v => getPiattNums(v.piattaforma).some(pp=>pp.num===2));
+    else if (_pfActive === 'p3') list = list.filter(v => getPiattNums(v.piattaforma).some(pp=>pp.num===3));
+    else if (_pfActive === 'p1') list = list.filter(v => getPiattNums(v.piattaforma).some(pp=>pp.num===1));
     else if (_pfActive === 'none') list = list.filter(v => !v.piattaforma || v.piattaforma.trim() === '');
-    else if (_pfActive === 'posizio') list = list.filter(v => (v.piattaforma||'').toUpperCase().trim() === 'POSIZIO');
-    else if (_pfActive === 'snaproute') list = list.filter(v => (v.piattaforma||'').toUpperCase().trim() === 'SNAPROUTE');
+    else if (_pfActive === 'posizio') list = list.filter(v => getPiattaforme(v.piattaforma).some(p=>p.toUpperCase()==='POSIZIO'));
+    else if (_pfActive === 'snaproute') list = list.filter(v => getPiattaforme(v.piattaforma).some(p=>p.toUpperCase()==='SNAPROUTE'));
     if (_sfActive !== 'all') {
       if (_sfActive === 'none') list = list.filter(v => !v.stato || v.stato.trim() === '');
       else list = list.filter(v => (v.stato||'').trim().toLowerCase() === _sfActive);
@@ -2708,11 +2753,9 @@
     if (pfCount) pfCount.textContent = `${_veicoli_filtered.length} targhe`;
     document.getElementById('gestVeicoliBody').innerHTML = slice.length ? slice.map(v => {
       _veicoliCache[v.id] = v;
-      const pn = getPiattNum(v.piattaforma);
-      const pRawChip = (v.piattaforma||'').trim();
-      const pLabel = pRawChip.toUpperCase() === 'POSIZIO' ? 'POS' : pRawChip.toUpperCase() === 'SNAPROUTE' ? 'SNAP' : (pRawChip ? `P${pn}` : '—');
-      const pChip = pRawChip
-        ? `<span class="piatt-chip p${pn}">${pLabel}</span>`
+      const piattArr = getPiattNums(v.piattaforma);
+      const pChip = piattArr.length
+        ? piattArr.map(pp=>{const lbl=pp.raw.toUpperCase()==='POSIZIO'?'POS':pp.raw.toUpperCase()==='SNAPROUTE'?'SNAP':`P${pp.num}`;return `<span class="piatt-chip p${pp.num}">${lbl}</span>`;}).join(' ')
         : `<span class="piatt-chip pnone">—</span>`;
       const sRaw = (v.stato||'').trim().toLowerCase();
       const sCls = sRaw ? 's-'+sRaw.replace(/ /g,''): '';
@@ -2868,7 +2911,7 @@
     f('mv_data_termine', v?.data_termine?v.data_termine.substring(0,10):'');
     f('mv_data_contratto', v?.data_contratto?v.data_contratto.substring(0,10):'');
     f('mv_tipo_contratto', v?.tipo_contratto||'');
-    f('mv_piattaforma', v?.piattaforma||'');
+    setMvPiattaforme(v?.piattaforma||'');
     f('mv_stato', v?.stato||'');
     f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
     f('mv_periferica', v?.periferica); f('mv_uid_gps', v?.uid_gps); f('mv_phone_gps', v?.phone_gps);
@@ -3034,7 +3077,7 @@
       data_termine: document.getElementById('mv_data_termine').value||null,
       data_contratto: document.getElementById('mv_data_contratto').value||null,
       tipo_contratto: document.getElementById('mv_tipo_contratto').value||null,
-      piattaforma: document.getElementById('mv_piattaforma').value||null,
+      piattaforma: getMvPiattaforme(),
       stato: document.getElementById('mv_stato').value||null,
       installatore: document.getElementById('mv_installatore').value||null,
       seriale_periferica: document.getElementById('mv_seriale').value||null,
@@ -3393,7 +3436,7 @@
     f('mv_data_termine', v.data_termine ? v.data_termine.substring(0, 10) : '');
     f('mv_data_contratto', v.data_contratto ? v.data_contratto.substring(0, 10) : '');
     f('mv_tipo_contratto', v.tipo_contratto || '');
-    f('mv_piattaforma', v.piattaforma || '');
+    setMvPiattaforme(v.piattaforma || '');
     f('mv_stato', v.stato || '');
     f('mv_installatore', v.installatore);
     f('mv_seriale', v.seriale_periferica);
