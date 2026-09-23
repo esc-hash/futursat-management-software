@@ -3133,8 +3133,8 @@
       provincia: document.getElementById('mc_provincia').value||null,
       partita_iva: document.getElementById('mc_piva').value||null,
       telefono: document.getElementById('mc_tel').value||null, fax: document.getElementById('mc_fax').value||null,
+      email: document.getElementById('mc_email').value||null,
       descriz_pagamento: document.getElementById('mc_pagamento').value||null
-      // email non presente nella tabella clienti del DB
     };
     try {
       if (id) { await sbPatch(`/rest/v1/clienti?id=eq.${id}`, data); }
