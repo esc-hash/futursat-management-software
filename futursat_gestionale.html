@@ -223,7 +223,6 @@
     .stato-badge.s-disattivato{background:rgba(75,85,99,0.1);border:1px solid rgba(75,85,99,0.3);color:#6b7280;}
     .stato-badge.s-furto{background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.6);color:#ef4444;}
     .stato-badge.s-revocato{background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.35);color:#c4b5fd;}
-    .stato-badge.s-inattesadiattivazione{background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.35);color:#fde047;}
     .stato-chip{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;}
     .stato-chip.s-incorso{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.28);}
     .stato-chip.s-sospeso{background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.28);}
@@ -232,7 +231,6 @@
     .stato-chip.s-disattivato{background:rgba(75,85,99,0.1);color:#6b7280;border:1px solid rgba(75,85,99,0.22);}
     .stato-chip.s-furto{background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.4);}
     .stato-chip.s-revocato{background:rgba(59,130,246,0.1);color:#c4b5fd;border:1px solid rgba(59,130,246,0.28);}
-    .stato-chip.s-inattesadiattivazione{background:rgba(234,179,8,0.1);color:#fde047;border:1px solid rgba(234,179,8,0.28);}
 
     /* AUTOCOMPLETE */
     .targa-ac-wrap{position:relative;width:100%;}
@@ -264,7 +262,6 @@
     .s-filter-btn.s-disattivato.active{background:rgba(75,85,99,0.5);border-color:#4b5563;color:#fff;}
     .s-filter-btn.s-furto.active{background:rgba(239,68,68,0.8);border-color:#ef4444;color:#fff;}
     .s-filter-btn.s-revocato.active{background:rgba(59,130,246,0.65);border-color:#3b82f6;color:#fff;}
-    .s-filter-btn.s-inattesadiattivazione.active{background:rgba(234,179,8,0.65);border-color:#eab308;color:#fff;}
 
     .result-title{font-size:22px;font-weight:700;}
     .result-subtitle{font-size:13px;color:var(--text2);margin-top:4px;}
@@ -372,14 +369,10 @@
     .p-filter-btn.p3.active{background:rgba(16,185,129,0.8);border-color:#10b981;}
     .p-filter-btn.p1.active{background:rgba(148,163,184,0.5);border-color:#94a3b8;color:var(--text);}
     .p-filter-btn.pnone.active{background:var(--surface2);border-color:var(--text3);color:var(--text3);}
-    .p-filter-btn.posizio.active{background:rgba(251,146,60,0.65);border-color:#f97316;color:#fff;}
-    .p-filter-btn.snaproute.active{background:rgba(167,139,250,0.65);border-color:#8b5cf6;color:#fff;}
     .piatt-chip{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.5px;}
     .piatt-chip.p1{background:rgba(148,163,184,0.1);color:#94a3b8;border:1px solid rgba(148,163,184,0.28);}
     .piatt-chip.p2{background:rgba(30,144,255,0.1);color:#a5b4fc;border:1px solid rgba(30,144,255,0.28);}
     .piatt-chip.p3{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.28);}
-    .piatt-chip.p4{background:rgba(251,146,60,0.1);color:#fdba74;border:1px solid rgba(251,146,60,0.28);}
-    .piatt-chip.p5{background:rgba(167,139,250,0.1);color:#c4b5fd;border:1px solid rgba(167,139,250,0.28);}
     .piatt-chip.pnone{color:var(--text3);font-style:italic;}
     .gest-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
     .gest-search{flex:1;min-width:180px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 16px;color:var(--text);font-size:13px;font-family:inherit;transition:all 0.2s;}
@@ -416,10 +409,6 @@
     .form-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:600;}
     .form-input,.form-select{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 13px;color:var(--text);font-size:13px;font-family:inherit;width:100%;transition:all 0.2s;}
     .form-input:focus,.form-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--glow-accent);}
-    .piatt-check-item{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 13px;font-size:13px;cursor:pointer;transition:all .15s;user-select:none;color:var(--text2);}
-    .piatt-check-item:hover{border-color:var(--accent);color:var(--text);}
-    .piatt-check-item input[type="checkbox"]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0;}
-    .piatt-check-item:has(input:checked){border-color:var(--accent);color:var(--text);background:rgba(30,144,255,0.08);}
     .modal-footer{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border);}
     .btn-cancel{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:9px;padding:9px 22px;font-size:13px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
     .btn-cancel:hover{border-color:var(--text2);color:var(--text);}
@@ -801,88 +790,6 @@
       </div>
     </div>
 
-    <!-- ═══ PAGINA: DETTAGLIO CLIENTE ═══ -->
-    <div id="page-cliente-detail" style="display:none;min-height:100vh;">
-    <style>
-      .cd-back-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;flex-shrink:0;}
-      .cd-back-btn:hover{border-color:var(--accent);color:var(--accent);}
-      .cd-client-name{font-size:24px;font-weight:800;background:linear-gradient(135deg,#e8edf8 30%,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-      .cd-section-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:44px 52px;display:flex;flex-direction:column;align-items:center;gap:14px;cursor:pointer;transition:all .2s;min-width:180px;position:relative;overflow:hidden;}
-      .cd-section-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--violet));transform:scaleX(0);transition:transform .2s;}
-      .cd-section-card:hover::after{transform:scaleX(1);}
-      .cd-section-card:hover{border-color:rgba(30,144,255,0.4);transform:translateY(-5px);box-shadow:0 18px 48px rgba(0,0,0,0.45);}
-      .cd-card-icon{font-size:42px;}
-      .cd-card-label{font-size:15px;font-weight:800;letter-spacing:2.5px;color:var(--text);text-transform:uppercase;}
-      .cd-section-tag{background:rgba(30,144,255,0.12);border:1px solid rgba(30,144,255,0.3);color:#a5b4fc;padding:4px 13px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
-      .cd-count-num{display:block;font-size:38px;font-weight:900;color:var(--accent);line-height:1;}
-      .cd-count-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:4px;display:block;}
-      .cd-plate-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));margin-top:28px;}
-      .cd-plate-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 16px;cursor:pointer;transition:all .2s;text-align:center;}
-      .cd-plate-card:hover{border-color:rgba(30,144,255,0.45);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,0.35);}
-      .cd-plate-num{font-family:'Courier New';font-size:19px;font-weight:700;letter-spacing:2px;color:var(--text);}
-    </style>
-
-      <!-- ── OVERVIEW ── -->
-      <div id="cd-overview" style="padding:40px;min-height:100vh;display:flex;flex-direction:column;">
-        <div style="display:flex;align-items:center;gap:18px;margin-bottom:56px;">
-          <button class="cd-back-btn" onclick="showPage('cliente')">← Clienti</button>
-          <h1 class="cd-client-name" id="cd-nome"></h1>
-        </div>
-        <div style="flex:1;display:flex;align-items:center;justify-content:center;">
-          <div style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center;align-items:stretch;">
-            <div class="cd-section-card" onclick="showCdSection('mezzi')">
-              <span class="cd-card-icon">🚗</span>
-              <span class="cd-card-label">MEZZI</span>
-            </div>
-            <div class="cd-section-card" onclick="showCdSection('piattaforme')">
-              <span class="cd-card-icon">📡</span>
-              <span class="cd-card-label">PIATTAFORME</span>
-            </div>
-            <div class="cd-section-card" onclick="showCdSection('fatturato')">
-              <span class="cd-card-icon">💰</span>
-              <span class="cd-card-label">FATTURATO</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── MEZZI ── -->
-      <div id="cd-mezzi" style="display:none;padding:40px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:36px;">
-          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-            <button class="cd-back-btn" onclick="showCdSection('overview')">← Indietro</button>
-            <span class="cd-client-name" id="cd-mezzi-nome"></span>
-            <span class="cd-section-tag">MEZZI</span>
-          </div>
-          <div style="text-align:right;">
-            <span class="cd-count-num" id="cd-mezzi-count">0</span>
-            <span class="cd-count-lbl">NUMERO DI MEZZI</span>
-          </div>
-        </div>
-        <div class="cd-plate-grid" id="cd-mezzi-list"></div>
-      </div>
-
-      <!-- ── PIATTAFORME ── -->
-      <div id="cd-piattaforme" style="display:none;padding:40px;">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:36px;">
-          <button class="cd-back-btn" onclick="showCdSection('overview')">← Indietro</button>
-          <span class="cd-client-name" id="cd-piatt-nome"></span>
-          <span class="cd-section-tag">PIATTAFORME</span>
-        </div>
-        <div id="cd-piatt-content"></div>
-      </div>
-
-      <!-- ── FATTURATO ── -->
-      <div id="cd-fatturato" style="display:none;padding:40px;">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:36px;">
-          <button class="cd-back-btn" onclick="showCdSection('overview')">← Indietro</button>
-          <span class="cd-client-name" id="cd-fatt-nome"></span>
-          <span class="cd-section-tag">FATTURATO</span>
-        </div>
-        <div id="cd-fatt-content"></div>
-      </div>
-    </div>
-
     <!-- ═══ PAGINA: CERCA PER TELAIO ═══ -->
     <div id="page-telaio" style="display:none">
       <div style="max-width:900px;margin:0 auto;">
@@ -1038,8 +945,6 @@
           <button class="p-filter-btn p3" id="pfBtn-p3" onclick="filterByPiattaforma('p3')">🟢 Piattaforma 3</button>
           <button class="p-filter-btn p1" id="pfBtn-p1" onclick="filterByPiattaforma('p1')">⚪ Piattaforma 1</button>
           <button class="p-filter-btn pnone" id="pfBtn-pnone" onclick="filterByPiattaforma('none')">— Nessuna</button>
-          <button class="p-filter-btn posizio" id="pfBtn-posizio" onclick="filterByPiattaforma('posizio')">📍 Posizio</button>
-          <button class="p-filter-btn snaproute" id="pfBtn-snaproute" onclick="filterByPiattaforma('snaproute')">🗺️ Snaproute</button>
           <span id="pfCount" style="margin-left:auto;font-size:12px;color:var(--text3)"></span>
         </div>
         <div class="stato-filter-bar">
@@ -1052,7 +957,6 @@
           <button class="s-filter-btn s-disattivato" id="sfBtn-disattivato" onclick="filterByStato('disattivato')">⚫ Disattivato</button>
           <button class="s-filter-btn s-furto" id="sfBtn-furto" onclick="filterByStato('furto')">🚨 Furto</button>
           <button class="s-filter-btn s-revocato" id="sfBtn-revocato" onclick="filterByStato('revocato')">🟣 Revocato</button>
-          <button class="s-filter-btn s-inattesadiattivazione" id="sfBtn-inattesadiattivazione" onclick="filterByStato('in attesa di attivazione')">🟡 In attesa di attivazione</button>
           <button class="s-filter-btn" id="sfBtn-none" onclick="filterByStato('none')">— Nessuno</button>
         </div>
         <div class="gest-table-wrap">
@@ -1248,17 +1152,11 @@
         </div>
         <div class="form-field"><label class="form-label">Data Attivazione</label><input class="form-input" id="mv_data_att" type="date"></div>
         <div class="form-field"><label class="form-label">Data Termine</label><input class="form-input" id="mv_data_termine" type="date"></div>
-        <div class="form-field full"><label class="form-label">Piattaforme <span style="font-size:11px;font-weight:400;color:var(--text3)">(seleziona una o più)</span></label>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
-            <label class="piatt-check-item"><input type="checkbox" id="mvP_p1" value="Piattaforma 1"> Piattaforma 1</label>
-            <label class="piatt-check-item"><input type="checkbox" id="mvP_p2" value="Piattaforma 2"> Piattaforma 2</label>
-            <label class="piatt-check-item"><input type="checkbox" id="mvP_p3" value="Piattaforma 3"> Piattaforma 3</label>
-            <label class="piatt-check-item"><input type="checkbox" id="mvP_posizio" value="POSIZIO"> POSIZIO</label>
-            <label class="piatt-check-item"><input type="checkbox" id="mvP_snaproute" value="SNAPROUTE"> SNAPROUTE</label>
-          </div>
+        <div class="form-field"><label class="form-label">Piattaforma</label>
+          <select class="form-select" id="mv_piattaforma"><option value="">— Seleziona —</option><option value="Piattaforma 1">Piattaforma 1</option><option value="Piattaforma 2">Piattaforma 2</option><option value="Piattaforma 3">Piattaforma 3</option><option value="POSIZIO">POSIZIO</option><option value="SNAPROUTE">SNAPROUTE</option></select>
         </div>
         <div class="form-field"><label class="form-label">Stato</label>
-          <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option><option value="In attesa di attivazione">🟡 In attesa di attivazione</option></select>
+          <select class="form-select" id="mv_stato"><option value="">— Seleziona —</option><option value="In corso">🟢 In corso</option><option value="Sospeso">🟠 Sospeso</option><option value="Archiviato">⬜ Archiviato</option><option value="Bloccato">🔴 Bloccato</option><option value="Disattivato">⚫ Disattivato</option><option value="Furto">🚨 Furto</option><option value="Revocato">🟣 Revocato</option></select>
         </div>
         <!-- ── MULTI SERVIZI ── -->
         <div class="form-field full" style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px;">
@@ -1424,49 +1322,16 @@
 
   // ── SUPABASE ─────────────────────────────────────────
   const SUPABASE_URL = 'https://fiekccauqjrfzlcyoakm.supabase.co';
+  function sbHeaders() {
+    const t = localStorage.getItem('sb_access_token');
+    return {'apikey': t || '', 'Authorization': 'Bearer ' + (t||''), 'Content-Type': 'application/json'};
+  }
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZpZWtjY2F1cWpyZnpsY3lvYWttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMjUxNjUsImV4cCI6MjEwMjgwMTE2NX0.x638w8cG06rsUiRrpmLBQ5Mn8ueEQ9dpS9nlcI6F6gw';
 
-  function sbHeaders() {
-    const t = localStorage.getItem('sb_access_token') || SUPABASE_KEY;
-    return {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json'};
-  }
-
-  async function refreshSbToken() {
-    const rt = localStorage.getItem('sb_refresh_token');
-    if (!rt) { logout(); throw new Error('Sessione scaduta'); }
-    const r = await fetch(SUPABASE_URL + '/auth/v1/token?grant_type=refresh_token', {
-      method: 'POST',
-      headers: {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json'},
-      body: JSON.stringify({refresh_token: rt})
-    });
-    if (!r.ok) { logout(); throw new Error('Sessione scaduta, effettua di nuovo il login'); }
-    const d = await r.json();
-    localStorage.setItem('sb_access_token', d.access_token);
-    localStorage.setItem('sb_refresh_token', d.refresh_token);
-    return d.access_token;
-  }
-
-  let _sbRefreshing = false;
-  async function sbFetch(url, options = {}) {
-    const t = localStorage.getItem('sb_access_token') || SUPABASE_KEY;
-    const authHeaders = {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + t};
-    const merged = {...options, headers: {...authHeaders, ...(options.headers || {})}};
-    let r = await fetch(url, merged);
-    if (r.status === 401 && !_sbRefreshing) {
-      _sbRefreshing = true;
-      try {
-        const newT = await refreshSbToken();
-        merged.headers['Authorization'] = 'Bearer ' + newT;
-        r = await fetch(url, merged);
-      } finally {
-        _sbRefreshing = false;
-      }
-    }
-    return r;
-  }
-
   async function sbGet(path) {
-    const r = await sbFetch(SUPABASE_URL + path);
+    const r = await fetch(SUPABASE_URL + path, {
+      headers: {'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + (token||SUPABASE_KEY)}
+    });
     if (!r.ok) throw new Error(await r.text());
     return r.json();
   }
@@ -1495,8 +1360,6 @@
 
   function showPage(id) {
     closeAllModals();
-    const cdp = document.getElementById('page-cliente-detail');
-    if (cdp) cdp.style.display = 'none';
     PAGES.forEach(p => {
       const pg = document.getElementById('page-'+p);
       if(pg) pg.style.display = p===id?'block':'none';
@@ -1579,24 +1442,55 @@
     notFound.style.display = 'none';
     list.innerHTML = '';
     try {
-      const clienti = await sbGet(`/rest/v1/clienti?ragione_sociale=ilike.*${encodeURIComponent(raw)}*&select=id,ragione_sociale,citta,provincia,telefono&limit=30`);
-      if (!clienti.length) { notFound.style.display = 'flex'; return; }
-      clienti.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'client-item';
-        div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;';
-        div.innerHTML = `
-          <div style="flex:1;min-width:0;cursor:pointer;" onclick="loadClienteVehicles('${c.id}','${(c.ragione_sociale||'').replace(/'/g,"\\'")}')">
-            <div class="client-item-name">${c.ragione_sociale||'—'}</div>
-            <div class="client-item-sub">${[c.citta, c.provincia].filter(Boolean).join(', ')||''} ${c.telefono?'· '+c.telefono:''}</div>
-          </div>
-          <button onclick="event.stopPropagation();openNuovaTargaPerCliente('${c.id}','${(c.ragione_sociale||'').replace(/'/g,"\\'")}')"
-            style="flex-shrink:0;padding:7px 13px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);
-                   border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">
-            ＋ Aggiungi Targa
-          </button>`;
-        list.appendChild(div);
-      });
+      const enc = encodeURIComponent(raw);
+      // Cerca prima nella tabella clienti
+      let clienti = await sbGet(`/rest/v1/clienti?ragione_sociale=ilike.*${enc}*&select=id,ragione_sociale,citta,provincia,telefono&limit=30`);
+
+      if (clienti && clienti.length) {
+        clienti.forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'client-item';
+          div.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;';
+          const safeRag = (c.ragione_sociale||'').replace(/'/g,"\'");
+          div.innerHTML = `
+            <div style="flex:1;min-width:0;cursor:pointer;" onclick="loadClienteVehicles('${c.id}','${safeRag}')">
+              <div class="client-item-name">${c.ragione_sociale||'—'}</div>
+              <div class="client-item-sub">${[c.citta, c.provincia].filter(Boolean).join(', ')||''} ${c.telefono?'· '+c.telefono:''}</div>
+            </div>
+            <button onclick="event.stopPropagation();openNuovaTargaPerCliente('${c.id}','${safeRag}')"
+              style="flex-shrink:0;padding:7px 13px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);
+                     border-radius:8px;color:var(--accent);font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap;">
+              ＋ Aggiungi Targa
+            </button>`;
+          list.appendChild(div);
+        });
+      } else {
+        // Fallback: cerca ragione_sociale direttamente nei veicoli
+        const veicoli = await sbGet(`/rest/v1/veicoli?ragione_sociale=ilike.*${enc}*&select=id,targa,ragione_sociale,stato,piattaforma&order=ragione_sociale.asc&limit=100`);
+        if (!veicoli || !veicoli.length) { notFound.style.display = 'flex'; return; }
+        // Raggruppa per ragione_sociale
+        const grouped = {};
+        veicoli.forEach(v => {
+          const k = v.ragione_sociale || '—';
+          if (!grouped[k]) grouped[k] = [];
+          grouped[k].push(v);
+        });
+        // Intestazione informativa
+        const info = document.createElement('div');
+        info.style.cssText = 'font-size:12px;color:var(--text2);margin-bottom:10px;padding:6px 10px;background:rgba(30,144,255,0.07);border-radius:8px;border:1px solid rgba(30,144,255,0.15)';
+        info.textContent = 'ℹ️ Cliente non in anagrafica — trovato come ragione sociale nei veicoli.';
+        list.appendChild(info);
+        Object.entries(grouped).forEach(([ragione, vlist]) => {
+          const div = document.createElement('div');
+          div.className = 'client-item';
+          div.style.cursor = 'pointer';
+          div.innerHTML = `
+            <div class="client-item-name">${ragione}</div>
+            <div class="client-item-sub">${vlist.length} veicolo/i — clicca per vedere le targhe</div>`;
+          div.onclick = () => loadClienteVehiclesByRagione(ragione);
+          list.appendChild(div);
+        });
+      }
     } catch(e) {
       notFound.style.display = 'flex';
       console.error(e);
@@ -1605,139 +1499,42 @@
     }
   }
 
-  async function loadClienteVehicles(clienteId, nome) {
-    await showClienteDetail(clienteId, nome);
-  }
-
-  // ── CLIENTE DETAIL PAGE ───────────────────────────────
-  let _cdClienteId = null;
-  let _cdClienteNome = '';
-  let _cdVeicoli = [];
-
-  async function showClienteDetail(clienteId, nome) {
-    _cdClienteId = clienteId;
-    _cdClienteNome = nome;
+  async function loadClienteVehiclesByRagione(ragione) {
     try {
-      _cdVeicoli = await sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=id,targa,numero_telaio,marca,modello,stato,piattaforma,canone&order=targa.asc`);
-    } catch(e) { _cdVeicoli = []; }
-
-    // Hide all standard pages, hide cliente-detail to reset
-    PAGES.forEach(p => {
-      const pg = document.getElementById('page-'+p);
-      if (pg) pg.style.display = 'none';
-      const nl = document.getElementById('nav-'+p);
-      if (nl) nl.classList.remove('active');
-    });
-    // Keep 'cliente' nav highlighted
-    const navC = document.getElementById('nav-cliente');
-    if (navC) navC.classList.add('active');
-
-    document.getElementById('cd-nome').textContent = nome;
-    showCdSection('overview');
-    document.getElementById('page-cliente-detail').style.display = 'block';
+      const enc = encodeURIComponent(ragione);
+      const veicoli = await sbGet(`/rest/v1/veicoli?ragione_sociale=eq.${enc}&select=*`);
+      if (!veicoli || !veicoli.length) return;
+      showPage('home');
+      document.getElementById('targaInput').value = veicoli[0].targa || '';
+      const servizi = veicoli[0].targa
+        ? await sbGet(`/rest/v1/veicoli_servizi?targa=ilike.${veicoli[0].targa}&select=*&order=numero_servizio.asc`)
+        : [];
+      renderResult(veicoli[0], null, veicoli.map(v=>({id:v.id, targa:v.targa||v.numero_telaio})), servizi);
+    } catch(e) { console.error(e); }
   }
 
-  function showCdSection(section) {
-    ['overview','mezzi','piattaforme','fatturato'].forEach(s => {
-      const el = document.getElementById('cd-' + s);
-      if (el) el.style.display = 'none';
-    });
-    const el = document.getElementById('cd-' + section);
-    if (!el) return;
-    el.style.display = 'block';
-
-    if (section === 'mezzi') {
-      document.getElementById('cd-mezzi-nome').textContent = _cdClienteNome;
-      document.getElementById('cd-mezzi-count').textContent = _cdVeicoli.length;
-      renderCdMezzi();
-    } else if (section === 'piattaforme') {
-      document.getElementById('cd-piatt-nome').textContent = _cdClienteNome;
-      renderCdPiattaforme();
-    } else if (section === 'fatturato') {
-      document.getElementById('cd-fatt-nome').textContent = _cdClienteNome;
-      renderCdFatturato();
-    }
-  }
-
-  function renderCdMezzi() {
-    const grid = document.getElementById('cd-mezzi-list');
-    if (!_cdVeicoli.length) {
-      grid.innerHTML = '<p style="color:var(--text2);text-align:center;padding:60px 0;grid-column:1/-1;">Nessun veicolo registrato per questo cliente.</p>';
-      return;
-    }
-    const icons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣','in attesa di attivazione':'🟡'};
-    grid.innerHTML = _cdVeicoli.map(v => {
-      const label = v.targa || v.numero_telaio || '—';
-      const sRaw = (v.stato||'').trim().toLowerCase();
-      const sCls = sRaw ? 's-'+sRaw.replace(/ /g,'') : '';
-      const sIcon = icons[sRaw] || '';
-      const sub = [v.marca, v.modello].filter(Boolean).join(' ');
-      return `<div class="cd-plate-card" onclick="openPlateFromCliente('${label.replace(/'/g,"\\'")}')">
-        <div class="cd-plate-num">${label}</div>
-        ${sub ? `<div style="margin-top:6px;font-size:12px;color:var(--text2);">${sub}</div>` : ''}
-        ${sCls ? `<span class="stato-chip ${sCls}" style="margin-top:10px;display:inline-block;">${sIcon} ${v.stato}</span>` : ''}
-      </div>`;
-    }).join('');
-  }
-
-  function renderCdPiattaforme() {
-    const el = document.getElementById('cd-piatt-content');
-    if (!_cdVeicoli.length) { el.innerHTML = '<p style="color:var(--text2);text-align:center;padding:40px 0;">Nessun dato disponibile.</p>'; return; }
-    const map = {};
-    _cdVeicoli.forEach(v => {
-      const parts = getPiattaforme(v.piattaforma);
-      const keys = parts.length ? parts : ['—'];
-      keys.forEach(p => { map[p] = (map[p]||[]).concat(v); });
-    });
-    el.innerHTML = Object.entries(map).map(([p, vv]) => `
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:12px;">
-        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">📡 ${p} <span style="color:var(--text3);font-weight:500;font-size:12px;">(${vv.length} mezz${vv.length===1?'o':'i'})</span></div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">${vv.map(v=>`<span style="font-family:'Courier New';font-size:12px;font-weight:600;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:4px 10px;">${v.targa||v.numero_telaio||'—'}</span>`).join('')}</div>
-      </div>`).join('');
-  }
-
-  function renderCdFatturato() {
-    const el = document.getElementById('cd-fatt-content');
-    if (!_cdVeicoli.length) { el.innerHTML = '<p style="color:var(--text2);text-align:center;padding:40px 0;">Nessun dato disponibile.</p>'; return; }
-    const canoni = _cdVeicoli.filter(v => v.canone != null).map(v => Number(v.canone));
-    const totMensile = canoni.reduce((a,b)=>a+b, 0);
-    el.innerHTML = `
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:28px;">
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;">
-          <div style="font-size:28px;font-weight:900;color:var(--accent);">€ ${totMensile.toFixed(2)}</div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:6px;">Canone mensile totale</div>
-        </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;">
-          <div style="font-size:28px;font-weight:900;color:var(--accent);">€ ${(totMensile*12).toFixed(2)}</div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:6px;">Fatturato annuale stimato</div>
-        </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 20px;">
-          <div style="font-size:28px;font-weight:900;color:var(--text);">${canoni.length}</div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text3);text-transform:uppercase;margin-top:6px;">Mezzi con canone attivo</div>
-        </div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-        <table style="width:100%;border-collapse:collapse;">
-          <thead><tr style="border-bottom:1px solid var(--border);">
-            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--text3);text-transform:uppercase;">Targa</th>
-            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--text3);text-transform:uppercase;">Piattaforma</th>
-            <th style="padding:10px 16px;text-align:right;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--text3);text-transform:uppercase;">Canone/mese</th>
-          </tr></thead>
-          <tbody>${_cdVeicoli.map(v=>`<tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:10px 16px;font-family:'Courier New';font-weight:600;font-size:13px;">${v.targa||v.numero_telaio||'—'}</td>
-            <td style="padding:10px 16px;font-size:13px;color:var(--text2);">${v.piattaforma||'—'}</td>
-            <td style="padding:10px 16px;text-align:right;font-size:13px;font-weight:600;">${v.canone!=null?'€ '+Number(v.canone).toFixed(2):'—'}</td>
-          </tr>`).join('')}</tbody>
-        </table>
-      </div>`;
-  }
-
-  async function openPlateFromCliente(targa) {
-    if (!targa || targa === '—') return;
-    const inp = document.getElementById('targaInput');
-    if (inp) inp.value = targa;
-    showPage('targa');
-    await searchTarga();
+  
+  async function loadClienteVehicles(clienteId, nome) {
+    try {
+      const [veicoli, cl] = await Promise.all([
+        sbGet(`/rest/v1/veicoli?cliente_id=eq.${clienteId}&select=*`),
+        sbGet(`/rest/v1/clienti?id=eq.${clienteId}&select=*`)
+      ]);
+      if (!veicoli.length) {
+        // Cliente senza veicoli — offri di aggiungere la prima targa
+        if (confirm(`Il cliente "${nome}" non ha ancora veicoli registrati.\nVuoi aggiungere la prima targa?`)) {
+          openNuovaTargaPerCliente(clienteId, nome);
+        }
+        return;
+      }
+      // Switch to targa page and show result
+      showPage('home');
+      document.getElementById('targaInput').value = veicoli[0].targa || (veicoli[0].numero_telaio ? 'TELAIO: '+veicoli[0].numero_telaio : '');
+      const servizi = veicoli[0].targa
+        ? await sbGet(`/rest/v1/veicoli_servizi?targa=ilike.${veicoli[0].targa}&select=*&order=numero_servizio.asc`)
+        : [];
+      renderResult(veicoli[0], cl[0]||null, veicoli.map(v=>({id:v.id, targa:v.targa||v.numero_telaio})), servizi);
+    } catch(e) { console.error(e); }
   }
 
   // ── RENDER RESULT ─────────────────────────────────────
@@ -1750,20 +1547,16 @@
     _currentResultVeicolo = veicolo;  // save for openVeicoloModalFromResult
     document.getElementById('resultPlate').textContent = veicolo.targa||'';
     document.getElementById('resultName').textContent  = veicolo.ragione_sociale || cliente?.ragione_sociale || '—';
-    // Badge piattaforma (supporta più piattaforme)
+    // Badge piattaforma
     const pBadge = document.getElementById('piattaformaBadge');
-    const piattParts = getPiattNums(veicolo.piattaforma);
-    if (piattParts.length === 1) {
-      const pp = piattParts[0];
-      pBadge.className = 'piattaforma-badge show p'+pp.num;
-      const lbl = pp.raw.toUpperCase()==='POSIZIO'?'POS':pp.raw.toUpperCase()==='SNAPROUTE'?'SNAP':pp.num||pp.raw;
-      pBadge.innerHTML = `<span style="font-size:10px;opacity:.7;margin-bottom:2px">PIATTAFORMA</span><span style="font-size:18px;font-weight:900">${lbl}</span>`;
-    } else if (piattParts.length > 1) {
-      pBadge.className = 'piattaforma-badge show p1';
-      pBadge.innerHTML = `<span style="font-size:9px;opacity:.7;margin-bottom:5px">PIATTAFORME</span><div style="display:flex;gap:4px;flex-wrap:wrap;">${piattParts.map(pp=>{
-        const lbl=pp.raw.toUpperCase()==='POSIZIO'?'POS':pp.raw.toUpperCase()==='SNAPROUTE'?'SNAP':`P${pp.num}`;
-        return `<span class="piatt-chip p${pp.num}">${lbl}</span>`;
-      }).join('')}</div>`;
+    const pRaw = (veicolo.piattaforma||'').toLowerCase().trim();
+    let pNum = 0, pClass = '';
+    if (pRaw.includes('guardone') || pRaw === 'piattaforma 2') { pNum=2; pClass='p2'; }
+    else if (pRaw.includes('watch') || pRaw === 'piattaforma 3') { pNum=3; pClass='p3'; }
+    else if (pRaw !== '') { pNum=1; pClass='p1'; }
+    if (pNum) {
+      pBadge.className = 'piattaforma-badge show ' + pClass;
+      pBadge.innerHTML = `<span style="font-size:10px;opacity:.7;margin-bottom:2px">PIATTAFORMA</span><span style="font-size:20px">${pNum}</span>`;
     } else {
       pBadge.className = 'piattaforma-badge';
       pBadge.innerHTML = '';
@@ -1771,7 +1564,7 @@
     // Badge stato
     const sBadge = document.getElementById('statoBadge');
     const sRaw = (veicolo.stato||'').trim().toLowerCase();
-    const statoIcons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣','in attesa di attivazione':'🟡'};
+    const statoIcons = {'in corso':'🟢','sospeso':'🟠','archiviato':'⬜','bloccato':'🔴','disattivato':'⚫','furto':'🚨','revocato':'🟣'};
     if (sRaw) {
       const sCls = 's-'+sRaw.replace(/ /g,'');
       sBadge.className = 'stato-badge show ' + sCls;
@@ -1812,7 +1605,7 @@
         ${row('Modello', veicolo.modello)}
         ${row('Colore', veicolo.colore)}
         ${row('Tipo Mezzo', veicolo.tipo_mezzo)}
-        ${row('Piattaforma', getPiattaforme(veicolo.piattaforma).join(', ') || null)}
+        ${row('Piattaforma', veicolo.piattaforma)}
         ${row('Numero Contratto', veicolo.numero_contratto)}
         ${row('Articolo', veicolo.articolo)}
         ${row('Attivazione', fmtDate(veicolo.data_attivazione))}
@@ -2462,26 +2255,28 @@
 
   // Supabase helpers
   async function sbPost(path, data) {
-    const res = await sbFetch(SUPABASE_URL + path, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+    const res = await fetch(SUPABASE_URL + path, {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+token,'Prefer':'return=representation'},
       body: JSON.stringify(data)
     });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Errore POST'); }
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message||'Errore POST'); }
     return res.json();
   }
   async function sbPatch(path, data) {
-    const res = await sbFetch(SUPABASE_URL + path, {
-      method: 'PATCH',
-      headers: {'Content-Type': 'application/json', 'Prefer': 'return=representation'},
+    const res = await fetch(SUPABASE_URL + path, {
+      method:'PATCH', headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,
+        'Authorization':'Bearer '+token,'Prefer':'return=representation'},
       body: JSON.stringify(data)
     });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Errore PATCH'); }
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message||'Errore PATCH'); }
     return res.json();
   }
   async function sbDelete(path) {
-    const res = await sbFetch(SUPABASE_URL + path, {method: 'DELETE'});
-    if (!res.ok) { const e = await res.json(); throw new Error(e.message || 'Errore DELETE'); }
+    const res = await fetch(SUPABASE_URL + path, {
+      method:'DELETE', headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token}
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.message||'Errore DELETE'); }
   }
 
   // Tab switching
@@ -2536,7 +2331,7 @@
       return `<tr style="cursor:pointer" onclick="openTelaioEdit('${r.id}')" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
         <td style="font-family:'Courier New';font-weight:700">${r.numero_telaio||'—'}</td>
         <td>${r.ragione_sociale||'—'}</td>
-        <td>${r.data_inserimento_telaio ? r.data_inserimento_telaio.substring(0,10).split('-').reverse().join('/') : '—'}</td>
+        <td>${r.data_inserimento_telaio||'—'}</td>
         <td>${giorniCell}</td>
         <td>${r.piattaforma||'—'}</td>
         <td>${r.stato||'—'}</td>
@@ -2653,8 +2448,8 @@
 
   // ── VEICOLI TABLE ─────────────────────────────────
   let _veicoli=[], _veicoli_filtered=[], _vPage=0, _veicoliCache={}; const V_PER_PAGE=50;
-  let _pfActives = new Set(['all']);
-  let _sfActives = new Set(['all']);
+  let _pfActive = 'all';
+  let _sfActive = 'all';
   async function loadVeicoliTable() {
     const tbody = document.getElementById('gestVeicoliBody');
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">⏳ Caricamento...</td></tr>';
@@ -2671,36 +2466,7 @@
     if (!s) return 0;
     if (s.includes('guardone') || s.includes('piattaforma 2')) return 2;
     if (s.includes('watch') || s.includes('piattaforma 3')) return 3;
-    if (s === 'posizio') return 4;
-    if (s === 'snaproute') return 5;
     return 1;
-  }
-  function getPiattaforme(piattaforma) {
-    return (piattaforma||'').split('|').map(p=>p.trim()).filter(Boolean);
-  }
-  function getPiattNums(piattaforma) {
-    return getPiattaforme(piattaforma).map(p => ({ raw: p, num: getPiattNum(p) }));
-  }
-  const _PIATT_CB_MAP = [
-    {id:'mvP_p1',  val:'Piattaforma 1'},
-    {id:'mvP_p2',  val:'Piattaforma 2'},
-    {id:'mvP_p3',  val:'Piattaforma 3'},
-    {id:'mvP_posizio',   val:'POSIZIO'},
-    {id:'mvP_snaproute', val:'SNAPROUTE'},
-  ];
-  function setMvPiattaforme(piattaforma) {
-    const vals = getPiattaforme(piattaforma).map(p=>p.toLowerCase());
-    _PIATT_CB_MAP.forEach(({id, val}) => {
-      const cb = document.getElementById(id);
-      if (cb) cb.checked = vals.includes(val.toLowerCase());
-    });
-  }
-  function getMvPiattaforme() {
-    const checked = _PIATT_CB_MAP.map(({id,val}) => {
-      const cb = document.getElementById(id);
-      return (cb && cb.checked) ? val : '';
-    }).filter(Boolean);
-    return checked.length ? checked.join('|') : null;
   }
   function applyVeicoliFilters() {
     const q = document.getElementById('gestVeicoliSearch').value.toLowerCase();
@@ -2711,55 +2477,32 @@
       (v.ragione_sociale||'').toLowerCase().includes(q) ||
       (v.marca||'').toLowerCase().includes(q)
     );
-    if (!_pfActives.has('all')) {
-      list = list.filter(v => {
-        if (_pfActives.has('none') && (!v.piattaforma || v.piattaforma.trim() === '')) return true;
-        const nums = getPiattNums(v.piattaforma);
-        const parts = getPiattaforme(v.piattaforma);
-        if (_pfActives.has('p2') && nums.some(pp=>pp.num===2)) return true;
-        if (_pfActives.has('p3') && nums.some(pp=>pp.num===3)) return true;
-        if (_pfActives.has('p1') && nums.some(pp=>pp.num===1)) return true;
-        if (_pfActives.has('posizio') && parts.some(p=>p.toUpperCase()==='POSIZIO')) return true;
-        if (_pfActives.has('snaproute') && parts.some(p=>p.toUpperCase()==='SNAPROUTE')) return true;
-        return false;
-      });
-    }
-    if (!_sfActives.has('all')) {
-      list = list.filter(v => {
-        if (_sfActives.has('none') && (!v.stato || v.stato.trim() === '')) return true;
-        const sRaw = (v.stato||'').trim().toLowerCase();
-        return _sfActives.has(sRaw);
-      });
+    if (_pfActive === 'p2') list = list.filter(v => getPiattNum(v.piattaforma) === 2);
+    else if (_pfActive === 'p3') list = list.filter(v => getPiattNum(v.piattaforma) === 3);
+    else if (_pfActive === 'p1') list = list.filter(v => getPiattNum(v.piattaforma) === 1);
+    else if (_pfActive === 'none') list = list.filter(v => !v.piattaforma || v.piattaforma.trim() === '');
+    if (_sfActive !== 'all') {
+      if (_sfActive === 'none') list = list.filter(v => !v.stato || v.stato.trim() === '');
+      else list = list.filter(v => (v.stato||'').trim().toLowerCase() === _sfActive);
     }
     _veicoli_filtered = list; _vPage=0; renderVeicoliTable();
   }
   function filterVeicoliTable() { applyVeicoliFilters(); }
   function filterByStato(key) {
-    const keyToId = {'all':'all','in corso':'incorso','sospeso':'sospeso','archiviato':'archiviato','bloccato':'bloccato','disattivato':'disattivato','furto':'furto','revocato':'revocato','in attesa di attivazione':'inattesadiattivazione','none':'none'};
-    if (key === 'all') {
-      _sfActives = new Set(['all']);
-    } else {
-      _sfActives.delete('all');
-      if (_sfActives.has(key)) { _sfActives.delete(key); if (_sfActives.size === 0) _sfActives.add('all'); }
-      else _sfActives.add(key);
-    }
+    _sfActive = key;
+    // Map stato value → button id suffix
+    const keyToId = {'all':'all','in corso':'incorso','sospeso':'sospeso','archiviato':'archiviato','bloccato':'bloccato','disattivato':'disattivato','furto':'furto','revocato':'revocato','none':'none'};
     Object.keys(keyToId).forEach(k => {
       const btn = document.getElementById('sfBtn-'+keyToId[k]);
-      if (btn) btn.classList.toggle('active', _sfActives.has(k));
+      if (btn) btn.classList.toggle('active', k === key);
     });
     applyVeicoliFilters();
   }
   function filterByPiattaforma(key) {
-    if (key === 'all') {
-      _pfActives = new Set(['all']);
-    } else {
-      _pfActives.delete('all');
-      if (_pfActives.has(key)) { _pfActives.delete(key); if (_pfActives.size === 0) _pfActives.add('all'); }
-      else _pfActives.add(key);
-    }
-    ['all','p2','p3','p1','pnone','posizio','snaproute'].forEach(k => {
+    _pfActive = key;
+    ['all','p2','p3','p1','pnone'].forEach(k => {
       const btn = document.getElementById('pfBtn-'+k);
-      if (btn) btn.classList.toggle('active', _pfActives.has(k));
+      if (btn) btn.classList.toggle('active', k === key);
     });
     applyVeicoliFilters();
   }
@@ -2774,9 +2517,11 @@
     if (pfCount) pfCount.textContent = `${_veicoli_filtered.length} targhe`;
     document.getElementById('gestVeicoliBody').innerHTML = slice.length ? slice.map(v => {
       _veicoliCache[v.id] = v;
-      const piattArr = getPiattNums(v.piattaforma);
-      const pChip = piattArr.length
-        ? piattArr.map(pp=>{const lbl=pp.raw.toUpperCase()==='POSIZIO'?'POS':pp.raw.toUpperCase()==='SNAPROUTE'?'SNAP':`P${pp.num}`;return `<span class="piatt-chip p${pp.num}">${lbl}</span>`;}).join(' ')
+      const pn = getPiattNum(v.piattaforma);
+      const pRawChip = (v.piattaforma||'').trim();
+      const pLabel = pRawChip.toUpperCase() === 'POSIZIO' ? 'POS' : pRawChip.toUpperCase() === 'SNAPROUTE' ? 'SNAP' : (pRawChip ? `P${pn}` : '—');
+      const pChip = pRawChip
+        ? `<span class="piatt-chip p${pn}">${pLabel}</span>`
         : `<span class="piatt-chip pnone">—</span>`;
       const sRaw = (v.stato||'').trim().toLowerCase();
       const sCls = sRaw ? 's-'+sRaw.replace(/ /g,''): '';
@@ -2932,7 +2677,7 @@
     f('mv_data_termine', v?.data_termine?v.data_termine.substring(0,10):'');
     f('mv_data_contratto', v?.data_contratto?v.data_contratto.substring(0,10):'');
     f('mv_tipo_contratto', v?.tipo_contratto||'');
-    setMvPiattaforme(v?.piattaforma||'');
+    f('mv_piattaforma', v?.piattaforma||'');
     f('mv_stato', v?.stato||'');
     f('mv_installatore', v?.installatore); f('mv_seriale', v?.seriale_periferica);
     f('mv_periferica', v?.periferica); f('mv_uid_gps', v?.uid_gps); f('mv_phone_gps', v?.phone_gps);
@@ -3098,7 +2843,7 @@
       data_termine: document.getElementById('mv_data_termine').value||null,
       data_contratto: document.getElementById('mv_data_contratto').value||null,
       tipo_contratto: document.getElementById('mv_tipo_contratto').value||null,
-      piattaforma: getMvPiattaforme(),
+      piattaforma: document.getElementById('mv_piattaforma').value||null,
       stato: document.getElementById('mv_stato').value||null,
       installatore: document.getElementById('mv_installatore').value||null,
       seriale_periferica: document.getElementById('mv_seriale').value||null,
@@ -3197,8 +2942,8 @@
       provincia: document.getElementById('mc_provincia').value||null,
       partita_iva: document.getElementById('mc_piva').value||null,
       telefono: document.getElementById('mc_tel').value||null, fax: document.getElementById('mc_fax').value||null,
-      email: document.getElementById('mc_email').value||null,
       descriz_pagamento: document.getElementById('mc_pagamento').value||null
+      // email non presente nella tabella clienti del DB
     };
     try {
       if (id) { await sbPatch(`/rest/v1/clienti?id=eq.${id}`, data); }
@@ -3457,7 +3202,7 @@
     f('mv_data_termine', v.data_termine ? v.data_termine.substring(0, 10) : '');
     f('mv_data_contratto', v.data_contratto ? v.data_contratto.substring(0, 10) : '');
     f('mv_tipo_contratto', v.tipo_contratto || '');
-    setMvPiattaforme(v.piattaforma || '');
+    f('mv_piattaforma', v.piattaforma || '');
     f('mv_stato', v.stato || '');
     f('mv_installatore', v.installatore);
     f('mv_seriale', v.seriale_periferica);
@@ -3644,7 +3389,7 @@
               <span style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,.5);color:#fca5a5;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">DISDETTA</span>
             </div>
             <div style="font-size:13px;color:var(--text2);">${r.ragione_sociale || '—'}</div>
-            <div style="font-size:12px;color:var(--text3);margin-top:2px;">${r.data_disdetta ? 'Data: ' + r.data_disdetta.substring(0,10).split('-').reverse().join('/') : ''} ${r.note_disdetta ? '· ' + r.note_disdetta : ''}</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;">${r.data_disdetta ? 'Data: ' + r.data_disdetta : ''} ${r.note_disdetta ? '· ' + r.note_disdetta : ''}</div>
           </div>
           <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">
             ${pdfBtn}
