@@ -13,7 +13,7 @@
     }
     *{box-sizing:border-box;margin:0;padding:0;}
     body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;
-      min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+      min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden;}
     .bg{position:fixed;inset:0;z-index:0;
       background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(30,144,255,.18) 0%,transparent 70%),
         radial-gradient(ellipse 40% 40% at 85% 80%,rgba(0,96,223,.12) 0%,transparent 60%),#020814;}
@@ -35,17 +35,23 @@
       background:linear-gradient(135deg,#fff 40%,#a5b4fc);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .logo-sub{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;}
+
     /* Tabs */
     .tabs{display:flex;gap:4px;background:rgba(255,255,255,.05);border-radius:12px;padding:4px;margin-bottom:28px;}
     .tab-btn{flex:1;padding:10px;border-radius:9px;border:none;background:none;
       color:rgba(255,255,255,.45);font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;}
     .tab-btn.active{background:rgba(30,144,255,.2);color:#93c5fd;font-weight:700;}
-    /* Form */
+
+    /* Form sections */
     .form-section{display:none;}
     .form-section.active{display:block;}
+
+    /* Fields */
     .field{margin-bottom:16px;}
-    .field label{display:block;font-size:11px;font-weight:600;color:rgba(255,255,255,.45);
+    .field label{display:flex;align-items:center;justify-content:space-between;
+      font-size:11px;font-weight:600;color:rgba(255,255,255,.45);
       text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+    .field label a{font-size:11px;font-weight:500;color:#93c5fd;text-transform:none;letter-spacing:0;}
     .field input,.field select,.field textarea{
       width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
       border-radius:10px;color:#fff;padding:12px 16px;font-size:14px;
@@ -54,22 +60,54 @@
       border-color:rgba(30,144,255,.6);box-shadow:0 0 0 3px rgba(30,144,255,.12);}
     .field input::placeholder{color:rgba(255,255,255,.2);}
     .field select option{background:#0d1322;color:#fff;}
+
+    /* Password wrapper con occhio */
+    .pw-wrap{position:relative;}
+    .pw-wrap input{padding-right:46px;}
+    .pw-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);
+      background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;
+      font-size:17px;line-height:1;padding:4px;transition:color .15s;}
+    .pw-eye:hover{color:rgba(255,255,255,.7);}
+
+    /* Buttons */
     .btn{width:100%;padding:14px;border-radius:12px;border:none;
       background:linear-gradient(135deg,#1e90ff,#3b82f6);
       color:#fff;font-size:15px;font-weight:700;cursor:pointer;
       box-shadow:0 4px 20px rgba(30,144,255,.35);transition:all .2s;margin-top:4px;}
     .btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(30,144,255,.4);}
-    .btn:disabled{opacity:.5;transform:none;}
+    .btn:disabled{opacity:.5;transform:none;cursor:not-allowed;}
+
+    /* Messages */
     .msg{padding:12px 16px;border-radius:10px;font-size:13px;text-align:center;margin-top:16px;display:none;}
-    .msg.error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
+    .msg.error  {background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
     .msg.success{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;}
     .msg.warning{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fcd34d;}
-    .divider{text-align:center;font-size:12px;color:rgba(255,255,255,.2);margin:16px 0;}
+
+    /* Spinner */
+    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
+      border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
     .back-link{text-align:center;margin-top:20px;font-size:13px;color:rgba(255,255,255,.4);}
     .back-link a{color:#93c5fd;}
-    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
-      border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;}
-    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* Reset password overlay */
+    .reset-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
+      display:none;align-items:center;justify-content:center;}
+    .reset-overlay.open{display:flex;}
+    .reset-card{background:#0d1322;border:1px solid rgba(255,255,255,.1);border-radius:20px;
+      padding:36px;width:100%;max-width:400px;margin:24px;box-shadow:0 24px 60px rgba(0,0,0,.7);}
+    .reset-card h3{font-size:17px;font-weight:700;margin-bottom:8px;}
+    .reset-card p{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px;line-height:1.5;}
+    .reset-btns{display:flex;gap:10px;margin-top:20px;}
+    .btn-cancel{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+      background:none;color:rgba(255,255,255,.5);font-size:14px;cursor:pointer;transition:all .15s;}
+    .btn-cancel:hover{border-color:rgba(255,255,255,.25);color:#fff;}
+    .btn-send{flex:2;padding:12px;border-radius:10px;border:none;
+      background:linear-gradient(135deg,#1e90ff,#3b82f6);color:#fff;font-size:14px;
+      font-weight:700;cursor:pointer;transition:all .2s;}
+    .btn-send:hover{opacity:.9;}
+    .btn-send:disabled{opacity:.5;cursor:not-allowed;}
   </style>
 </head>
 <body>
@@ -90,21 +128,28 @@
       <button class="tab-btn" onclick="switchTab('register')">Richiedi accesso</button>
     </div>
 
-    <!-- LOGIN -->
+    <!-- ── LOGIN ─────────────────────────────────────── -->
     <div class="form-section active" id="tab-login">
       <div class="field">
         <label>Email</label>
         <input type="email" id="l_email" placeholder="nome@futursat.it" autocomplete="email">
       </div>
       <div class="field">
-        <label>Password</label>
-        <input type="password" id="l_password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <label>
+          Password
+          <a href="#" onclick="openReset();return false;">Password dimenticata?</a>
+        </label>
+        <div class="pw-wrap">
+          <input type="password" id="l_password" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="pw-eye" type="button" onclick="togglePw('l_password',this)" title="Mostra/nascondi">👁</button>
+        </div>
       </div>
       <button class="btn" id="loginBtn" onclick="doLogin()">Accedi</button>
       <div class="msg" id="loginMsg"></div>
     </div>
 
-    <!-- REGISTRAZIONE -->
+    <!-- ── REGISTRAZIONE ──────────────────────────────── -->
     <div class="form-section" id="tab-register">
       <div class="field">
         <label>Nome completo *</label>
@@ -116,7 +161,10 @@
       </div>
       <div class="field">
         <label>Password *</label>
-        <input type="password" id="r_password" placeholder="Minimo 8 caratteri">
+        <div class="pw-wrap">
+          <input type="password" id="r_password" placeholder="Minimo 8 caratteri">
+          <button class="pw-eye" type="button" onclick="togglePw('r_password',this)" title="Mostra/nascondi">👁</button>
+        </div>
       </div>
       <div class="field">
         <label>Ruolo richiesto</label>
@@ -128,13 +176,17 @@
       </div>
       <div class="field">
         <label>Motivazione (opzionale)</label>
-        <textarea id="r_note" rows="2" placeholder="Spiega brevemente per quale motivo hai bisogno dell'accesso…"
-          style="resize:vertical;min-height:70px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;padding:12px 16px;font-size:14px;font-family:inherit;width:100%;outline:none;"></textarea>
+        <textarea id="r_note" rows="2"
+          placeholder="Spiega brevemente per quale motivo hai bisogno dell'accesso…"
+          style="resize:vertical;min-height:70px;background:rgba(255,255,255,.05);
+            border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;
+            padding:12px 16px;font-size:14px;font-family:inherit;width:100%;outline:none;"></textarea>
       </div>
       <button class="btn" id="registerBtn" onclick="doRegister()">Invia richiesta</button>
       <div class="msg" id="registerMsg"></div>
       <p style="font-size:11px;color:rgba(255,255,255,.25);text-align:center;margin-top:12px">
-        La tua richiesta sarà approvata dall'amministratore.<br>Riceverai una notifica quando il tuo account sarà attivo.
+        La tua richiesta sarà approvata dall'amministratore.<br>
+        Riceverai accesso quando il tuo account sarà attivato.
       </p>
     </div>
 
@@ -143,33 +195,71 @@
     </div>
   </div>
 
-  <script type="module">
-    import { supabase }             from './js/supabaseClient.js';
-    import { login, requestRegistration, getCurrentProfile } from './js/modules/auth.js';
-    import { logAction }            from './js/modules/auditLog.js';
+  <!-- ── RESET PASSWORD OVERLAY ─────────────────────── -->
+  <div class="reset-overlay" id="resetOverlay">
+    <div class="reset-card">
+      <h3>🔑 Recupera password</h3>
+      <p>Inserisci la tua email. Ti invieremo un link per impostare una nuova password.</p>
+      <div class="field">
+        <label>Email account</label>
+        <input type="email" id="reset_email" placeholder="nome@futursat.it">
+      </div>
+      <div class="msg" id="resetMsg"></div>
+      <div class="reset-btns">
+        <button class="btn-cancel" onclick="closeReset()">Annulla</button>
+        <button class="btn-send" id="resetBtn" onclick="doReset()">Invia link →</button>
+      </div>
+    </div>
+  </div>
 
-    // Controlla se già loggato
+  <script type="module">
+    import { supabase }          from './js/supabaseClient.js';
+    import { login, requestRegistration, getCurrentProfile } from './js/modules/auth.js';
+    import { logAction }         from './js/modules/auditLog.js';
+
+    // ── Controlla hash per recovery ───────────────────
+    const hashParams = new URLSearchParams(location.hash.replace('#',''));
+    if (hashParams.get('type') === 'recovery') {
+      showNewPasswordForm();
+    }
+
+    // ── Controlla se già loggato + URL params ─────────
     (async () => {
+      const params = new URLSearchParams(location.search);
+
+      // Auto-switch tab
+      if (params.get('tab') === 'register') switchTab('register');
+
       const { data:{ session } } = await supabase.auth.getSession();
-      if (session) {
+      // Se è una recovery session non reindirizzare
+      if (session && hashParams.get('type') !== 'recovery') {
         const p = await getCurrentProfile();
         if (p?.stato_account === 'approved') { window.location.href = '/gestionale.html'; return; }
       }
-      // Mostra messaggio da parametro URL
-      const params = new URLSearchParams(location.search);
       const status = params.get('status');
-      if (status === 'pending')   showMsg('loginMsg', 'warning', '⏳ Il tuo account è in attesa di approvazione dall\'amministratore.');
-      if (status === 'rejected')  showMsg('loginMsg', 'error',   '❌ La tua richiesta di accesso è stata rifiutata.');
-      if (status === 'suspended') showMsg('loginMsg', 'error',   '🚫 Il tuo account è stato sospeso.');
-      if (status === 'none')      showMsg('loginMsg', 'warning', '⚠️ Profilo non trovato. Contatta l\'amministratore.');
+      if (status === 'pending')   showMsg('loginMsg','warning','⏳ Il tuo account è in attesa di approvazione.');
+      if (status === 'rejected')  showMsg('loginMsg','error',  '❌ La tua richiesta di accesso è stata rifiutata.');
+      if (status === 'suspended') showMsg('loginMsg','error',  '🚫 Il tuo account è stato sospeso.');
+      if (status === 'none')      showMsg('loginMsg','warning','⚠️ Profilo non trovato. Contatta l\'amministratore.');
     })();
 
+    // ── Tabs ──────────────────────────────────────────
     window.switchTab = (tab) => {
-      document.querySelectorAll('.tab-btn').forEach((b,i)  => b.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
-      document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
-      document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+      document.querySelectorAll('.tab-btn').forEach((b,i) =>
+        b.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register')));
+      document.getElementById('tab-login').classList.toggle('active',    tab==='login');
+      document.getElementById('tab-register').classList.toggle('active', tab==='register');
     };
 
+    // ── Mostra/nascondi password ──────────────────────
+    window.togglePw = (inputId, btn) => {
+      const inp = document.getElementById(inputId);
+      const show = inp.type === 'password';
+      inp.type = show ? 'text' : 'password';
+      btn.textContent = show ? '🙈' : '👁';
+    };
+
+    // ── Login ─────────────────────────────────────────
     window.doLogin = async () => {
       const btn   = document.getElementById('loginBtn');
       const email = document.getElementById('l_email').value.trim();
@@ -182,12 +272,13 @@
         await logAction({ azione:'LOGIN', modulo:'auth', record_label: email });
         window.location.href = '/gestionale.html';
       } catch(e) {
-        showMsg('loginMsg', 'error', e.message);
+        showMsg('loginMsg','error', e.message);
         btn.disabled = false;
         btn.textContent = 'Accedi';
       }
     };
 
+    // ── Registrazione ─────────────────────────────────
     window.doRegister = async () => {
       const btn  = document.getElementById('registerBtn');
       const name = document.getElementById('r_name').value.trim();
@@ -195,7 +286,7 @@
       const pass = document.getElementById('r_password').value;
       const role = document.getElementById('r_role').value;
       const note = document.getElementById('r_note').value.trim();
-      if (!name || !mail || !pass) { showMsg('registerMsg','error','Compila i campi obbligatori.'); return; }
+      if (!name || !mail || !pass) { showMsg('registerMsg','error','Compila tutti i campi obbligatori.'); return; }
       if (pass.length < 8) { showMsg('registerMsg','error','La password deve essere di almeno 8 caratteri.'); return; }
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span>Invio richiesta…';
@@ -210,9 +301,93 @@
       }
     };
 
+    // ── Reset password ────────────────────────────────
+    window.openReset  = () => document.getElementById('resetOverlay').classList.add('open');
+    window.closeReset = () => {
+      document.getElementById('resetOverlay').classList.remove('open');
+      document.getElementById('resetMsg').style.display = 'none';
+      document.getElementById('reset_email').value = '';
+      const btn = document.getElementById('resetBtn');
+      btn.disabled = false;
+      btn.textContent = 'Invia link →';
+    };
+
+    window.doReset = async () => {
+      const btn   = document.getElementById('resetBtn');
+      const email = document.getElementById('reset_email').value.trim();
+      if (!email) { showMsg('resetMsg','error','Inserisci la tua email.'); return; }
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Invio…';
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/login.html?reset=1',
+        });
+        if (error) throw error;
+        showMsg('resetMsg','success','✅ Email inviata! Controlla la tua casella (anche la cartella spam).');
+        btn.textContent = 'Email inviata ✓';
+      } catch(e) {
+        showMsg('resetMsg','error', e.message);
+        btn.disabled = false;
+        btn.textContent = 'Invia link →';
+      }
+    };
+
+    // ── Nuova password dopo recovery ─────────────────
+    window.showNewPasswordForm = () => {
+      document.querySelector('.tabs').style.display = 'none';
+      document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+      const card = document.querySelector('.card');
+      const div = document.createElement('div');
+      div.id = 'tab-newpw';
+      div.className = 'form-section active';
+      div.innerHTML = `
+        <p style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.5">
+          Imposta la tua nuova password per accedere al gestionale.
+        </p>
+        <div class="field">
+          <label>Nuova password</label>
+          <div class="pw-wrap">
+            <input type="password" id="np_password" placeholder="Minimo 8 caratteri">
+            <button class="pw-eye" type="button" onclick="togglePw('np_password',this)">👁</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Conferma password</label>
+          <div class="pw-wrap">
+            <input type="password" id="np_confirm" placeholder="Ripeti la password">
+            <button class="pw-eye" type="button" onclick="togglePw('np_confirm',this)">👁</button>
+          </div>
+        </div>
+        <button class="btn" id="newpwBtn" onclick="doNewPassword()">Imposta nuova password</button>
+        <div class="msg" id="newpwMsg"></div>
+      `;
+      card.insertBefore(div, card.querySelector('.back-link'));
+    };
+
+    window.doNewPassword = async () => {
+      const btn  = document.getElementById('newpwBtn');
+      const pw1  = document.getElementById('np_password').value;
+      const pw2  = document.getElementById('np_confirm').value;
+      if (pw1.length < 8) { showMsg('newpwMsg','error','La password deve essere di almeno 8 caratteri.'); return; }
+      if (pw1 !== pw2)    { showMsg('newpwMsg','error','Le password non corrispondono.'); return; }
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Aggiornamento…';
+      try {
+        const { error } = await supabase.auth.updateUser({ password: pw1 });
+        if (error) throw error;
+        showMsg('newpwMsg','success','✅ Password aggiornata! Reindirizzamento…');
+        setTimeout(() => { window.location.href = '/gestionale.html'; }, 1500);
+      } catch(e) {
+        showMsg('newpwMsg','error', e.message);
+        btn.disabled = false;
+        btn.textContent = 'Imposta nuova password';
+      }
+    };
+
+    // ── Helper ────────────────────────────────────────
     function showMsg(id, type, text) {
       const el = document.getElementById(id);
-      el.className = 'msg ' + type;
+      el.className  = 'msg ' + type;
       el.textContent = text;
       el.style.display = 'block';
     }
