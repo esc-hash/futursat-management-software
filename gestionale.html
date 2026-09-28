@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Futursat — Gestionale</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <nav class="nav-sidebar" id="sidebar">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🛰</div>
+      <div>
+        <div class="nav-logo-text">FUTURSAT</div>
+        <div class="nav-logo-sub">GESTIONALE v2</div>
+      </div>
+    </div>
+
+    <div class="nav-items" id="nav-items">
+      <!-- Popolato da app.js in base al ruolo -->
+    </div>
+
+    <div class="nav-user-section">
+      <button class="nav-user-btn" id="userBtn" onclick="toggleUserDropdown()">
+        <div class="nav-user-avatar" id="userAvatar">?</div>
+        <div class="nav-user-info">
+          <div class="nav-user-name"  id="userName">Caricamento…</div>
+          <div class="nav-user-email" id="userEmail">—</div>
+        </div>
+        <span class="nav-user-chevron">▲</span>
+      </button>
+      <div class="nav-dropdown" id="userDropdown">
+        <button class="nav-dd-item" onclick="navigate('home')">🏠 Home</button>
+        <div class="nav-dd-divider"></div>
+        <button class="nav-dd-item danger" onclick="logout()">🚪 Esci</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <div class="main-wrap">
+    <header class="topbar">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="topbarTitle">Futursat</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifiche attività">
+          🔔
+          <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="page-content" class="content">
+      <div class="page-loading">Avvio in corso…</div>
+    </main>
+  </div>
+
+  <!-- ── Notification panel ───────────────────────────────── -->
+  <div class="notif-panel" id="notifPanel" style="display:none">
+    <div class="notif-panel-header">
+      <span>Attività recenti</span>
+      <button onclick="markAllRead()">✓ Segna tutto letto</button>
+    </div>
+    <div class="notif-list" id="notifList">
+      <div style="padding:20px;text-align:center;color:var(--text3)">Nessuna notifica</div>
+    </div>
+  </div>
+  <div class="notif-overlay" id="notifOverlay" onclick="closeNotifPanel()" style="display:none"></div>
+
+  <!-- ── Modal globale ────────────────────────────────────── -->
+  <div class="modal-overlay" id="modalOverlay" onclick="event.target===this&&closeModal()" style="display:none">
+    <div class="modal-card" id="modalCard">
+      <div class="modal-head"   id="modalHead"></div>
+      <div class="modal-body"   id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
