@@ -9,6 +9,7 @@ import documentiMod      from './modules/documenti.js';
 import auditMod          from './modules/auditLog.js';
 import collaboratoriMod  from './modules/collaboratori.js';
 import ammMod            from './modules/amministrazione.js';
+import gestioneDatiMod   from './modules/gestioneDati.js';
 
 // ── Home dashboard ──────────────────────────────────────────
 const homeMod = {
@@ -48,6 +49,7 @@ function _renderHomeActions(profile) {
     { icon:'🚛', title:'Cerca Targa',    desc:'Ricerca rapida per targa',      route:'veicoli' },
     { icon:'🏢', title:'Clienti',        desc:'Anagrafica e veicoli cliente',   route:'clienti' },
     { icon:'📁', title:'Documenti',      desc:'Archivio PDF e immagini',        route:'documenti' },
+    { icon:'📊', title:'Gestione Dati',   desc:'Ricerca, filtri, export/import', route:'gestioneDati' },
     { icon:'📋', title:'Registro',       desc:'Cronologia attività',            route:'audit',         roles: MACRO.ADMIN_AMM },
     { icon:'⚙️', title:'Amministrazione',desc:'Utenti e configurazioni',        route:'amministrazione', roles: MACRO.ADMIN_AMM },
     { icon:'👥', title:'Area Operativa', desc:'Dashboard collaboratori',        route:'collaboratori',  roles: MACRO.OPERATIVA },
@@ -74,6 +76,7 @@ async function buildNav(profile) {
     { route:'veicoli',           icon:'🚛', label:'Ricerca Targa' },
     { route:'clienti',           icon:'🏢', label:'Clienti' },
     { route:'documenti',         icon:'📁', label:'Documenti' },
+    { route:'gestioneDati',      icon:'📊', label:'Gestione Dati' },
     ...(isOp  ? [{ route:'collaboratori',  icon:'👥', label:'Area Operativa' }] : []),
     ...(isAmm ? [
       { sep: true, label:'AMMINISTRAZIONE' },
@@ -179,7 +182,7 @@ async function boot() {
   }
 
   // Register modules
-  [homeMod, veicoliMod, clientiMod, documentiMod, auditMod, collaboratoriMod, ammMod]
+  [homeMod, veicoliMod, clientiMod, documentiMod, auditMod, collaboratoriMod, ammMod, gestioneDatiMod]
     .forEach(m => register(m));
 
   await buildNav(profile);
