@@ -7,90 +7,138 @@
   <meta http-equiv="Pragma" content="no-cache">
   <title>Futursat — Accesso</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#020814; --surface:rgba(255,255,255,0.03); --border:rgba(255,255,255,0.08);
-      --accent:#1e90ff; --green:#10b981; --red:#ef4444; --text:#ffffff; --text2:rgba(255,255,255,0.55);
+      --bg:#F8FAFC; --surface:#FFFFFF; --border:#E2E8F0; --border2:#CBD5E1;
+      --accent:#2563EB; --accent-h:#1D4ED8; --accent-lt:#EFF6FF; --glow:rgba(37,99,235,.12);
+      --green:#10B981; --red:#EF4444; --orange:#F59E0B;
+      --text:#0F172A; --text2:#475569; --text3:#94A3B8;
     }
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;
-      min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden;}
-    .bg{position:fixed;inset:0;z-index:0;
-      background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(30,144,255,.18) 0%,transparent 70%),
-        radial-gradient(ellipse 40% 40% at 85% 80%,rgba(0,96,223,.12) 0%,transparent 60%),#020814;}
-    .grid{position:fixed;inset:0;z-index:0;
-      background-image:linear-gradient(rgba(30,144,255,.04) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(30,144,255,.04) 1px,transparent 1px);
-      background-size:60px 60px;
-      mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);}
-    .card{position:relative;z-index:10;width:100%;max-width:440px;margin:24px;
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
-      border-radius:24px;padding:40px;backdrop-filter:blur(20px);
-      box-shadow:0 32px 80px rgba(0,0,0,.6);}
-    .logo{display:flex;align-items:center;margin-bottom:32px;}
-    .logo img{height:52px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 12px rgba(30,144,255,.25));}
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background:var(--bg); color:var(--text);
+      font-family:'Inter', system-ui, sans-serif;
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:24px; -webkit-font-smoothing:antialiased;
+    }
+
+    /* Subtle pattern background */
+    body::before {
+      content:''; position:fixed; inset:0; z-index:0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -5%, rgba(37,99,235,.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 80% 90%, rgba(37,99,235,.04) 0%, transparent 50%);
+    }
+
+    .card {
+      position:relative; z-index:1; width:100%; max-width:420px;
+      background:var(--surface); border:1px solid var(--border); border-radius:20px;
+      padding:36px 36px 28px;
+      box-shadow:0 4px 24px rgba(0,0,0,.06), 0 1px 4px rgba(0,0,0,.04);
+    }
+
+    .logo { display:flex; align-items:center; margin-bottom:28px; }
+    .logo img { height:44px; width:auto; object-fit:contain; }
 
     /* Tabs */
-    .tabs{display:flex;gap:4px;background:rgba(255,255,255,.05);border-radius:12px;padding:4px;margin-bottom:28px;}
-    .tab-btn{flex:1;padding:10px;border-radius:9px;border:none;background:none;
-      color:rgba(255,255,255,.45);font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;}
-    .tab-btn.active{background:rgba(30,144,255,.2);color:#93c5fd;font-weight:700;}
+    .tabs {
+      display:flex; gap:4px; background:var(--bg); border:1px solid var(--border);
+      border-radius:10px; padding:3px; margin-bottom:24px;
+    }
+    .tab-btn {
+      flex:1; padding:9px; border-radius:7px; border:none;
+      background:none; color:var(--text3); font-size:13px; font-weight:500;
+      cursor:pointer; transition:all .18s; font-family:inherit;
+    }
+    .tab-btn.active {
+      background:var(--surface); color:var(--text); font-weight:600;
+      box-shadow:0 1px 4px rgba(0,0,0,.08);
+    }
 
     /* Form sections */
-    .form-section{display:none;}
-    .form-section.active{display:block;}
+    .form-section { display:none; }
+    .form-section.active { display:block; }
 
     /* Fields */
-    .field{margin-bottom:16px;}
-    .field label{display:flex;align-items:center;justify-content:space-between;
-      font-size:11px;font-weight:600;color:rgba(255,255,255,.45);
-      text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-    .field label a{font-size:11px;font-weight:500;color:#93c5fd;text-transform:none;letter-spacing:0;}
-    .field input,.field select,.field textarea{
-      width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
-      border-radius:10px;color:#fff;padding:12px 16px;font-size:14px;
-      font-family:inherit;transition:border-color .18s;outline:none;}
-    .field input:focus,.field select:focus,.field textarea:focus{
-      border-color:rgba(30,144,255,.6);box-shadow:0 0 0 3px rgba(30,144,255,.12);}
-    .field input::placeholder{color:rgba(255,255,255,.2);}
-    .field select option{background:#0d1322;color:#fff;}
+    .field { margin-bottom:14px; }
+    .field-header {
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;
+    }
+    .field-label {
+      font-size:12px; font-weight:500; color:var(--text2);
+    }
+    .field-link {
+      font-size:12px; font-weight:500; color:var(--accent); text-decoration:none; transition:color .15s;
+    }
+    .field-link:hover { color:var(--accent-h); }
+    .field input, .field select, .field textarea {
+      width:100%; background:var(--surface); border:1px solid var(--border);
+      border-radius:8px; color:var(--text); padding:10px 14px; font-size:14px;
+      font-family:inherit; transition:border-color .15s, box-shadow .15s; outline:none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color:var(--accent); box-shadow:0 0 0 3px var(--glow);
+    }
+    .field input::placeholder { color:var(--text3); }
+    .field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:36px; }
+    .field textarea { resize:vertical; min-height:70px; }
 
-    /* Password wrapper con occhio */
-    .pw-wrap{position:relative;}
-    .pw-wrap input{padding-right:46px;}
-    .pw-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);
-      background:none;border:none;color:rgba(255,255,255,.35);cursor:pointer;
-      font-size:17px;line-height:1;padding:4px;transition:color .15s;}
-    .pw-eye:hover{color:rgba(255,255,255,.7);}
+    /* Password wrapper */
+    .pw-wrap { position:relative; }
+    .pw-wrap input { padding-right:44px; }
+    .pw-eye {
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:var(--text3); cursor:pointer;
+      font-size:16px; padding:4px; transition:color .15s;
+    }
+    .pw-eye:hover { color:var(--text2); }
 
-    /* Buttons */
-    .btn{width:100%;padding:14px;border-radius:12px;border:none;
-      background:linear-gradient(135deg,#1e90ff,#3b82f6);
-      color:#fff;font-size:15px;font-weight:700;cursor:pointer;
-      box-shadow:0 4px 20px rgba(30,144,255,.35);transition:all .2s;margin-top:4px;}
-    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(30,144,255,.4);}
-    .btn:disabled{opacity:.5;transform:none;cursor:not-allowed;}
+    /* Button */
+    .btn {
+      width:100%; padding:12px; border-radius:8px; border:none;
+      background:var(--accent); color:#fff;
+      font-size:14px; font-weight:600; cursor:pointer;
+      font-family:inherit; transition:all .18s; margin-top:4px;
+      box-shadow:0 1px 3px rgba(37,99,235,.3);
+    }
+    .btn:hover { background:var(--accent-h); box-shadow:0 4px 12px rgba(37,99,235,.35); transform:translateY(-1px); }
+    .btn:disabled { opacity:.55; transform:none; cursor:not-allowed; }
 
     /* Messages */
-    .msg{padding:12px 16px;border-radius:10px;font-size:13px;text-align:center;margin-top:16px;display:none;}
-    .msg.error  {background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#fca5a5;}
-    .msg.success{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;}
-    .msg.warning{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fcd34d;}
+    .msg {
+      padding:10px 14px; border-radius:8px; font-size:13px; text-align:center;
+      margin-top:14px; display:none; line-height:1.4;
+    }
+    .msg.error   { background:#FEF2F2; border:1px solid rgba(239,68,68,.25);   color:#991B1B; }
+    .msg.success { background:#ECFDF5; border:1px solid rgba(16,185,129,.25);   color:#065F46; }
+    .msg.warning { background:#FFFBEB; border:1px solid rgba(245,158,11,.25);   color:#854D0E; }
 
     /* Spinner */
-    .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
-      border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-right:8px;vertical-align:middle;}
-    @keyframes spin{to{transform:rotate(360deg);}}
+    .spinner {
+      display:inline-block; width:14px; height:14px;
+      border:2px solid rgba(255,255,255,.35); border-top-color:#fff;
+      border-radius:50%; animation:spin .6s linear infinite; margin-right:8px; vertical-align:middle;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
-    .back-link{text-align:center;margin-top:20px;font-size:13px;color:rgba(255,255,255,.4);}
-    .back-link a{color:#93c5fd;}
+    .hint-text {
+      font-size:11px; color:var(--text3); text-align:center; margin-top:12px; line-height:1.5;
+    }
+    .back-link { text-align:center; margin-top:18px; }
+    .back-link a { font-size:13px; color:var(--text3); text-decoration:none; transition:color .15s; }
+    .back-link a:hover { color:var(--accent); }
 
+    /* New password instructions */
+    .recovery-hint {
+      font-size:13px; color:var(--text2); margin-bottom:18px; line-height:1.5;
+      background:var(--accent-lt); border:1px solid rgba(37,99,235,.15);
+      border-radius:8px; padding:12px 14px;
+    }
   </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="grid"></div>
 
   <div class="card">
     <div class="logo">
@@ -102,16 +150,16 @@
       <button class="tab-btn" onclick="switchTab('register')">Richiedi accesso</button>
     </div>
 
-    <!-- ── LOGIN ─────────────────────────────────────── -->
+    <!-- ── LOGIN ──────────────────────────────────────────── -->
     <div class="form-section active" id="tab-login">
       <div class="field">
-        <label>Email</label>
+        <div class="field-header"><span class="field-label">Email</span></div>
         <input type="email" id="l_email" placeholder="nome@futursat.it" autocomplete="email">
       </div>
       <div class="field">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;">Password</span>
-          <a href="reset-password.html" style="font-size:11px;font-weight:500;color:#93c5fd;text-decoration:none;">Password dimenticata?</a>
+        <div class="field-header">
+          <span class="field-label">Password</span>
+          <a href="reset-password.html" class="field-link">Password dimenticata?</a>
         </div>
         <div class="pw-wrap">
           <input type="password" id="l_password" placeholder="••••••••"
@@ -123,25 +171,25 @@
       <div class="msg" id="loginMsg"></div>
     </div>
 
-    <!-- ── REGISTRAZIONE ──────────────────────────────── -->
+    <!-- ── REGISTRAZIONE ──────────────────────────────────── -->
     <div class="form-section" id="tab-register">
       <div class="field">
-        <label>Nome completo *</label>
+        <div class="field-header"><span class="field-label">Nome completo *</span></div>
         <input type="text" id="r_name" placeholder="Mario Rossi">
       </div>
       <div class="field">
-        <label>Email *</label>
+        <div class="field-header"><span class="field-label">Email *</span></div>
         <input type="email" id="r_email" placeholder="mario@esempio.it">
       </div>
       <div class="field">
-        <label>Password *</label>
+        <div class="field-header"><span class="field-label">Password *</span></div>
         <div class="pw-wrap">
           <input type="password" id="r_password" placeholder="Minimo 8 caratteri">
           <button class="pw-eye" type="button" onclick="togglePw('r_password',this)" title="Mostra/nascondi">👁</button>
         </div>
       </div>
       <div class="field">
-        <label>Ruolo richiesto</label>
+        <div class="field-header"><span class="field-label">Ruolo richiesto</span></div>
         <select id="r_role">
           <option value="agente">Agente</option>
           <option value="dipendente">Dipendente</option>
@@ -149,19 +197,14 @@
         </select>
       </div>
       <div class="field">
-        <label>Motivazione (opzionale)</label>
+        <div class="field-header"><span class="field-label">Motivazione (opzionale)</span></div>
         <textarea id="r_note" rows="2"
-          placeholder="Spiega brevemente per quale motivo hai bisogno dell'accesso…"
-          style="resize:vertical;min-height:70px;background:rgba(255,255,255,.05);
-            border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;
-            padding:12px 16px;font-size:14px;font-family:inherit;width:100%;outline:none;"></textarea>
+          placeholder="Spiega brevemente per quale motivo hai bisogno dell'accesso…"></textarea>
       </div>
       <button class="btn" id="registerBtn" onclick="doRegister()">Invia richiesta</button>
       <div class="msg" id="registerMsg"></div>
-      <p style="font-size:11px;color:rgba(255,255,255,.25);text-align:center;margin-top:12px">
-        La tua richiesta sarà approvata dall'amministratore.<br>
-        Riceverai accesso quando il tuo account sarà attivato.
-      </p>
+      <p class="hint-text">La tua richiesta sarà approvata dall'amministratore.<br>
+        Riceverai accesso quando il tuo account sarà attivato.</p>
     </div>
 
     <div class="back-link">
@@ -174,21 +217,18 @@
     import { login, requestRegistration, getCurrentProfile } from './js/modules/auth.js';
     import { logAction }         from './js/modules/auditLog.js';
 
-    // ── Controlla hash per recovery ───────────────────
+    // ── Controlla hash per recovery ──────────────────────────
     const hashParams = new URLSearchParams(location.hash.replace('#',''));
     if (hashParams.get('type') === 'recovery') {
       showNewPasswordForm();
     }
 
-    // ── Controlla se già loggato + URL params ─────────
+    // ── Controlla se già loggato + URL params ────────────────
     (async () => {
       const params = new URLSearchParams(location.search);
-
-      // Auto-switch tab
       if (params.get('tab') === 'register') switchTab('register');
 
       const { data:{ session } } = await supabase.auth.getSession();
-      // Se è una recovery session non reindirizzare
       if (session && hashParams.get('type') !== 'recovery') {
         const p = await getCurrentProfile();
         if (p?.stato_account === 'approved') { window.location.href = '/gestionale.html'; return; }
@@ -200,7 +240,7 @@
       if (status === 'none')      showMsg('loginMsg','warning','⚠️ Profilo non trovato. Contatta l\'amministratore.');
     })();
 
-    // ── Tabs ──────────────────────────────────────────
+    // ── Tabs ─────────────────────────────────────────────────
     window.switchTab = (tab) => {
       document.querySelectorAll('.tab-btn').forEach((b,i) =>
         b.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register')));
@@ -208,7 +248,7 @@
       document.getElementById('tab-register').classList.toggle('active', tab==='register');
     };
 
-    // ── Mostra/nascondi password ──────────────────────
+    // ── Mostra/nascondi password ─────────────────────────────
     window.togglePw = (inputId, btn) => {
       const inp = document.getElementById(inputId);
       const show = inp.type === 'password';
@@ -216,7 +256,7 @@
       btn.textContent = show ? '🙈' : '👁';
     };
 
-    // ── Login ─────────────────────────────────────────
+    // ── Login ────────────────────────────────────────────────
     window.doLogin = async () => {
       const btn   = document.getElementById('loginBtn');
       const email = document.getElementById('l_email').value.trim();
@@ -235,7 +275,7 @@
       }
     };
 
-    // ── Registrazione ─────────────────────────────────
+    // ── Registrazione ────────────────────────────────────────
     window.doRegister = async () => {
       const btn  = document.getElementById('registerBtn');
       const name = document.getElementById('r_name').value.trim();
@@ -258,7 +298,7 @@
       }
     };
 
-    // ── Nuova password dopo recovery ─────────────────
+    // ── Nuova password dopo recovery ─────────────────────────
     window.showNewPasswordForm = () => {
       document.querySelector('.tabs').style.display = 'none';
       document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
@@ -267,18 +307,16 @@
       div.id = 'tab-newpw';
       div.className = 'form-section active';
       div.innerHTML = `
-        <p style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.5">
-          Imposta la tua nuova password per accedere al gestionale.
-        </p>
+        <p class="recovery-hint">Imposta la tua nuova password per accedere al gestionale.</p>
         <div class="field">
-          <label>Nuova password</label>
+          <div class="field-header"><span class="field-label">Nuova password</span></div>
           <div class="pw-wrap">
             <input type="password" id="np_password" placeholder="Minimo 8 caratteri">
             <button class="pw-eye" type="button" onclick="togglePw('np_password',this)">👁</button>
           </div>
         </div>
         <div class="field">
-          <label>Conferma password</label>
+          <div class="field-header"><span class="field-label">Conferma password</span></div>
           <div class="pw-wrap">
             <input type="password" id="np_confirm" placeholder="Ripeti la password">
             <button class="pw-eye" type="button" onclick="togglePw('np_confirm',this)">👁</button>
@@ -310,7 +348,7 @@
       }
     };
 
-    // ── Helper ────────────────────────────────────────
+    // ── Helper ───────────────────────────────────────────────
     function showMsg(id, type, text) {
       const el = document.getElementById(id);
       el.className  = 'msg ' + type;
