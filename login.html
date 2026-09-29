@@ -91,23 +91,6 @@
     .back-link{text-align:center;margin-top:20px;font-size:13px;color:rgba(255,255,255,.4);}
     .back-link a{color:#93c5fd;}
 
-    /* Reset password overlay */
-    .reset-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
-      display:none;align-items:center;justify-content:center;}
-    .reset-overlay.open{display:flex;}
-    .reset-card{background:#0d1322;border:1px solid rgba(255,255,255,.1);border-radius:20px;
-      padding:36px;width:100%;max-width:400px;margin:24px;box-shadow:0 24px 60px rgba(0,0,0,.7);}
-    .reset-card h3{font-size:17px;font-weight:700;margin-bottom:8px;}
-    .reset-card p{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px;line-height:1.5;}
-    .reset-btns{display:flex;gap:10px;margin-top:20px;}
-    .btn-cancel{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
-      background:none;color:rgba(255,255,255,.5);font-size:14px;cursor:pointer;transition:all .15s;}
-    .btn-cancel:hover{border-color:rgba(255,255,255,.25);color:#fff;}
-    .btn-send{flex:2;padding:12px;border-radius:10px;border:none;
-      background:linear-gradient(135deg,#1e90ff,#3b82f6);color:#fff;font-size:14px;
-      font-weight:700;cursor:pointer;transition:all .2s;}
-    .btn-send:hover{opacity:.9;}
-    .btn-send:disabled{opacity:.5;cursor:not-allowed;}
   </style>
 </head>
 <body>
@@ -137,7 +120,7 @@
       <div class="field">
         <label>
           Password
-          <a href="#" onclick="openReset();return false;">Password dimenticata?</a>
+          <a href="/reset-password.html">Password dimenticata?</a>
         </label>
         <div class="pw-wrap">
           <input type="password" id="l_password" placeholder="••••••••"
@@ -192,23 +175,6 @@
 
     <div class="back-link">
       <a href="index.html">← Torna alla home</a>
-    </div>
-  </div>
-
-  <!-- ── RESET PASSWORD OVERLAY ─────────────────────── -->
-  <div class="reset-overlay" id="resetOverlay">
-    <div class="reset-card">
-      <h3>🔑 Recupera password</h3>
-      <p>Inserisci la tua email. Ti invieremo un link per impostare una nuova password.</p>
-      <div class="field">
-        <label>Email account</label>
-        <input type="email" id="reset_email" placeholder="nome@futursat.it">
-      </div>
-      <div class="msg" id="resetMsg"></div>
-      <div class="reset-btns">
-        <button class="btn-cancel" onclick="closeReset()">Annulla</button>
-        <button class="btn-send" id="resetBtn" onclick="doReset()">Invia link →</button>
-      </div>
     </div>
   </div>
 
@@ -298,37 +264,6 @@
         showMsg('registerMsg','error', e.message);
         btn.disabled = false;
         btn.textContent = 'Invia richiesta';
-      }
-    };
-
-    // ── Reset password ────────────────────────────────
-    window.openReset  = () => document.getElementById('resetOverlay').classList.add('open');
-    window.closeReset = () => {
-      document.getElementById('resetOverlay').classList.remove('open');
-      document.getElementById('resetMsg').style.display = 'none';
-      document.getElementById('reset_email').value = '';
-      const btn = document.getElementById('resetBtn');
-      btn.disabled = false;
-      btn.textContent = 'Invia link →';
-    };
-
-    window.doReset = async () => {
-      const btn   = document.getElementById('resetBtn');
-      const email = document.getElementById('reset_email').value.trim();
-      if (!email) { showMsg('resetMsg','error','Inserisci la tua email.'); return; }
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span>Invio…';
-      try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/login.html?reset=1',
-        });
-        if (error) throw error;
-        showMsg('resetMsg','success','✅ Email inviata! Controlla la tua casella (anche la cartella spam).');
-        btn.textContent = 'Email inviata ✓';
-      } catch(e) {
-        showMsg('resetMsg','error', e.message);
-        btn.disabled = false;
-        btn.textContent = 'Invia link →';
       }
     };
 
