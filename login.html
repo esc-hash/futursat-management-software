@@ -120,10 +120,10 @@
         <input type="email" id="l_email" placeholder="nome@futursat.it" autocomplete="email">
       </div>
       <div class="field">
-        <label>
-          Password
-          <a href="reset-password.html">Password dimenticata?</a>
-        </label>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.5px;">Password</span>
+          <a href="reset-password.html" style="font-size:11px;font-weight:500;color:#93c5fd;text-decoration:none;">Password dimenticata?</a>
+        </div>
         <div class="pw-wrap">
           <input type="password" id="l_password" placeholder="••••••••"
             onkeydown="if(event.key==='Enter')doLogin()">
