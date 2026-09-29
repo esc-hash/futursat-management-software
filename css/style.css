@@ -47,9 +47,10 @@ input, select, textarea { font-family:inherit; font-size:14px; }
   transition:transform 0.25s;
 }
 .nav-logo {
-  padding:22px 20px 18px; display:flex; align-items:center; gap:12px;
+  padding:18px 20px 16px; display:flex; align-items:center;
   border-bottom:1px solid var(--border); flex-shrink:0;
 }
+.nav-logo img { height:38px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(30,144,255,.2)); }
 .nav-logo-icon {
   width:36px; height:36px;
   background:linear-gradient(135deg,var(--accent),var(--violet));
