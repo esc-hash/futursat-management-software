@@ -7,9 +7,16 @@ const PIATTAFORME = ['Piattaforma 1','Piattaforma 2','Piattaforma 3','POSIZIO','
 // ── API ─────────────────────────────────────────────────────
 export async function searchByTarga(targa) {
   const { data } = await supabase
-    .from('veicoli')
-    .select('*')
+    .from('veicoli').select('*')
     .ilike('targa', targa.trim())
+    .maybeSingle();
+  return data;
+}
+
+export async function searchByTelaio(telaio) {
+  const { data } = await supabase
+    .from('veicoli').select('*')
+    .ilike('numero_telaio', telaio.trim())
     .maybeSingle();
   return data;
 }
@@ -19,8 +26,17 @@ export async function searchTargaAC(q) {
     .from('veicoli')
     .select('id,targa,ragione_sociale,stato')
     .ilike('targa', `%${q}%`)
-    .order('targa')
-    .limit(10);
+    .order('targa').limit(10);
+  return data ?? [];
+}
+
+export async function searchTelaioAC(q) {
+  const { data } = await supabase
+    .from('veicoli')
+    .select('id,numero_telaio,targa,ragione_sociale')
+    .ilike('numero_telaio', `%${q}%`)
+    .not('numero_telaio', 'is', null)
+    .order('numero_telaio').limit(10);
   return data ?? [];
 }
 
@@ -58,11 +74,18 @@ export default {
     container.innerHTML = `
       <div class="page-wrap search-page">
         <div class="page-header" style="text-align:center">
-          <h1 class="page-title">🚛 Ricerca per Targa</h1>
-          <p class="page-sub">Inserisci la targa per trovare il veicolo e il contratto GPS.</p>
+          <h1 class="page-title">🚛 Ricerca Veicolo</h1>
+          <p class="page-sub">Cerca per targa o numero di telaio.</p>
         </div>
 
-        <div style="max-width:380px;margin:0 auto 24px">
+        <!-- Tab switcher -->
+        <div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px">
+          <button class="vsearch-tab active" id="tabTarga"  onclick="window._vSwitchTab('targa')">🔢 Targa</button>
+          <button class="vsearch-tab"        id="tabTelaio" onclick="window._vSwitchTab('telaio')">🔩 Telaio</button>
+        </div>
+
+        <!-- Targa -->
+        <div id="panelTarga" style="max-width:380px;margin:0 auto 24px">
           <div class="plate-input-wrap" id="targaACWrap">
             <div class="plate-input-box">
               <input id="targaInput" placeholder="ES. AA123BB" maxlength="10"
@@ -74,11 +97,37 @@ export default {
           <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:6px">Premi Invio o clicca 🔍</div>
         </div>
 
+        <!-- Telaio -->
+        <div id="panelTelaio" style="display:none;max-width:420px;margin:0 auto 24px">
+          <div class="plate-input-wrap" id="telaioACWrap">
+            <div class="plate-input-box" style="border-radius:12px">
+              <input id="telaioInput" placeholder="Es. ZFA19900003219141" maxlength="40"
+                style="text-transform:uppercase;letter-spacing:1px"
+                oninput="window._telaioAC()" onkeydown="if(event.key==='Enter')window._telaioSearch()">
+            </div>
+            <div class="ac-dropdown" id="telaioAC"></div>
+          </div>
+          <button class="btn-search-round" onclick="window._telaioSearch()">🔍</button>
+          <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:6px">Premi Invio o clicca 🔍</div>
+        </div>
+
         <div id="targaResult" style="max-width:760px;margin:0 auto"></div>
       </div>`;
 
     let _acTimer = null;
 
+    // ── Tab switch ──────────────────────────────────────
+    window._vSwitchTab = (tab) => {
+      document.getElementById('tabTarga') .classList.toggle('active', tab === 'targa');
+      document.getElementById('tabTelaio').classList.toggle('active', tab === 'telaio');
+      document.getElementById('panelTarga') .style.display = tab === 'targa'  ? '' : 'none';
+      document.getElementById('panelTelaio').style.display = tab === 'telaio' ? '' : 'none';
+      document.getElementById('targaResult').innerHTML = '';
+      document.getElementById('targaAC').innerHTML  = '';
+      document.getElementById('telaioAC').innerHTML = '';
+    };
+
+    // ── Autocomplete Targa ──────────────────────────────
     window._targaAC = () => {
       clearTimeout(_acTimer);
       const q = document.getElementById('targaInput')?.value?.trim().toUpperCase();
@@ -100,17 +149,46 @@ export default {
       if (!val) return;
       if (document.getElementById('targaInput')) document.getElementById('targaInput').value = val;
       document.getElementById('targaAC').innerHTML = '';
+      _doShowVeicolo(() => searchByTarga(val), `targa <b>${val}</b>`);
+    };
+
+    // ── Autocomplete Telaio ─────────────────────────────
+    window._telaioAC = () => {
+      clearTimeout(_acTimer);
+      const q = document.getElementById('telaioInput')?.value?.trim().toUpperCase();
+      if (!q || q.length < 3) { document.getElementById('telaioAC').innerHTML = ''; return; }
+      _acTimer = setTimeout(async () => {
+        const list = await searchTelaioAC(q);
+        const dd = document.getElementById('telaioAC');
+        if (!list.length) { dd.innerHTML = ''; return; }
+        dd.innerHTML = list.map(v => `
+          <div class="ac-item" onclick="window._telaioSearch('${v.numero_telaio}')">
+            <b>${_hl(v.numero_telaio, q)}</b>
+            <span style="color:var(--text2);font-size:12px"> — ${v.targa || '—'} · ${v.ragione_sociale || '—'}</span>
+          </div>`).join('');
+      }, 220);
+    };
+
+    window._telaioSearch = async (telaio) => {
+      const val = (telaio || document.getElementById('telaioInput')?.value || '').trim().toUpperCase();
+      if (!val) return;
+      if (document.getElementById('telaioInput')) document.getElementById('telaioInput').value = val;
+      document.getElementById('telaioAC').innerHTML = '';
+      _doShowVeicolo(() => searchByTelaio(val), `telaio <b>${val}</b>`);
+    };
+
+    async function _doShowVeicolo(fetchFn, label) {
       const res = document.getElementById('targaResult');
       res.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)">Ricerca in corso…</div>';
       try {
-        const v = await searchByTarga(val);
-        if (!v) { res.innerHTML = `<div class="empty-state">Nessun veicolo trovato con targa <b>${val}</b></div>`; return; }
+        const v = await fetchFn();
+        if (!v) { res.innerHTML = `<div class="empty-state">Nessun veicolo trovato con ${label}</div>`; return; }
         await logAction({ azione:'READ', modulo:'veicoli', record_id:v.id, record_label:v.targa });
         res.innerHTML = _renderVehicleDetail(v);
       } catch(e) {
         res.innerHTML = `<div style="color:var(--red);padding:20px">${e.message}</div>`;
       }
-    };
+    }
   },
 };
 

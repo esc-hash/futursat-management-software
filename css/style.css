@@ -437,6 +437,18 @@ textarea.form-input { resize:vertical; min-height:80px; }
   .gd-filters { flex-direction:column; }
 }
 
+/* ── Veicoli search tabs ────────────────────────────────────── */
+.vsearch-tab {
+  padding:10px 24px; border-radius:12px; border:1px solid var(--border);
+  background:var(--surface); color:var(--text2); font-size:14px; font-weight:600;
+  cursor:pointer; transition:all .18s;
+}
+.vsearch-tab.active {
+  background:rgba(30,144,255,.15); border-color:rgba(30,144,255,.45);
+  color:var(--accent); box-shadow:0 0 12px rgba(30,144,255,.15);
+}
+.vsearch-tab:hover:not(.active) { border-color:rgba(255,255,255,.2); color:var(--text); }
+
 /* ── Gestione Dati ──────────────────────────────────────────── */
 .gd-tabs {
   display:flex; gap:6px; margin-bottom:16px;
