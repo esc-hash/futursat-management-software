@@ -437,6 +437,21 @@ textarea.form-input { resize:vertical; min-height:80px; }
   .gd-filters { flex-direction:column; }
 }
 
+/* ── Griglia veicoli proprietario ──────────────────────────── */
+.vlist-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px;
+}
+.vlist-card {
+  background:rgba(255,255,255,.04); border:1px solid var(--border);
+  border-radius:12px; padding:14px; cursor:pointer; transition:all .18s;
+}
+.vlist-card:hover { border-color:rgba(30,144,255,.35); background:rgba(30,144,255,.06); transform:translateY(-1px); }
+.vlist-card-current {
+  border-color:rgba(30,144,255,.5); background:rgba(30,144,255,.08);
+  cursor:default;
+}
+.vlist-card-current:hover { transform:none; }
+
 /* ── Veicoli search tabs ────────────────────────────────────── */
 .vsearch-tab {
   padding:10px 24px; border-radius:12px; border:1px solid var(--border);

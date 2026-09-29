@@ -183,8 +183,26 @@ export default {
       try {
         const v = await fetchFn();
         if (!v) { res.innerHTML = `<div class="empty-state">Nessun veicolo trovato con ${label}</div>`; return; }
+
+        // Carica proprietario + tutti i suoi veicoli in parallelo
+        const ragSoc = v.ragione_sociale;
+        const [clienteRes, altriVeicoliRes] = await Promise.all([
+          v.cliente_id
+            ? supabase.from('clienti').select('*').eq('id', v.cliente_id).maybeSingle()
+            : supabase.from('clienti').select('*').ilike('ragione_sociale', ragSoc || '').maybeSingle(),
+          ragSoc
+            ? supabase.from('veicoli')
+                .select('id,targa,tipo_mezzo,marca,modello,stato,piattaforma,canone,data_attivazione,data_sospensione,numero_contratto')
+                .ilike('ragione_sociale', ragSoc)
+                .order('targa')
+            : Promise.resolve({ data: [] }),
+        ]);
+
+        const cliente     = clienteRes?.data ?? null;
+        const tuttiVeicoli = altriVeicoliRes?.data ?? [];
+
         await logAction({ azione:'READ', modulo:'veicoli', record_id:v.id, record_label:v.targa });
-        res.innerHTML = _renderVehicleDetail(v);
+        res.innerHTML = _renderVehicleDetail(v, cliente, tuttiVeicoli);
       } catch(e) {
         res.innerHTML = `<div style="color:var(--red);padding:20px">${e.message}</div>`;
       }
@@ -192,64 +210,144 @@ export default {
   },
 };
 
-function _renderVehicleDetail(v) {
+function _renderVehicleDetail(v, cliente, tuttiVeicoli = []) {
   const stMap = { 'In corso':'s-incorso','Sospeso':'s-sospeso','Archiviato':'s-archiviato',
     'Bloccato':'s-bloccato','Disattivato':'s-disattivato','Furto':'s-furto','Revocato':'s-revocato' };
+
+  const attivi    = tuttiVeicoli.filter(x => x.stato === 'In corso').length;
+  const canTotale = tuttiVeicoli.filter(x => x.stato === 'In corso').reduce((s,x) => s+(x.canone||0), 0);
+  const altriVeicoli = tuttiVeicoli.filter(x => x.id !== v.id);
+
   return `
     <div class="detail-card">
+
+      <!-- ── Header ──────────────────────────────────────────── -->
       <div class="detail-card-header">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
           <div class="plate-badge">${v.targa}</div>
-          ${v.stato ? `<span class="stato-chip ${stMap[v.stato]||''}">${v.stato}</span>` : ''}
+          ${v.stato     ? `<span class="stato-chip ${stMap[v.stato]||''}">${v.stato}</span>` : ''}
           ${v.piattaforma ? `<span class="plat-badge">${v.piattaforma}</span>` : ''}
+          ${v.tipo_mezzo  ? `<span style="font-size:12px;color:var(--text2);background:rgba(255,255,255,.06);padding:4px 10px;border-radius:6px;border:1px solid var(--border)">${v.tipo_mezzo}</span>` : ''}
         </div>
         <button class="btn-primary" onclick="window._veicoloEdit(${v.id})">✏️ Modifica</button>
       </div>
 
+      <!-- ── KPI ─────────────────────────────────────────────── -->
       <div class="kpi-row">
-        <div class="kpi-box"><div class="kpi-val">${[v.marca,v.modello].filter(Boolean).join(' ') || '—'}</div><div class="kpi-label">Veicolo</div></div>
-        <div class="kpi-box"><div class="kpi-val">${v.colore || '—'}</div><div class="kpi-label">Colore</div></div>
-        <div class="kpi-box kpi-blue"><div class="kpi-val">€${v.canone||0}</div><div class="kpi-label">Canone</div></div>
+        <div class="kpi-box">
+          <div class="kpi-val">${[v.marca,v.modello].filter(Boolean).join(' ') || '—'}</div>
+          <div class="kpi-label">Veicolo</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">${v.colore || '—'}</div>
+          <div class="kpi-label">Colore</div>
+        </div>
+        <div class="kpi-box kpi-blue">
+          <div class="kpi-val">€ ${v.canone != null ? Number(v.canone).toFixed(2) : '—'}</div>
+          <div class="kpi-label">Canone mensile</div>
+        </div>
+        <div class="kpi-box">
+          <div class="kpi-val">${tuttiVeicoli.length}</div>
+          <div class="kpi-label">Targhe proprietario</div>
+        </div>
+        <div class="kpi-box kpi-green">
+          <div class="kpi-val">${attivi}</div>
+          <div class="kpi-label">Attive</div>
+        </div>
+        ${canTotale > 0 ? `<div class="kpi-box kpi-blue">
+          <div class="kpi-val">€ ${canTotale.toFixed(2)}</div>
+          <div class="kpi-label">Canone totale proprietario</div>
+        </div>` : ''}
       </div>
 
+      <!-- ── Griglia info ────────────────────────────────────── -->
       <div class="info-grid-2col">
+
+        <!-- PROPRIETARIO DEL MEZZO -->
         <div>
-          <div class="section-label">CONTRATTO</div>
-          ${_row('N° Contratto', v.numero_contratto)}
-          ${_row('Articolo', v.articolo)}
-          ${_row('Canone', v.canone ? '€'+v.canone : null)}
-          ${_row('Attivazione', v.data_attivazione)}
-          ${_row('Scadenza', v.data_sospensione || v.data_termine)}
-          ${_row('Stato', v.stato)}
-          ${_row('Piattaforma', v.piattaforma)}
+          <div class="section-label">👤 PROPRIETARIO DEL MEZZO</div>
+          ${_row('Ragione Sociale', cliente?.ragione_sociale || v.ragione_sociale)}
+          ${_row('Partita IVA',     cliente?.partita_iva)}
+          ${_row('Indirizzo',       cliente?.indirizzo)}
+          ${_row('Città',           cliente?.citta)}
+          ${_row('Provincia',       cliente?.provincia)}
+          ${_row('Telefono',        cliente?.telefono || v.telefono_ufficio)}
+          ${_row('Cellulare',       v.cellulare)}
+          ${_row('Email',           cliente?.email || v.email)}
+          ${!cliente ? `<div class="info-row"><span class="info-label" style="color:var(--text3);font-style:italic">Nessun cliente collegato in anagrafica</span></div>` : ''}
         </div>
+
+        <!-- DATI VEICOLO -->
         <div>
-          <div class="section-label">DISPOSITIVO GPS</div>
-          ${_row('Seriale', v.seriale_periferica)}
-          ${_row('Modello', v.modello_periferica)}
-          ${_row('Produttore', v.produttore_periferica)}
-          ${_row('Installatore', v.installatore)}
-          ${_row('Data Installaz.', v.data_installazione)}
-          ${_row('SIM Voce', v.sim_voce)}
-          ${_row('SIM Dati', v.sim_dati)}
+          <div class="section-label">🚛 DATI VEICOLO</div>
+          ${_row('Tipo Mezzo',   v.tipo_mezzo)}
+          ${_row('Marca',        v.marca)}
+          ${_row('Modello',      v.modello)}
+          ${_row('Colore',       v.colore)}
+          ${_row('N° Telaio',    v.numero_telaio)}
+          ${_row('Targa',        v.targa)}
         </div>
+
+        <!-- CONTRATTO GPS -->
         <div>
-          <div class="section-label">CLIENTE</div>
-          ${_row('Ragione Sociale', v.ragione_sociale)}
-          ${_row('Email', v.email)}
-          ${_row('Cellulare', v.cellulare)}
-          ${_row('Tel. Ufficio', v.telefono_ufficio)}
+          <div class="section-label">📄 CONTRATTO GPS</div>
+          ${_row('N° Contratto',  v.numero_contratto)}
+          ${_row('Articolo',      v.articolo)}
+          ${_row('Canone',        v.canone != null ? '€ '+Number(v.canone).toFixed(2) : null)}
+          ${_row('Attivazione',   _fmtDate(v.data_attivazione))}
+          ${_row('Sospensione',   _fmtDate(v.data_sospensione))}
+          ${_row('Termine',       _fmtDate(v.data_termine))}
+          ${_row('Stato',         v.stato)}
+          ${_row('Piattaforma',   v.piattaforma)}
+          ${_row('Note',          v.note)}
         </div>
+
+        <!-- DISPOSITIVO GPS -->
         <div>
-          <div class="section-label">VEICOLO</div>
-          ${_row('Tipo Mezzo', v.tipo_mezzo)}
-          ${_row('Marca', v.marca)}
-          ${_row('Modello', v.modello)}
-          ${_row('Colore', v.colore)}
-          ${_row('N° Telaio', v.numero_telaio)}
+          <div class="section-label">📡 DISPOSITIVO GPS</div>
+          ${_row('Seriale GPS',      v.seriale_periferica)}
+          ${_row('Modello periferica', v.modello_periferica)}
+          ${_row('Produttore',       v.produttore_periferica)}
+          ${_row('Installatore',     v.installatore)}
+          ${_row('Data installaz.',  _fmtDate(v.data_installazione))}
+          ${_row('SIM Voce',         v.sim_voce)}
+          ${_row('SIM Dati',         v.sim_dati)}
         </div>
+
       </div>
+
+      <!-- ── Tutti i veicoli del proprietario ────────────────── -->
+      ${tuttiVeicoli.length > 0 ? `
+      <div style="margin-top:24px">
+        <div class="section-label" style="margin-bottom:12px">
+          🚗 TUTTI I VEICOLI DI "${(cliente?.ragione_sociale || v.ragione_sociale || '').toUpperCase()}"
+          <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:8px">${tuttiVeicoli.length} targ${tuttiVeicoli.length===1?'a':'he'} · ${attivi} attiv${attivi===1?'a':'e'}</span>
+        </div>
+        <div class="vlist-grid">
+          ${tuttiVeicoli.map(x => `
+            <div class="vlist-card ${x.id === v.id ? 'vlist-card-current' : ''}" onclick="${x.id !== v.id ? `window._targaSearch('${x.targa}')` : ''}">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                <div class="plate-badge" style="font-size:13px;padding:4px 10px">${x.targa}</div>
+                <span class="stato-chip ${stMap[x.stato]||''}" style="font-size:11px">${x.stato||'—'}</span>
+                ${x.id === v.id ? '<span style="font-size:10px;color:var(--accent);font-weight:700">← QUESTO</span>' : ''}
+              </div>
+              <div style="font-size:12px;color:var(--text2);margin-top:6px">
+                ${[x.marca,x.modello].filter(Boolean).join(' ') || '—'}
+                ${x.piattaforma ? ` · ${x.piattaforma}` : ''}
+                ${x.canone != null ? ` · <b style="color:var(--accent)">€${Number(x.canone).toFixed(0)}</b>` : ''}
+              </div>
+              ${x.numero_contratto ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">Contr. ${x.numero_contratto}</div>` : ''}
+              ${x.data_attivazione ? `<div style="font-size:11px;color:var(--text3)">Att. ${_fmtDate(x.data_attivazione)}</div>` : ''}
+            </div>`).join('')}
+        </div>
+      </div>` : ''}
+
     </div>`;
+}
+
+function _fmtDate(d) {
+  if (!d) return null;
+  try { return new Date(d).toLocaleDateString('it-IT'); } catch { return d; }
 }
 
 window._veicoloEdit = async (id) => {
