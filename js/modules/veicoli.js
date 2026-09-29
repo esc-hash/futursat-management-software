@@ -18,10 +18,16 @@ export async function searchTargaAC(q) {
   const { data } = await supabase
     .from('veicoli')
     .select('id,targa,ragione_sociale,stato')
-    .ilike('targa', `${q}%`)
+    .ilike('targa', `%${q}%`)
     .order('targa')
-    .limit(8);
+    .limit(10);
   return data ?? [];
+}
+
+function _hl(text, q) {
+  if (!text || !q) return text || '';
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return String(text).replace(re, '<span style="color:#ef4444;font-weight:800">$1</span>');
 }
 
 export async function saveVeicolo(data) {
@@ -83,7 +89,8 @@ export default {
         if (!list.length) { dd.innerHTML = ''; return; }
         dd.innerHTML = list.map(v => `
           <div class="ac-item" onclick="window._targaSearch('${v.targa}')">
-            <b>${v.targa}</b> <span style="color:var(--text2);font-size:12px">— ${v.ragione_sociale || '—'}</span>
+            <b>${_hl(v.targa, q)}</b>
+            <span style="color:var(--text2);font-size:12px"> — ${v.ragione_sociale || '—'}</span>
           </div>`).join('');
       }, 220);
     };

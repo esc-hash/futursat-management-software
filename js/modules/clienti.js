@@ -2,13 +2,18 @@ import { supabase }  from '../supabaseClient.js';
 import { logAction }  from './auditLog.js';
 import { hasRole }    from './auth.js';
 
+function _hl(text, q) {
+  if (!text || !q) return text || '';
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return String(text).replace(re, '<span style="color:#ef4444;font-weight:800">$1</span>');
+}
+
 // ── API ─────────────────────────────────────────────────────
 export async function searchClienti(q, limit = 60) {
-  const enc = encodeURIComponent(q);
   const { data, error } = await supabase
     .from('clienti')
     .select('id,ragione_sociale,citta,provincia,partita_iva,telefono')
-    .ilike('ragione_sociale', `*${q}*`)
+    .ilike('ragione_sociale', `%${q}%`)
     .order('ragione_sociale')
     .limit(limit);
   if (error) throw error;
@@ -68,10 +73,12 @@ export default {
         </div>
 
         <div class="search-bar-wrap">
-          <div class="name-search-box">
+          <div class="name-search-box" style="position:relative">
             <input id="clienteSearchInput" class="search-input" placeholder="Ragione sociale…" autocomplete="off"
-              oninput="window._clienteSearch()" onkeydown="if(event.key==='Enter') window._clienteSearch()">
-            <button class="btn-search" onclick="window._clienteSearch()">Cerca</button>
+              oninput="window._clienteAC()"
+              onkeydown="window._clienteKeyDown(event)">
+            <button class="btn-search" onclick="window._clienteSearchFull()">Cerca</button>
+            <div class="ac-dropdown" id="clienteAC" style="position:absolute;top:100%;left:0;right:0;z-index:50"></div>
           </div>
         </div>
 
@@ -79,27 +86,80 @@ export default {
         <div id="clienteDetail" style="display:none;margin-top:24px"></div>
       </div>`;
 
-    let _searchTimer = null;
-    window._clienteSearch = async () => {
-      clearTimeout(_searchTimer);
-      _searchTimer = setTimeout(async () => {
-        const q = document.getElementById('clienteSearchInput')?.value?.trim();
-        if (!q || q.length < 2) return;
-        const res = document.getElementById('clienteResults');
-        res.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:10px">Ricerca…</div>';
+    let _acTimer = null;
+    let _acIndex = -1;
+
+    window._clienteAC = () => {
+      clearTimeout(_acTimer);
+      _acIndex = -1;
+      const q = document.getElementById('clienteSearchInput')?.value?.trim();
+      const dd = document.getElementById('clienteAC');
+      if (!q || q.length < 2) { dd.innerHTML = ''; return; }
+      _acTimer = setTimeout(async () => {
         try {
-          const list = await searchClienti(q);
-          if (!list.length) { res.innerHTML = '<div class="empty-state">Nessun cliente trovato</div>'; return; }
-          res.innerHTML = list.map(c => `
-            <div class="cliente-item" onclick="window._clienteOpen(${c.id})">
-              <div class="cliente-item-name">${c.ragione_sociale}</div>
-              <div class="cliente-item-sub">${[c.citta, c.provincia].filter(Boolean).join(', ')} · P.IVA: ${c.partita_iva || '—'}</div>
+          const list = await searchClienti(q, 10);
+          if (!list.length) { dd.innerHTML = ''; return; }
+          dd.innerHTML = list.map((c, i) => `
+            <div class="ac-item" data-idx="${i}" data-id="${c.id}"
+              onmousedown="window._clienteOpen(${c.id});document.getElementById('clienteAC').innerHTML='';document.getElementById('clienteSearchInput').value='${c.ragione_sociale.replace(/'/g,"\\'")}'"
+              onmouseenter="window._clienteACHover(${i})">
+              <span>${_hl(c.ragione_sociale, q)}</span>
+              <span style="color:var(--text2);font-size:12px;margin-left:8px">${[c.citta, c.provincia].filter(Boolean).join(', ') || ''}</span>
             </div>`).join('');
-        } catch(e) {
-          res.innerHTML = `<div style="color:var(--red);padding:10px">${e.message}</div>`;
-        }
-      }, 300);
+        } catch(e) { dd.innerHTML = ''; }
+      }, 220);
     };
+
+    window._clienteACHover = (idx) => {
+      _acIndex = idx;
+      document.querySelectorAll('#clienteAC .ac-item').forEach((el, i) =>
+        el.classList.toggle('ac-item-active', i === idx));
+    };
+
+    window._clienteKeyDown = (e) => {
+      const items = document.querySelectorAll('#clienteAC .ac-item');
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        _acIndex = Math.min(_acIndex + 1, items.length - 1);
+        items.forEach((el, i) => el.classList.toggle('ac-item-active', i === _acIndex));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        _acIndex = Math.max(_acIndex - 1, 0);
+        items.forEach((el, i) => el.classList.toggle('ac-item-active', i === _acIndex));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (_acIndex >= 0 && items[_acIndex]) {
+          items[_acIndex].dispatchEvent(new MouseEvent('mousedown'));
+        } else {
+          window._clienteSearchFull();
+        }
+      } else if (e.key === 'Escape') {
+        document.getElementById('clienteAC').innerHTML = '';
+        _acIndex = -1;
+      }
+    };
+
+    window._clienteSearchFull = async () => {
+      document.getElementById('clienteAC').innerHTML = '';
+      const q = document.getElementById('clienteSearchInput')?.value?.trim();
+      if (!q || q.length < 2) return;
+      const res = document.getElementById('clienteResults');
+      res.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:10px">Ricerca…</div>';
+      try {
+        const list = await searchClienti(q);
+        if (!list.length) { res.innerHTML = '<div class="empty-state">Nessun cliente trovato</div>'; return; }
+        res.innerHTML = list.map(c => `
+          <div class="cliente-item" onclick="window._clienteOpen(${c.id})">
+            <div class="cliente-item-name">${_hl(c.ragione_sociale, q)}</div>
+            <div class="cliente-item-sub">${[c.citta, c.provincia].filter(Boolean).join(', ')} · P.IVA: ${c.partita_iva || '—'}</div>
+          </div>`).join('');
+      } catch(e) {
+        res.innerHTML = `<div style="color:var(--red);padding:10px">${e.message}</div>`;
+      }
+    };
+
+    // Alias per compatibilità
+    window._clienteSearch = window._clienteSearchFull;
 
     window._clienteOpen = async (id) => {
       const detail = document.getElementById('clienteDetail');

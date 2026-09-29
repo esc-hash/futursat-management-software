@@ -218,7 +218,7 @@ input, select, textarea { font-family:inherit; font-size:14px; }
 .name-search-box  {
   display:flex; align-items:center; gap:0;
   background:var(--surface2); border:1px solid var(--border); border-radius:13px;
-  overflow:hidden; transition:border-color .2s;
+  overflow:visible; transition:border-color .2s; position:relative;
 }
 .name-search-box:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px var(--glow); }
 .search-input {
@@ -266,9 +266,10 @@ input, select, textarea { font-family:inherit; font-size:14px; }
 .ac-item {
   padding:10px 16px; cursor:pointer; font-size:13px; color:#1e293b;
   border-bottom:1px solid #f1f5f9; transition:background .1s;
+  display:flex; align-items:center; gap:4px; flex-wrap:wrap;
 }
 .ac-item:last-child { border-bottom:none; }
-.ac-item:hover { background:#f8fafc; }
+.ac-item:hover, .ac-item-active { background:#f0f7ff; }
 
 /* ── Client items ──────────────────────────────────────────── */
 .cliente-item {
