@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
 
@@ -31,9 +32,9 @@
         <span class="nav-user-chevron">▲</span>
       </button>
       <div class="nav-dropdown" id="userDropdown">
-        <button class="nav-dd-item" onclick="navigate('home')">🏠 Home</button>
+        <button class="nav-dd-item" onclick="navigate('home')"><i data-lucide="home"></i> Home</button>
         <div class="nav-dd-divider"></div>
-        <button class="nav-dd-item danger" onclick="logout()">🚪 Esci</button>
+        <button class="nav-dd-item danger" onclick="logout()"><i data-lucide="log-out"></i> Esci</button>
       </div>
     </div>
   </nav>
@@ -41,11 +42,11 @@
   <!-- ── Main ─────────────────────────────────────────────── -->
   <div class="main-wrap">
     <header class="topbar">
-      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <button class="hamburger" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
       <div class="topbar-title" id="topbarTitle">Futursat</div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifiche attività">
-          🔔
+          <i data-lucide="bell"></i>
           <span class="notif-badge" id="notifBadge" style="display:none">0</span>
         </button>
       </div>

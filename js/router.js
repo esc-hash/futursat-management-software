@@ -35,6 +35,7 @@ export async function navigate(id, push = true) {
   c.innerHTML = '<div class="page-loading">Caricamento…</div>';
   await mod.render(c);
   if (mod.onEnter) await mod.onEnter(c);
+  window.lucide?.createIcons();
 
   // Title
   const titleEl = document.getElementById('topbarTitle');
@@ -52,8 +53,9 @@ export function initRouter() {
 function _showDenied() {
   const c = document.getElementById('page-content');
   if (c) c.innerHTML = `<div style="padding:80px;text-align:center">
-    <div style="font-size:54px;margin-bottom:16px">🚫</div>
-    <h2 style="color:var(--text)">Accesso negato</h2>
-    <p style="color:var(--text2);margin-top:8px">Non hai i permessi per questa sezione.</p>
+    <div style="margin-bottom:16px;color:var(--danger)"><i data-lucide="shield-off" style="width:48px;height:48px;stroke-width:1.5px"></i></div>
+    <h2 style="color:var(--text-main)">Accesso negato</h2>
+    <p style="color:var(--text-muted);margin-top:8px">Non hai i permessi per questa sezione.</p>
   </div>`;
+  window.lucide?.createIcons();
 }

@@ -46,13 +46,13 @@ async function _loadHomeStats() {
 
 function _renderHomeActions(profile) {
   const all = [
-    { icon:'🚛', title:'Cerca Targa',    desc:'Ricerca rapida per targa',      route:'veicoli' },
-    { icon:'🏢', title:'Clienti',        desc:'Anagrafica e veicoli cliente',   route:'clienti' },
-    { icon:'📁', title:'Documenti',      desc:'Archivio PDF e immagini',        route:'documenti' },
-    { icon:'📊', title:'Gestione Dati',   desc:'Ricerca, filtri, export/import', route:'gestioneDati' },
-    { icon:'📋', title:'Registro',       desc:'Cronologia attività',            route:'audit',         roles: MACRO.ADMIN_AMM },
-    { icon:'⚙️', title:'Amministrazione',desc:'Utenti e configurazioni',        route:'amministrazione', roles: MACRO.ADMIN_AMM },
-    { icon:'👥', title:'Area Operativa', desc:'Dashboard collaboratori',        route:'collaboratori',  roles: MACRO.OPERATIVA },
+    { icon:'<i data-lucide="truck"></i>',          title:'Cerca Targa',     desc:'Ricerca rapida per targa',       route:'veicoli' },
+    { icon:'<i data-lucide="building-2"></i>',     title:'Clienti',         desc:'Anagrafica e veicoli cliente',   route:'clienti' },
+    { icon:'<i data-lucide="folder"></i>',         title:'Documenti',       desc:'Archivio PDF e immagini',        route:'documenti' },
+    { icon:'<i data-lucide="bar-chart-2"></i>',    title:'Gestione Dati',   desc:'Ricerca, filtri, export/import', route:'gestioneDati' },
+    { icon:'<i data-lucide="clipboard-list"></i>', title:'Registro',        desc:'Cronologia attività',            route:'audit',           roles: MACRO.ADMIN_AMM },
+    { icon:'<i data-lucide="settings"></i>',       title:'Amministrazione', desc:'Utenti e configurazioni',        route:'amministrazione', roles: MACRO.ADMIN_AMM },
+    { icon:'<i data-lucide="users"></i>',          title:'Area Operativa',  desc:'Dashboard collaboratori',        route:'collaboratori',   roles: MACRO.OPERATIVA },
   ];
   const el = document.getElementById('homeActions');
   if (!el) return;
@@ -63,6 +63,7 @@ function _renderHomeActions(profile) {
       <div class="action-card-title">${a.title}</div>
       <div class="action-card-desc">${a.desc}</div>
     </div>`).join('');
+  window.lucide?.createIcons();
 }
 
 // ── Navigazione sidebar ─────────────────────────────────────
@@ -72,16 +73,16 @@ async function buildNav(profile) {
   const isOp  = MACRO.OPERATIVA.includes(role);
 
   const items = [
-    { route:'home',              icon:'🏠', label:'Home' },
-    { route:'veicoli',           icon:'🚛', label:'Ricerca Targa' },
-    { route:'clienti',           icon:'🏢', label:'Clienti' },
-    { route:'documenti',         icon:'📁', label:'Documenti' },
-    { route:'gestioneDati',      icon:'📊', label:'Gestione Dati' },
-    ...(isOp  ? [{ route:'collaboratori',  icon:'👥', label:'Area Operativa' }] : []),
+    { route:'home',              icon:'<i data-lucide="home"></i>',           label:'Home' },
+    { route:'veicoli',           icon:'<i data-lucide="truck"></i>',          label:'Ricerca Targa' },
+    { route:'clienti',           icon:'<i data-lucide="building-2"></i>',     label:'Clienti' },
+    { route:'documenti',         icon:'<i data-lucide="folder"></i>',         label:'Documenti' },
+    { route:'gestioneDati',      icon:'<i data-lucide="bar-chart-2"></i>',    label:'Gestione Dati' },
+    ...(isOp  ? [{ route:'collaboratori',  icon:'<i data-lucide="users"></i>',          label:'Area Operativa' }] : []),
     ...(isAmm ? [
       { sep: true, label:'AMMINISTRAZIONE' },
-      { route:'audit',           icon:'📋', label:'Registro Attività' },
-      { route:'amministrazione', icon:'⚙️', label:'Amministrazione' },
+      { route:'audit',           icon:'<i data-lucide="clipboard-list"></i>', label:'Registro Attività' },
+      { route:'amministrazione', icon:'<i data-lucide="settings"></i>',       label:'Amministrazione' },
     ] : []),
   ];
 
@@ -93,6 +94,7 @@ async function buildNav(profile) {
         <span class="nav-icon">${i.icon}</span>${i.label}
        </button>`
   ).join('');
+  window.lucide?.createIcons();
 
   // User info
   const abbr = profile?.full_name?.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase() || '?';
